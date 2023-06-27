@@ -93,7 +93,7 @@ namespace SysBot.Pokemon.Discord
 
                 var embed = GenerateEntityEmbed(fin, Context.User.Username, Hub.Config.TradeCord.UseLargerPokeBalls);
 
-                Context.Channel.SendMessageAsync(Trader.Username + " - " + msg, embed: embed.Build()).ConfigureAwait(false);
+                Context.Channel.SendMessageAsync(Trader.Username + " ➔ " + msg, embed: embed.Build()).ConfigureAwait(false);
                 switch (fin)
                 {
                     case PK9: TradeExtensions<PK9>.SVTrade = new(); break;
