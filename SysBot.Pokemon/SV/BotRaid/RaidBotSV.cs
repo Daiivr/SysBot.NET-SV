@@ -1158,7 +1158,7 @@ namespace SysBot.Pokemon
 
                     else if (!Settings.UsePresetFile)
                     {
-                        Settings.RaidEmbedFilters.Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Movimientos:**"", movestr, extramoves, BaseDescription, res };
+                        Settings.RaidEmbedFilters.Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Movimientos:**", movestr, extramoves, BaseDescription, res };
                         Settings.RaidEmbedFilters.Title = $"{(Species)pk.Species} {starcount} - {(MoveType)raids[i].TeraType}";
                     }
 
