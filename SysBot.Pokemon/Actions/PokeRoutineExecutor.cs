@@ -227,7 +227,7 @@ namespace SysBot.Pokemon
                         quit = true;
                     }
 
-                    var msg = $"⚠️ Encontrado a {user.TrainerName}{useridmsg} __enviando__ a varios jugadores en el juego. **OT Anterior**: {previousEncounter.Name}, **OT actual**: {TrainerName}";
+                    var msg = $"⚠️ Encontrado a {user.TrainerName}{useridmsg} __enviando__ a varios jugadores en el juego. **OT Anterior**: {previous_remote.Name}, **OT actual**: {TrainerName}";
                     if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
                         msg += $"\nID: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
