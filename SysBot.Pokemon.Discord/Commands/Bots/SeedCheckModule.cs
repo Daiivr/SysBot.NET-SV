@@ -55,7 +55,7 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Command("findFrame")]
@@ -83,7 +83,7 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync($"Here are the details for `{r.Seed:X16}`:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync($"Aquí están los detalles para: `{r.Seed:X16}`:", embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

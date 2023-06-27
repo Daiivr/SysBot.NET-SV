@@ -13,26 +13,26 @@ namespace SysBot.Pokemon.Twitch
         {
             if (!TwitchBot<T>.Info.GetCanQueue())
             {
-                msg = "Sorry, I am not currently accepting queue requests!";
+                msg = "Lo siento, actualmente no estoy aceptando solicitudes de cola.";
                 return false;
             }
 
             var set = ShowdownUtil.ConvertToShowdown(setstring);
             if (set == null)
             {
-                msg = $"Skipping trade, @{username}: Empty nickname provided for the species.";
+                msg = $"Omitiendo el tradeo, @{username}: Apodo vacío proporcionado para la especie.";
                 return false;
             }
             var template = AutoLegalityWrapper.GetTemplate(set);
             if (template.Species < 1)
             {
-                msg = $"Skipping trade, @{username}: Please read what you are supposed to type as the command argument.";
+                msg = $"Omitiendo tradeo, @{username}: Por favor, lea lo que se supone que debe escribir como argumento del comando.";
                 return false;
             }
 
             if (set.InvalidLines.Count != 0)
             {
-                msg = $"Skipping trade, @{username}: Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                msg = $"Omitiendo tradeo, @{username}: No se puede analizar el Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
                 return false;
             }
 
@@ -50,7 +50,7 @@ namespace SysBot.Pokemon.Twitch
 
                 if (!pkm.CanBeTraded())
                 {
-                    msg = $"Skipping trade, @{username}: Provided Pokémon content is blocked from trading!";
+                    msg = $"Omitiendo el tradeo, @{username}: ¡El contenido Pokémon proporcionado está bloqueado para el comercio!";
                     return false;
                 }
 
@@ -62,18 +62,18 @@ namespace SysBot.Pokemon.Twitch
                         var tq = new TwitchQueue<T>(pk, new PokeTradeTrainerInfo(display, mUserId), username, sub);
                         TwitchBot<T>.QueuePool.RemoveAll(z => z.UserName == username); // remove old requests if any
                         TwitchBot<T>.QueuePool.Add(tq);
-                        msg = $"@{username} - added to the waiting list. Please whisper your trade code to me! Your request from the waiting list will be removed if you are too slow!";
+                        msg = $"@{username} - añadidos a la lista de espera. Por favor, ¡susúrrame tu código de intercambio! ¡Su solicitud de la lista de espera será eliminado si usted es demasiado lento!";
                         return true;
                     }
                 }
 
-                var reason = result == "Timeout" ? "Set took too long to generate." : "Unable to legalize the Pokémon.";
-                msg = $"Skipping trade, @{username}: {reason}";
+                var reason = result == "Timeout" ? "El conjunto tardó demasiado en generarse." : "Incapaz de legalizar el Pokémon.";
+                msg = $"Omitiendo tradeo, @{username}: {reason}";
             }
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TwitchCommandsHelper<T>));
-                msg = $"Skipping trade, @{username}: An unexpected problem occurred.";
+                msg = $"Omitiendo tradeo, @{username}: Ha ocurrido un problema inesperado.";
             }
             return false;
         }
@@ -94,10 +94,10 @@ namespace SysBot.Pokemon.Twitch
         {
             return result switch
             {
-                QueueResultRemove.CurrentlyProcessing => "Looks like you're currently being processed! Did not remove from queue.",
-                QueueResultRemove.CurrentlyProcessingRemoved => "Looks like you're currently being processed! Removed from queue.",
-                QueueResultRemove.Removed => "Removed you from the queue.",
-                _ => "Sorry, you are not currently in the queue.",
+                QueueResultRemove.CurrentlyProcessing => "Parece que está siendo procesado. No se te ha eliminado de la cola.",
+                QueueResultRemove.CurrentlyProcessingRemoved => "Parece que estas siendo procesado. Eliminado de la cola.",
+                QueueResultRemove.Removed => "Eliminado de la cola.",
+                _ => "Lo sentimos, actualmente no está en la cola.",
             };
         }
 
@@ -105,8 +105,8 @@ namespace SysBot.Pokemon.Twitch
         {
             var detail = TwitchBot<T>.Info.GetDetail(parse);
             return detail == null
-                ? "Sorry, you are not currently in the queue."
-                : $"Your trade code is {detail.Trade.Code:0000 0000}";
+                ? "Lo sentimos, actualmente no estas en la cola."
+                : $"Su código de tradeo es: {detail.Trade.Code:0000 0000}";
         }
 
         public static string GetRaidList()
@@ -127,7 +127,7 @@ namespace SysBot.Pokemon.Twitch
                     msg += $"{raidcount}.) " + s.Title + " - " + s.Seed + " - Status: Inactive | ";
                 }
             }
-            return "These are the first 20 raids currently in the list:\n" + msg;
+            return "Estas son las 20 primeras incursiones que figuran actualmente en la lista:\n" + msg;
         }
     }
 }

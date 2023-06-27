@@ -37,7 +37,7 @@ namespace SysBot.Pokemon.Discord
             }).WithFooter(x =>
             {
                 x.IconUrl = "https://i.imgur.com/nXNBrlr.png";
-                x.Text = $"Page 1 of {pageContent.Count}";
+                x.Text = $"Pagina 1 de {pageContent.Count}";
             });
 
             if (!canReact && pageContent.Count > 1)
@@ -158,7 +158,7 @@ namespace SysBot.Pokemon.Discord
                     }
 
                     contents.Embed.Fields[0].Value = contents.Pages[page];
-                    contents.Embed.Footer.Text = $"Page {page + 1} of {contents.Pages.Count}";
+                    contents.Embed.Footer.Text = $"Pagina {page + 1} de {contents.Pages.Count}";
                     await msg.RemoveReactionAsync(reactions[reaction.Emote.Name == reactions[0].Name ? 0 : 1], user).ConfigureAwait(false);
                     await msg.ModifyAsync(msg => msg.Embed = contents.Embed.Build()).ConfigureAwait(false);
                 }
@@ -174,7 +174,7 @@ namespace SysBot.Pokemon.Discord
                     var tempEntry = string.Join(", ", reaction.Emote.Name == reactions[2].Name ? tempList.OrderBy(x => x.Split(' ')[1]) : tempList.OrderByDescending(x => x.Split(' ')[1]));
                     contents.Pages = ListUtilPrep(tempEntry);
                     contents.Embed.Fields[0].Value = contents.Pages[page];
-                    contents.Embed.Footer.Text = $"Page {page + 1} of {contents.Pages.Count}";
+                    contents.Embed.Footer.Text = $"Pagina {page + 1} de {contents.Pages.Count}";
                     await msg.RemoveReactionAsync(reactions[reaction.Emote.Name == reactions[2].Name ? 2 : 3], user).ConfigureAwait(false);
                     await msg.ModifyAsync(msg => msg.Embed = contents.Embed.Build()).ConfigureAwait(false);
                 }

@@ -32,14 +32,14 @@ namespace SysBot.Pokemon.Discord
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var receive = Data.Species == 0 ? string.Empty : $" ({Data.Nickname})";
-            Trader.SendMessageAsync($"Initializing trade{receive}. Please be ready. Your code is **{Code:0000 0000}**.").ConfigureAwait(false);
+            Trader.SendMessageAsync($"Iniciando __trade__ **{receive}**. Porfavor este atento. Tu codigo es: **{Code:0000 0000}**.").ConfigureAwait(false);
         }
 
         public void TradeSearching(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var name = Info.TrainerName;
-            var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", {name}";
-            Trader.SendMessageAsync($"I'm waiting for you{trainer}! Your code is **{Code:0000 0000}**. My IGN is **{routine.InGameName}**.").ConfigureAwait(false);
+            var trainer = string.IsNullOrEmpty(name) ? string.Empty : $" {name}";
+            Trader.SendMessageAsync($"Estoy esperando por ti, **{trainer}**! __Tienes **40 segundos**__. Tu codigo es: **{Code:0000 0000}**. Mi IGN es **{routine.InGameName}**.").ConfigureAwait(false);
         }
 
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
@@ -48,7 +48,7 @@ namespace SysBot.Pokemon.Discord
                 TradeCordHelper<T>.HandleTradedCatches(Trader.Id, false);
 
             OnFinish?.Invoke(routine);
-            Trader.SendMessageAsync($"Trade canceled: {msg}").ConfigureAwait(false);
+            Trader.SendMessageAsync($"✘ Trade __cancelado__: {msg}").ConfigureAwait(false);
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
@@ -58,10 +58,10 @@ namespace SysBot.Pokemon.Discord
 
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
-            var message = tradedToUser != 0 ? $"Trade finished. Enjoy your {(Species)tradedToUser}!" : "Trade finished!";
+            var message = tradedToUser != 0 ? $"✓ Trade finalizado. Disfruta de tu **{(Species)tradedToUser}**!" : "✔ Trade finalizado!";
             Trader.SendMessageAsync(message).ConfigureAwait(false);
             if (result.Species != 0 && Hub.Config.Discord.ReturnPKMs)
-                Trader.SendPKMAsync(result, "Here's what you traded me!").ConfigureAwait(false);
+                Trader.SendPKMAsync(result, "▼ Aqui esta lo que me enviaste! ▼").ConfigureAwait(false);
 
             var SVmon = TradeExtensions<PK9>.SVTrade;
             var LAmon = TradeExtensions<PA8>.LATrade;
@@ -78,17 +78,17 @@ namespace SysBot.Pokemon.Discord
 
             if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay)
             {
-                var msg = "Displaying your ";
+                var msg = "Mostrando tu ";
                 var mode = info.Type;
                 switch (mode)
                 {
-                    case PokeTradeType.Specific: msg += "request!"; break;
-                    case PokeTradeType.Clone: msg += "clone!"; break;
-                    case PokeTradeType.Display: msg += "trophy!"; break;
-                    case PokeTradeType.EtumrepDump or PokeTradeType.Dump or PokeTradeType.Seed: msg += "dump!"; break;
-                    case PokeTradeType.SupportTrade or PokeTradeType.Giveaway: msg += $"gift!"; break;
-                    case PokeTradeType.FixOT: msg += $"fixed OT!"; break;
-                    case PokeTradeType.TradeCord: msg += $"prize!"; break;
+                    case PokeTradeType.Specific: msg += "**Trade**!"; break;
+                    case PokeTradeType.Clone: msg += "**Clone**!"; break;
+                    case PokeTradeType.Display: msg += "**Trophy**!"; break;
+                    case PokeTradeType.EtumrepDump or PokeTradeType.Dump or PokeTradeType.Seed: msg += "**Dump**!"; break;
+                    case PokeTradeType.SupportTrade or PokeTradeType.Giveaway: msg += $"**Regalo**!"; break;
+                    case PokeTradeType.FixOT: msg += $"**Fixed OT**!"; break;
+                    case PokeTradeType.TradeCord: msg += $"**Premio**!"; break;
                 }
 
                 var embed = GenerateEntityEmbed(fin, Context.User.Username, Hub.Config.TradeCord.UseLargerPokeBalls);
@@ -112,9 +112,9 @@ namespace SysBot.Pokemon.Discord
             var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
             var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
             var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
-            var trademessage = $"Pokémon IVs: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
-            $"Ability: {(Ability)fin.Ability}\n" +
-            $"{(Nature)fin.Nature} Nature\n" +
+            var trademessage = $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
+            $"**Habilidad**: {(Ability)fin.Ability}\n" +
+            $"**Naturaleza**: {(Nature)fin.Nature}\n" +
             (StopConditionSettings.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\nPokémon Mark: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
             string markEntryText = "";
             var index = (int)mark - (int)RibbonIndex.MarkLunchtime;
@@ -122,7 +122,7 @@ namespace SysBot.Pokemon.Discord
                 markEntryText = MarkTitle[index];
             var specitem = fin.HeldItem != 0 ? $"{SpeciesName.GetSpeciesNameGeneration(fin.Species, 2, fin.Generation <= 8 ? 8 : 9)}{TradeExtensions<T>.FormOutput(fin.Species, fin.Form, out _) + " (" + ShowdownParsing.GetShowdownText(fin).Split('@', '\n')[1].Trim() + ")"}" : $"{SpeciesName.GetSpeciesNameGeneration(fin.Species, 2, fin.Generation <= 8 ? 8 : 9) + TradeExtensions<T>.FormOutput(fin.Species, fin.Form, out _)}{markEntryText}";
             string TIDFormatted = fin.Generation >= 7 ? $"{fin.TrainerTID7:000000}" : $"{fin.TID16:00000}";
-            var footer = new EmbedFooterBuilder { Text = $"Trainer Info: {fin.OT_Name}/{TIDFormatted}" };
+            var footer = new EmbedFooterBuilder { Text = $"Informacion de entrenador: {fin.OT_Name}/{TIDFormatted}" };
             var author = new EmbedAuthorBuilder { Name = $"{user}'s Pokémon" };
             if (!largerBalls)
                 ballImg = "";
@@ -168,11 +168,11 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder { Color = Color.LighterGrey };
             embed.AddField(x =>
             {
-                x.Name = $"Seed: {r.Seed:X16}";
+                x.Name = $"Semilla: {r.Seed:X16}";
                 x.Value = lines;
                 x.IsInline = false;
             });
-            var msg = $"Here are the details for `{r.Seed:X16}`:";
+            var msg = $"Aqui estan los detalles para: `{r.Seed:X16}`:";
             Trader.SendMessageAsync(msg, embed: embed.Build()).ConfigureAwait(false);
         }
 
@@ -189,7 +189,7 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder
             {
                 Color = Color.Blue,
-                Description = "Here are all the Pokémon you dumped!",
+                Description = "¡Aquí están todos los Pokémon que dumpeaste!",
             }.WithAuthor(x => { x.Name = "Pokémon Legends: Arceus Dump"; });
 
             var ch = Trader.CreateDMChannelAsync().Result;

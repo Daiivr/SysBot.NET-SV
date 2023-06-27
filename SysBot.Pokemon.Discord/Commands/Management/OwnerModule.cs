@@ -75,13 +75,13 @@ namespace SysBot.Pokemon.Discord
         {
             if (!ulong.TryParse(userInput, out ulong id))
             {
-                await ReplyAsync("Please provide a valid Guild ID.").ConfigureAwait(false);
+                await ReplyAsync("Proporcione una identificación válida de servidor!").ConfigureAwait(false);
                 return;
             }
             var guild = Context.Client.Guilds.FirstOrDefault(x => x.Id == id);
             if (guild is null)
             {
-                await ReplyAsync($"Provided input ({userInput}) is not a valid guild ID or the bot is not in the specified guild.").ConfigureAwait(false);
+                await ReplyAsync($"La entrada proporcionada ({userInput}) no es un ID de server válido o el bot no está en el servidor especificado.").ConfigureAwait(false);
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace SysBot.Pokemon.Discord
         // ReSharper disable once UnusedParameter.Global
         public async Task LeaveAll()
         {
-            await ReplyAsync("Leaving all servers.").ConfigureAwait(false);
+            await ReplyAsync("Abandonando todos los servidores.").ConfigureAwait(false);
             foreach (var guild in Context.Client.Guilds)
             {
                 await guild.LeaveAsync().ConfigureAwait(false);
@@ -131,7 +131,7 @@ namespace SysBot.Pokemon.Discord
         // ReSharper disable once UnusedParameter.Global
         public async Task ExitProgram()
         {
-            await Context.Channel.EchoAndReply("Shutting down... goodbye! **Bot services are going offline.**").ConfigureAwait(false);
+            await Context.Channel.EchoAndReply("✘ Cerrando... ¡adiós! **Los servicios de bots se están desconectando.**").ConfigureAwait(false);
             Environment.Exit(0);
         }
 
@@ -139,14 +139,14 @@ namespace SysBot.Pokemon.Discord
         {
             ID = channel.Id,
             Name = channel.Username,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
 
         private RemoteControlAccess GetReference(IChannel channel) => new()
         {
             ID = channel.Id,
             Name = channel.Name,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
     }
 }

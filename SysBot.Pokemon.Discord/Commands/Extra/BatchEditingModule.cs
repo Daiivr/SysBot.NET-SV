@@ -17,7 +17,7 @@ namespace SysBot.Pokemon.Discord
         {
             var result = BatchEditing.GetPropertyType(propertyName);
             if (string.IsNullOrWhiteSpace(result))
-                await ReplyAsync($"Unable to find info for {propertyName}.").ConfigureAwait(false);
+                await ReplyAsync($"No pude encuentra información sobre: {propertyName}.").ConfigureAwait(false);
             else
                 await ReplyAsync($"{propertyName}: {result}").ConfigureAwait(false);
         }
@@ -31,12 +31,12 @@ namespace SysBot.Pokemon.Discord
             if (!valid)
             {
                 var msg = invalid.Select(z => $"{z.PropertyName}, {z.PropertyValue}");
-                await ReplyAsync($"Invalid Lines Detected:\r\n{Format.Code(string.Join(Environment.NewLine, msg))}")
+                await ReplyAsync($"Líneas no válidas detectadas:\r\n{Format.Code(string.Join(Environment.NewLine, msg))}")
                     .ConfigureAwait(false);
             }
             else
             {
-                await ReplyAsync($"{invalid.Count} line(s) are invalid.").ConfigureAwait(false);
+                await ReplyAsync($"{invalid.Count} la(s) línea(s) no es(son) válida(s).").ConfigureAwait(false);
             }
         }
 

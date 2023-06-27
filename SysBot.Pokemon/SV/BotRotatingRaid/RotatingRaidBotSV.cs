@@ -63,11 +63,11 @@ namespace SysBot.Pokemon
                 var update = await CheckAzureLabel();
                 if (update)
                 {
-                    Log("A new azure-build is available for download @ https://dev.azure.com/zyrocodez/zyro670/_build?definitionId=2&_a=summary");
+                    Log("Se puede descargar una nueva versión de Azure. @ https://dev.azure.com/zyrocodez/zyro670/_build?definitionId=2&_a=summary");
                     return;
                 }
                 else
-                    Log("You are on the latest build of NotForkBot.");
+                    Log("Estás en la última versión de SySBot");
             }
 
             if (Settings.GenerateParametersFromFile)
@@ -244,10 +244,10 @@ namespace SysBot.Pokemon
                 var currentSeed = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset, 8, token).ConfigureAwait(false), 0);
                 if (TodaySeed != currentSeed)
                 {
-                    var msg = $"Current Today Seed {currentSeed:X8} does not match Starting Today Seed: {TodaySeed:X8} after rolling back 1 day. ";
+                    var msg = $"La semilla actual {currentSeed:X8} no coincide con la semilla inicial: {TodaySeed:X8} después de retroceder 1 día. ";
                     if (dayRoll != 0)
                     {
-                        Log(msg + "Stopping routine for lost raid.");
+                        Log(msg + "Rutina detenida por perdida de incursion.");
                         return;
                     }
                     Log(msg);
@@ -378,7 +378,7 @@ namespace SysBot.Pokemon
                         // We read bad data, reset game to end early and recover.
                         if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.EndRaid();
-                        var msg = "Oops! Something went wrong, resetting to recover.";
+                        var msg = "¡Ups! Algo salió mal, reiniciando para recuperar.";
                         await EnqueueEmbed(null, msg, false, false, false, null, token).ConfigureAwait(false);
                         await ReOpenGame(Hub.Config, token).ConfigureAwait(false);
                         return;
@@ -710,16 +710,16 @@ namespace SysBot.Pokemon
                 }
                 if (val == Settings.CatchLimit + 2 && Settings.CatchLimit != 0) // Hard pity - ban user
                 {
-                    msg = $"{trainer.OT} is now banned for repeatedly attempting to go beyond the catch limit for {Settings.RaidEmbedParameters[RotationCount].Species} on {DateTime.Now}.";
+                    msg = $"**{trainer.OT}** ahora está baneado por intentar repetidamente sobrepasar el límite de capturas para **{Settings.RaidEmbedParameters[RotationCount].Species}** el **{DateTime.Now}**.";
                     Log(msg);
                     RaiderBanList.List.Add(new() { ID = nid, Name = trainer.OT, Comment = msg });
                     blockResult = false;
-                    await EnqueueEmbed(null, $"Penalty #{val}\n" + msg, false, true, false, null, token).ConfigureAwait(false);
+                    await EnqueueEmbed(null, $"Sanción **#{val}**\n" + msg, false, true, false, null, token).ConfigureAwait(false);
                     return true;
                 }
                 if (blockResult && !isBanned)
                 {
-                    msg = $"Penalty #{val}\n{trainer.OT} has already reached the catch limit.\nPlease do not join again.\nRepeated attempts to join like this will result in a ban from future raids.";
+                    msg = $"Sanción **#{val}**\n**{trainer.OT}** ya ha alcanzado el límite de capturas.\nPor favor, no vuelvas a unirte.\nLos intentos repetidos de unirse de esta manera resultarán en la prohibición de futuras incursiones.";
                     Log(msg);
                     await EnqueueEmbed(null, msg, false, true, false, null, token).ConfigureAwait(false);
                     return true;
@@ -728,7 +728,7 @@ namespace SysBot.Pokemon
 
             if (isBanned)
             {
-                msg = banResultCC.Item1 ? banResultCC.Item2 : $"Penalty #{val}\n{banResultCFW!.Name} was found in the host's ban list.\n{banResultCFW.Comment}";
+                msg = banResultCC.Item1 ? banResultCC.Item2 : $"Sanción **#{val}**\n**{banResultCFW!.Name}** se encontró en la lista de prohibiciones del anfitrión.\n{banResultCFW.Comment}";
                 Log(msg);
                 await EnqueueEmbed(null, msg, false, true, false, null, token).ConfigureAwait(false);
                 return true;
@@ -971,44 +971,44 @@ namespace SysBot.Pokemon
             if (Settings.TakeScreenshot && !upnext)
                 bytes = await SwitchConnection.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
 
-            string disclaimer = Settings.RaidEmbedParameters.Count > 1 ? "Raid Seeds obtained through Tera Finder.\n" : "";
+            string disclaimer = Settings.RaidEmbedParameters.Count > 1 ? "Semillas de incursión obtenidas a través de Tera Finder.\n" : "";
 
             if (upnext)
-                title = "Preparing next raid...";
+                title = "Preparando la próxima incursión...";
 
             var embed = new EmbedBuilder()
             {
-                Title = disband ? $"**Raid canceled: [{TeraRaidCode}]**" : title,
+                Title = disband ? $"**Incursión cancelada: [{TeraRaidCode}]**" : title,
                 Color =  disband ? Color.Red : overrideColor is not null ? overrideColor : hatTrick ? Color.Purple : Color.Green,
                 Description = disband ? message : upnext ? Settings.RaidEmbedParameters[RotationCount].Title : description,
                 ImageUrl = bytes.Length > 0 ? "attachment://zap.jpg" : default,
             }.WithFooter(new EmbedFooterBuilder()
             {
-                Text = $"Host: {HostSAV.OT} | Uptime: {StartTime - DateTime.Now:d\\.hh\\:mm\\:ss}\n" +
-                       $"Raids: {RaidCount} | Wins: {WinCount} | Losses: {LossCount}\n" + disclaimer,
+                Text = $"Anfitrión: {HostSAV.OT} | Tiempo de actividad: {StartTime - DateTime.Now:d\\.hh\\:mm\\:ss}\n" +
+                       $"Raids: {RaidCount} | Ganadas: {WinCount} | Perdidas: {LossCount}\n" + disclaimer,
             });
 
             if (!disband && names is null && !upnext)
             {
-                embed.AddField("**Waiting in lobby!**", $"Raid code: {code}");
+                embed.AddField("**Esperando en el Lobby!**", $"Raid code: {code}");
             }
 
             if (!disband && names is not null && !upnext)
             {
                 var players = string.Empty;
                 if (names.Count == 0)
-                    players = "Though our party did not make it :(";
+                    players = "Al parecer nuestro grupo no lo consiguió :(";
                 else
                 {
                     int i = 2;
                     names.ForEach(x =>
                     {
-                        players += $"Player {i} - **{x}**\n";
+                        players += $"Jugador {i} - **{x}**\n";
                         i++;
                     });
                 }
 
-                embed.AddField($"**Raid #{RaidCount} is starting!**", players);
+                embed.AddField($"**La incursion #{RaidCount} esta comenzando!**", players);
             }
 
             var turl = string.Empty;
@@ -1270,7 +1270,7 @@ namespace SysBot.Pokemon
                         if (string.IsNullOrEmpty(res))
                             res = string.Empty;
                         else
-                            res = "**Special Rewards:**\n" + res;
+                            res = "**Recompensas Especiales:**\n" + res;
                         Log($"Seed {seed:X8} found for {(Species)pk.Species}");
                         Settings.RaidEmbedParameters[a].Seed = $"{seed:X8}";
                         var stars = raids[i].IsEvent ? encounters[i].Stars : RaidExtensions.GetStarCount(raids[i], raids[i].Difficulty, StoryProgress, raids[i].IsBlack);
@@ -1292,7 +1292,7 @@ namespace SysBot.Pokemon
                         Settings.RaidEmbedParameters[a].Species = (Species)pk.Species;
                         Settings.RaidEmbedParameters[a].SpeciesForm = pk.Form;
                         var pkinfo = Hub.Config.StopConditions.GetRaidPrintName(pk);
-                        pkinfo += $"\nTera Type: {(MoveType)raids[i].TeraType}";
+                        pkinfo += $"\n**Tera Type**: {(MoveType)raids[i].TeraType}";
                         var strings = GameInfo.GetStrings(1);
                         var moves = new ushort[4] { encounters[i].Move1, encounters[i].Move2, encounters[i].Move3, encounters[i].Move4 };
                         var movestr = string.Concat(moves.Where(z => z != 0).Select(z => $"{strings.Move[z]}ㅤ{Environment.NewLine}")).TrimEnd(Environment.NewLine.ToCharArray());
@@ -1355,7 +1355,7 @@ namespace SysBot.Pokemon
 
                         else if (!Settings.PresetFilters.UsePresetFile)
                         {
-                            Settings.RaidEmbedParameters[a].Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Moveset:**", movestr, extramoves, BaseDescription, res };
+                            Settings.RaidEmbedParameters[a].Description = new[] { "\n**Raid Info:**", pkinfo, "\n**Movimientos:**", movestr, extramoves, BaseDescription, res };
                             Settings.RaidEmbedParameters[a].Title = $"{(Species)pk.Species} {starcount} - {(MoveType)raids[i].TeraType}";
                         }
 

@@ -10,7 +10,7 @@ namespace SysBot.Pokemon.Discord
         [Summary("Returns the Host's Stream link.")]
         public async Task PingAsync()
         {
-            var str = $"Here's the Stream link, enjoy :3 {SysCordSettings.Settings.StreamLink}";
+            var str = $"Aquí está el enlace del Stream, disfrutar :3 {SysCordSettings.Settings.StreamLink}";
             await ReplyAsync(str).ConfigureAwait(false);
         }
     }

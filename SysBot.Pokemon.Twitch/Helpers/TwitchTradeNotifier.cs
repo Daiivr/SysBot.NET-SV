@@ -41,7 +41,7 @@ namespace SysBot.Pokemon.Twitch
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
-            var line = $"@{info.Trainer.TrainerName}: Trade canceled, {msg}";
+            var line = $"@{info.Trainer.TrainerName}: Trade cancelado, {msg}";
             LogUtil.LogText(line);
             SendMessage(line, Settings.TradeCanceledDestination);
         }
@@ -50,7 +50,7 @@ namespace SysBot.Pokemon.Twitch
         {
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
-            var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0 ? $"Trade finished. Enjoy your {(Species)tradedToUser}!" : "Trade finished!");
+            var message = $"@{info.Trainer.TrainerName}: " + (tradedToUser != 0 ? $"Trade terminado. Disfrute de su {(Species)tradedToUser}!" : "Trade terminado!");
             LogUtil.LogText(message);
             SendMessage(message, Settings.TradeFinishDestination);
         }
@@ -58,10 +58,10 @@ namespace SysBot.Pokemon.Twitch
         public void TradeInitialize(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info)
         {
             var receive = Data.Species == 0 ? string.Empty : Data.IsEgg || Data.Species == 132 && Data.IsNicknamed ? $" ({Data.Species} ({Data.Nickname}))" : $" ({Data.Nickname})";
-            var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Initializing trade{receive} with you. Please be ready. Use the code you whispered me to search!";
+            var msg = $"@{info.Trainer.TrainerName} (ID: {info.ID}): Inicializando trade{receive} con usted. Por favor, prepárate. ¡Usa el código que me susurraste para buscar!";
             var dest = Settings.TradeStartDestination;
             if (dest == TwitchMessageDestination.Whisper)
-                msg += $" Your trade code is: {info.Code:0000 0000}";
+                msg += $" Tu código de tradeo es: {info.Code:0000 0000}";
             LogUtil.LogText(msg);
             SendMessage(msg, dest);
         }
@@ -70,12 +70,12 @@ namespace SysBot.Pokemon.Twitch
         {
             var name = Info.TrainerName;
             var trainer = string.IsNullOrEmpty(name) ? string.Empty : $", @{name}";
-            var message = $"I'm waiting for you{trainer}! My IGN is {routine.InGameName}.";
+            var message = $"Te estoy esperando{trainer}! Mi IGN es {routine.InGameName}.";
             var dest = Settings.TradeSearchDestination;
             if (dest == TwitchMessageDestination.Channel)
-                message += " Use the code you whispered me to search!";
+                message += " ¡Usa el código que me has susurrado para buscar!";
             else if (dest == TwitchMessageDestination.Whisper)
-                message += $" Your trade code is: {info.Code:0000 0000}";
+                message += $" Tu código de tradeo es: {info.Code:0000 0000}";
             LogUtil.LogText(message);
             SendMessage($"@{info.Trainer.TrainerName} {message}", dest);
         }
@@ -91,7 +91,7 @@ namespace SysBot.Pokemon.Twitch
 
         public void SendNotification(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result, string message)
         {
-            var msg = $"Details for {result.FileName}: " + message;
+            var msg = $"Detalles para {result.FileName}: " + message;
             LogUtil.LogText(msg);
             SendMessage(msg, Settings.NotifyDestination);
         }

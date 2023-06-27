@@ -116,18 +116,18 @@ namespace SysBot.Pokemon.Twitch
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"@{name}: Sorry, you are already in the queue.";
+                msg = $"@{name}: Lo siento, ya estás en la cola.";
                 return false;
             }
 
             var position = Info.CheckPosition(userID, type);
-            msg = $"@{name}: Added to the {type} queue, unique ID: {detail.ID}. Current Position: {position.Position}";
+            msg = $"@{name}: Añadido a la cola {type}, ID único: {detail.ID}. Posición actual: {position.Position}";
 
             var botct = Info.Hub.Bots.Count;
             if (position.Position > botct)
             {
                 var eta = Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
-                msg += $". Estimated: {eta:F1} minutes.";
+                msg += $". Tiempo estimado: {eta:F1} minutos.";
             }
             return true;
         }
@@ -219,9 +219,9 @@ namespace SysBot.Pokemon.Twitch
             {
                 // User Usable Commands
                 case "donate":
-                    return Settings.DonationLink.Length > 0 ? $"Here's the donation link! Thank you for your support :3 {Settings.DonationLink}" : string.Empty;
+                    return Settings.DonationLink.Length > 0 ? $"¡Aquí está el enlace de donación! Gracias por tu apoyo :3 {Settings.DonationLink}" : string.Empty;
                 case "discord":
-                    return Settings.DiscordLink.Length > 0 ? $"Here's the Discord Server Link, have a nice stay :3 {Settings.DiscordLink}" : string.Empty;
+                    return Settings.DiscordLink.Length > 0 ? $"Aquí está el enlace del servidor Discord, que tengas una buena estancia :3 {Settings.DiscordLink}" : string.Empty;
                 case "tutorial":
                 case "help":
                     return $"{Settings.TutorialText} {Settings.TutorialLink}";
@@ -230,8 +230,8 @@ namespace SysBot.Pokemon.Twitch
                 case "trade":
                 case "t":
                     var _ = TwitchCommandsHelper<T>.AddToWaitingList(args, m.DisplayName, m.Username, ulong.Parse(m.UserId), subscriber(), out string msg);
-                    if (msg.Contains("Please read what you are supposed to type") && Settings.TutorialLink.Length > 0)
-                        msg += $"\nUsage Tutorial: {Settings.TutorialLink}";
+                    if (msg.Contains("Por favor, lea lo que estas supuesto escribir") && Settings.TutorialLink.Length > 0)
+                        msg += $"\nTutorial de uso: {Settings.TutorialLink}";
                     return msg;
                 case "ts":
                 case "queue":
@@ -251,7 +251,7 @@ namespace SysBot.Pokemon.Twitch
                 case "pc" when !sudo():
                 case "tt" when !sudo():
                 case "tcu" when !sudo():
-                    return "This command is locked for sudo users only!";
+                    return "¡Este comando está bloqueado sólo para usuarios sudo!";
 
                 case "tca":
                     Info.ClearAllQueues();
@@ -265,8 +265,8 @@ namespace SysBot.Pokemon.Twitch
 
                 case "tt":
                     return Info.Hub.Queues.Info.ToggleQueue()
-                        ? "Users are now able to join the trade queue."
-                        : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                        ? "Los usuarios ya pueden unirse a la cola de intercambios."
+                        : "Cambiada la configuración de la cola: **Los usuarios NO PUEDEN unirse a la cola hasta que se vuelva a activar.**";
 
                 case "tcu":
                     return TwitchCommandsHelper<T>.ClearTrade(args);

@@ -54,7 +54,7 @@ namespace SysBot.Pokemon.Discord.Commands
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace SysBot.Pokemon.Discord
         private const string fork = "https://github.com/Koi-3088/ForkBot.NET";
         private const string notfork = "https://github.com/zyro670/NotForkBot.NET";
         private const string manufork = "https://github.com/Manu098vm/SysBot.NET";
+		private const string daifork = "https://github.com/Daiivr/SysBot.NET";
 
         [Command("info")]
         [Alias("about", "whoami", "owner")]
@@ -34,29 +35,30 @@ namespace SysBot.Pokemon.Discord
             };
 
             builder.AddField("Info",
+			    $"- [This Bot Sourse code ESP]({daifork})\n" +
                 $"- [Manu's Fork Source Code]({manufork})\n" +
                 $"- [Zyro's Fork Source Code]({notfork})\n" +
                 $"- [Koi's Fork Source Code]({fork})\n" +
                 $"- [kwsch's Original Source Code]({repo})\n" +
-                $"- {Format.Bold("Owner")}: {app.Owner} ({app.Owner.Id})\n" +
-                $"- {Format.Bold("Library")}: Discord.Net ({DiscordConfig.Version})\n" +
-                $"- {Format.Bold("Uptime")}: {GetUptime()}\n" +
-                $"- {Format.Bold("Runtime")}: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture} " +
+                $"- {Format.Bold("Propietario")}: {app.Owner} ({app.Owner.Id})\n" +
+                $"- {Format.Bold("Biblioteca")}: Discord.Net ({DiscordConfig.Version})\n" +
+                $"- {Format.Bold("Tiempo de actividad")}: {GetUptime()}\n" +
+                $"- {Format.Bold("Tiempo de ejecución")}: {RuntimeInformation.FrameworkDescription} {RuntimeInformation.ProcessArchitecture} " +
                 $"({RuntimeInformation.OSDescription} {RuntimeInformation.OSArchitecture})\n" +
-                $"- {Format.Bold("Buildtime")}: {GetVersionInfo("SysBot.Base", false)}\n" +
-                $"- {Format.Bold("Core Version")}: {GetVersionInfo("PKHeX.Core")}\n" +
-                $"- {Format.Bold("AutoLegality Version")}: {GetVersionInfo("PKHeX.Core.AutoMod")}\n"
+                $"- {Format.Bold("Tiempo de compilación")}: {GetVersionInfo("SysBot.Base", false)}\n" +
+                $"- {Format.Bold("Versión principal")}: {GetVersionInfo("PKHeX.Core")}\n" +
+                $"- {Format.Bold("Versión de AutoLegality")}: {GetVersionInfo("PKHeX.Core.AutoMod")}\n"
                 );
 
             builder.AddField("Stats",
-                $"- {Format.Bold("Heap Size")}: {GetHeapSize()}MiB\n" +
-                $"- {Format.Bold("Guilds")}: {Context.Client.Guilds.Count}\n" +
-                $"- {Format.Bold("Channels")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
-                $"- {Format.Bold("Users")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n" +
-                $"{Format.Bold("\nThank you, [Project Pokémon](https://projectpokemon.org), for making Pokémon sprites, images and event wondercards used here publicly available!")}\n"
+                $"- {Format.Bold("Tamaño")}: {GetHeapSize()}MiB\n" +
+                $"- {Format.Bold("Servers")}: {Context.Client.Guilds.Count}\n" +
+                $"- {Format.Bold("Canales")}: {Context.Client.Guilds.Sum(g => g.Channels.Count)}\n" +
+                $"- {Format.Bold("Usuarios")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n" +
+                $"{Format.Bold("\nGracias, [Project Pokémon](https://projectpokemon.org), por hacer públicos los sprites e imágenes de Pokémon utilizados en este bot!")}\n"
                 );
 
-            await ReplyAsync("Here's a bit about me!", embed: builder.Build()).ConfigureAwait(false);
+            await ReplyAsync("He aquí un poco sobre mí!", embed: builder.Build()).ConfigureAwait(false);
         }
 
         private static string GetUptime() => (DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\.hh\:mm\:ss");

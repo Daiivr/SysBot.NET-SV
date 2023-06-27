@@ -79,14 +79,14 @@ namespace SysBot.Pokemon.Discord
 
         [Command("queueToggle")]
         [Alias("qt", "tt")]
-        [Summary("Toggles on/off the ability to join the trade queue.")]
+        [Summary("Activa/desactiva la posibilidad de unirse a la cola de intercambios.")]
         [RequireSudo]
         public async Task ToggleQueueTradeAsync()
         {
             var state = Info.ToggleQueue();
             var msg = state
-                ? "Users are now able to join the trade queue."
-                : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                ? "✓ **Configuración de cola modificada**: Los usuarios ahora __pueden unirse__ a la **cola**."
+                : "⚠️ **Configuración de cola modificada**: Los usuarios __**NO PUEDEN**__ unirse a la `cola` hasta que se vuelva a `habilitar`.";
 
             await Context.Channel.EchoAndReply(msg).ConfigureAwait(false);
         }
@@ -98,7 +98,7 @@ namespace SysBot.Pokemon.Discord
         public async Task ChangeQueueModeAsync([Summary("Queue mode")] QueueOpening mode)
         {
             SysCord<T>.Runner.Hub.Config.Queues.QueueToggleMode = mode;
-            await ReplyAsync($"Changed queue mode to {mode}.").ConfigureAwait(false);
+            await ReplyAsync($"Modo de cola cambiado a {mode}.").ConfigureAwait(false);
         }
 
         [Command("queueList")]
@@ -110,7 +110,7 @@ namespace SysBot.Pokemon.Discord
             var lines = SysCord<T>.Runner.Hub.Queues.Info.GetUserList("(ID {0}) - Code: {1} - {2} - {3}");
             var msg = string.Join("\n", lines);
             if (msg.Length < 3)
-                await ReplyAsync("Queue list is empty.").ConfigureAwait(false);
+                await ReplyAsync("La lista de espera está vacía.").ConfigureAwait(false);
             else
                 await Context.User.SendMessageAsync(msg).ConfigureAwait(false);
         }
@@ -137,10 +137,10 @@ namespace SysBot.Pokemon.Discord
         {
             return result switch
             {
-                QueueResultRemove.CurrentlyProcessing => "Looks like you're currently being processed! Did not remove from all queues.",
-                QueueResultRemove.CurrentlyProcessingRemoved => "Looks like you're currently being processed!",
-                QueueResultRemove.Removed => "Removed you from the queue.",
-                _ => "Sorry, you are not currently in the queue.",
+                QueueResultRemove.CurrentlyProcessing => "⚠️ Parece que estás siendo procesado actualmente! No se te eliminó de la lista.",
+                QueueResultRemove.CurrentlyProcessingRemoved => "⚠️ Parece que estás siendo procesado actualmente!",
+                QueueResultRemove.Removed => "✓ Te he eliminado de la lista.",
+                _ => "⚠️ Lo sentimos, actualmente no estás en la lista.",
             };
         }
     }

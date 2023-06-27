@@ -62,7 +62,7 @@ namespace SysBot.Pokemon.Discord
             }
 
             if (SysCordSettings.Settings.EchoOnBotStart)
-                EchoUtil.Echo("Added echo notification to Discord channel(s) on Bot startup.");
+                EchoUtil.Echo("✔ Añadida notificación de eco a canal(es) de Discord al iniciar el Bot.");
         }
 
         [Command("echoHere")]
@@ -74,7 +74,7 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Already notifying here.").ConfigureAwait(false);
+                await ReplyAsync("Ya se está notificando aquí.").ConfigureAwait(false);
                 return;
             }
 
@@ -82,7 +82,7 @@ namespace SysBot.Pokemon.Discord
 
             // Add to discord global loggers (saves on program close)
             SysCordSettings.Settings.EchoChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("Added Echo output to this channel!").ConfigureAwait(false);
+            await ReplyAsync("¡Añadida la salida Eco a este canal!").ConfigureAwait(false);
         }
 
         private static void AddEchoChannel(ISocketMessageChannel c, ulong cid)
@@ -112,7 +112,7 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (EncounterChannels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Already notifying here.").ConfigureAwait(false);
+                await ReplyAsync("Ya se está notificando aquí.").ConfigureAwait(false);
                 return;
             }
 
@@ -120,7 +120,7 @@ namespace SysBot.Pokemon.Discord
 
             // Add to discord global loggers (saves on program close)
             SysCordSettings.Settings.EncounterEchoChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("Added Echo output to this channel!").ConfigureAwait(false);
+            await ReplyAsync("¡Añadida la salida Eco a este canal!").ConfigureAwait(false);
         }
 
         private static void AddEncounterEchoChannel(ISocketMessageChannel c, ulong cid)
@@ -162,14 +162,14 @@ namespace SysBot.Pokemon.Discord
             var id = Context.Channel.Id;
             if (!Channels.TryGetValue(id, out var echo))
             {
-                await ReplyAsync("Not echoing in this channel.").ConfigureAwait(false);
+                await ReplyAsync("No hay eco en este canal.").ConfigureAwait(false);
                 return;
             }
             EchoUtil.Forwarders.Remove(echo.Action);
             EchoUtil.RaidForwarders.Remove(echo.RaidAction);
             Channels.Remove(Context.Channel.Id);
             SysCordSettings.Settings.EchoChannels.RemoveAll(z => z.ID == id);
-            await ReplyAsync($"Echoes cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+            await ReplyAsync($"Ecos despejados del canal: {Context.Channel.Name}").ConfigureAwait(false);
         }
 
         [Command("echoClearAll")]
@@ -180,14 +180,14 @@ namespace SysBot.Pokemon.Discord
             foreach (var l in Channels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Echoing cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"Ecos despejados de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
                 EchoUtil.Forwarders.Remove(entry.Action);
             }
             EchoUtil.Forwarders.RemoveAll(y => Channels.Select(x => x.Value.Action).Contains(y));
             EchoUtil.RaidForwarders.RemoveAll(y => Channels.Select(x => x.Value.RaidAction).Contains(y));
             Channels.Clear();
             SysCordSettings.Settings.EchoChannels.Clear();
-            await ReplyAsync("Echoes cleared from all channels!").ConfigureAwait(false);
+            await ReplyAsync("Ecos eliminados de todos los canales!").ConfigureAwait(false);
         }
 
         [Command("embedInfo")]
@@ -207,13 +207,13 @@ namespace SysBot.Pokemon.Discord
             var id = Context.Channel.Id;
             if (!EncounterChannels.TryGetValue(id, out var echo))
             {
-                await ReplyAsync("Not echoing in this channel.").ConfigureAwait(false);
+                await ReplyAsync("No hay eco en este canal.").ConfigureAwait(false);
                 return;
             }
             EchoUtil.EmbedForwarders.Remove(echo.EmbedAction);
             EncounterChannels.Remove(Context.Channel.Id);
             SysCordSettings.Settings.EncounterEchoChannels.RemoveAll(z => z.ID == id);
-            await ReplyAsync($"Embed echoes cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+            await ReplyAsync($"Embed ecos borrados del canal: {Context.Channel.Name}").ConfigureAwait(false);
         }
 
         [Command("embedClearAll")]
@@ -224,20 +224,20 @@ namespace SysBot.Pokemon.Discord
             foreach (var l in EncounterChannels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Embed echoing cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"Embed eco borrado de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
                 EchoUtil.EmbedForwarders.Remove(entry.EmbedAction);
             }
             EchoUtil.EmbedForwarders.RemoveAll(y => EncounterChannels.Select(x => x.Value.EmbedAction).Contains(y));
             EncounterChannels.Clear();
             SysCordSettings.Settings.EncounterEchoChannels.Clear();
-            await ReplyAsync("Embed echoes cleared from all channels!").ConfigureAwait(false);
+            await ReplyAsync("Embed ecos eliminados de todos los canales").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()
         {
             ID = channel.Id,
             Name = channel.Name,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
 
     }

@@ -54,7 +54,7 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Already logging here.").ConfigureAwait(false);
+                await ReplyAsync("Ya se está registrando aquí.").ConfigureAwait(false);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace SysBot.Pokemon.Discord
 
             // Add to discord global loggers (saves on program close)
             SysCordSettings.Settings.TradeStartingChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("Added Start Notification output to this channel!").ConfigureAwait(false);
+            await ReplyAsync("¡Añadida salida de Notificación de Inicio a este canal!").ConfigureAwait(false);
         }
 
         private static void AddLogChannel(ISocketMessageChannel c, ulong cid)
@@ -76,7 +76,7 @@ namespace SysBot.Pokemon.Discord
 
             Action<PokeRoutineExecutorBase, PokeTradeDetail<T>> l = Logger;
             SysCord<T>.Runner.Hub.Queues.Forwarders.Add(l);
-            static string GetMessage(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail) => $"> [{DateTime.Now:hh:mm:ss}] - {bot.Connection.Label} is now trading (ID {detail.ID}) {detail.Trainer.TrainerName}";
+            static string GetMessage(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail) => $"> [{DateTime.Now:hh:mm:ss}] - {bot.Connection.Label} ahora esta tradeando (ID {detail.ID}) {detail.Trainer.TrainerName}";
 
             var entry = new TradeStartAction(cid, l, c.Name);
             Channels.Add(cid, entry);

@@ -36,11 +36,11 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Command("giveawaypool")]
-        [Alias("gap")]
+        [Alias("gap", "srl")]
         [Summary("Show a list of Pokémon available for giveaway.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
         public async Task DisplayGiveawayPoolCountAsync()
@@ -51,13 +51,13 @@ namespace SysBot.Pokemon.Discord
                 var test = pool.Files;
                 var lines = pool.Files.Select((z, i) => $"{i + 1}: {z.Key} = {(Species)z.Value.RequestInfo.Species}");
                 var msg = string.Join("\n", lines);
-                await Util.ListUtil(Context, "Giveaway Pool Details", msg).ConfigureAwait(false);
+                await Util.ListUtil(Context, "Tradeos especiales!", msg).ConfigureAwait(false);
             }
-            else await ReplyAsync("Giveaway pool is empty.").ConfigureAwait(false);
+            else await ReplyAsync("⚠️ Aun no hay ningun pokemon en la lista para tradeos especiales.").ConfigureAwait(false);
         }
 
         [Command("giveaway")]
-        [Alias("ga", "giveme", "gimme")]
+        [Alias("ga", "giveme", "gimme", "sr")]
         [Summary("Makes the bot trade you the specified giveaway Pokémon.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
         public async Task GiveawayAsync([Remainder] string content)
@@ -67,17 +67,17 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("giveaway")]
-        [Alias("ga", "giveme", "gimme")]
+        [Alias("ga", "giveme", "gimme", "sr")]
         [Summary("Makes the bot trade you the specified giveaway Pokémon.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
-        public async Task GiveawayAsync([Summary("Giveaway Code")] int code, [Remainder] string content)
+        public async Task GiveawayAsync([Summary("Código del Tradeo")] int code, [Remainder] string content)
         {
             T pk;
             content = ReusableActions.StripCodeBlock(content);
             var pool = Info.Hub.Ledy.Pool;
             if (pool.Count == 0)
             {
-                await ReplyAsync("Giveaway pool is empty.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ Aun no hay ningun pokemon en la lista para tradeos especiales.").ConfigureAwait(false);
                 return;
             }
             else if (content.ToLower() == "random") // Request a random giveaway prize.
@@ -86,7 +86,7 @@ namespace SysBot.Pokemon.Discord
                 pk = val.RequestInfo;
             else
             {
-                await ReplyAsync($"Requested Pokémon not available, use \"{Info.Hub.Config.Discord.CommandPrefix}giveawaypool\" for a full list of available giveaways!").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ El pokémon solicitado no esta disponible, usa \"{Info.Hub.Config.Discord.CommandPrefix}srl\" para consultar la lista completa de pokemons disponibles.").ConfigureAwait(false);
                 return;
             }
 
@@ -129,7 +129,7 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Command("itemTrade")]
@@ -156,7 +156,7 @@ namespace SysBot.Pokemon.Discord
             pkm = EntityConverter.ConvertToType(pkm, typeof(T), out _) ?? pkm;
             if (pkm.HeldItem == 0 && !Info.Hub.Config.Trade.Memes)
             {
-                await ReplyAsync($"{Context.User.Username}, the item you entered wasn't recognized.").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ {Context.User.Username}, el item que has solicitado no ha sido reconocido.").ConfigureAwait(false);
                 return;
             }
 
@@ -166,8 +166,8 @@ namespace SysBot.Pokemon.Discord
 
             if (pkm is not T pk || !la.Valid)
             {
-                var reason = result == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
-                var imsg = $"Oops! {reason} Here's my best attempt for that {species}!";
+                var reason = result == "Timeout" ? "El conjunto solicitado tardó demasiado en generarse." : "No fui capaz de crear algo a partir de los datos proporcionados.";
+                var imsg = $"⚠️ Oops! {reason} Aquí está mi mejor intento para: **{species}**!";
                 await Context.Channel.SendPKMAsync(pkm, imsg).ConfigureAwait(false);
                 return;
             }
@@ -181,7 +181,7 @@ namespace SysBot.Pokemon.Discord
         [Alias("dt", "ditto")]
         [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
-        public async Task DittoTrade([Summary("A combination of \"ATK/SPA/SPE\" or \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
+        public async Task DittoTrade([Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
         {
             var code = Info.GetRandomTradeCode();
             await DittoTrade(code, keyword, language, nature).ConfigureAwait(false);
@@ -191,14 +191,14 @@ namespace SysBot.Pokemon.Discord
         [Alias("dt", "ditto")]
         [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
-        public async Task DittoTrade([Summary("Trade Code")] int code, [Summary("A combination of \"ATK/SPA/SPE\" or \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
+        public async Task DittoTrade([Summary("Trade Code")] int code, [Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
         {
             keyword = keyword.ToLower().Trim();
             if (Enum.TryParse(language, true, out LanguageID lang))
                 language = lang.ToString();
             else
             {
-                await Context.Message.ReplyAsync($"Couldn't recognize language: {language}.").ConfigureAwait(false);
+                await Context.Message.ReplyAsync($"No pude reconocer el idioma solicitado: {language}.").ConfigureAwait(false);
                 return;
             }
             nature = nature.Trim()[..1].ToUpper() + nature.Trim()[1..].ToLower();
@@ -214,8 +214,8 @@ namespace SysBot.Pokemon.Discord
 
             if (pkm is not T pk || !la.Valid)
             {
-                var reason = result == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
-                var imsg = $"Oops! {reason} Here's my best attempt for that Ditto!";
+                var reason = result == "Timeout" ? "El conjunto solicitado tardó demasiado en generarse." : "No fui capaz de crear algo a partir de los datos proporcionados.";
+                var imsg = $"⚠️ Oops! {reason} Aquí está mi mejor intento para ese **Ditto**!";
                 await Context.Channel.SendPKMAsync(pkm, imsg).ConfigureAwait(false);
                 return;
             }
@@ -236,7 +236,7 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(address);
             if (bot == null)
             {
-                await ReplyAsync($"No bot found with the specified address ({address}).").ConfigureAwait(false);
+                await ReplyAsync($"No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
                 return;
             }
 
@@ -244,13 +244,13 @@ namespace SysBot.Pokemon.Discord
             var bytes = await c.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
             if (bytes.Length == 1)
             {
-                await ReplyAsync($"Failed to take a screenshot for bot at {address}. Is the bot connected?").ConfigureAwait(false);
+                await ReplyAsync($"No se pudo tomar una captura de pantalla para el bot en {address}. ¿Está conectado el bot?").ConfigureAwait(false);
                 return;
             }
             MemoryStream ms = new(bytes);
 
             var img = "cap.jpg";
-            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Captured image from bot at address {address}." });
+            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Imagen capturada del bot en la dirección: {address}." });
             await Context.Channel.SendFileAsync(ms, img, "", false, embed: embed.Build());
         }
 
@@ -618,7 +618,7 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(address);
             if (bot == null)
             {
-                await ReplyAsync($"No bot found with the specified address ({address}).").ConfigureAwait(false);
+                await ReplyAsync($"No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
                 return;
             }
 
@@ -627,7 +627,7 @@ namespace SysBot.Pokemon.Discord
             var bytes = Task.Run(async () => await c.PixelPeek(token).ConfigureAwait(false)).Result ?? Array.Empty<byte>();
             MemoryStream ms = new(bytes);
             var img = "cap.jpg";
-            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Captured image from bot at address {address}." });
+            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Imagen capturada del bot en la dirección: {address}." });
             await Context.Channel.SendFileAsync(ms, img, "", false, embed: embed.Build());
         }
 
@@ -635,11 +635,11 @@ namespace SysBot.Pokemon.Discord
         [Alias("scl")]
         [Summary("Set the Catch Limit for Raids in SV.")]
         [RequireSudo]
-        public async Task SetOffsetIncrement([Summary("Set the Catch Limit for Raids in SV.")] int limit)
+        public async Task SetOffsetIncrement([Summary("Establece el límite de capturas para las incursiones en SV.")] int limit)
         {
             int parse = SysCord<T>.Runner.Hub.Config.RaidSV.CatchLimit = limit;
 
-            var msg = $"{Context.User.Mention} Catch Limit for Raids has been set to {parse}.";
+            var msg = $"{Context.User.Mention} El límite de capturas para las incursiones se ha fijado en **{parse}**.";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
@@ -650,7 +650,7 @@ namespace SysBot.Pokemon.Discord
         public async Task ClearRaidBansSV()
         {
             SysCord<T>.Runner.Hub.Config.RaidSV.RaiderBanList.Clear();
-            var msg = "RaidSV ban list has been cleared.";
+            var msg = "La lista de baneos de RaidSV ha sido borrada.";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
@@ -683,7 +683,7 @@ namespace SysBot.Pokemon.Discord
             var parse = TradeExtensions<T>.EnumParse<Species>(species);
             if (parse == default)
             {
-                await ReplyAsync($"{species} is not a valid Species.").ConfigureAwait(false);
+                await ReplyAsync($"{species} no es una Especie válida.").ConfigureAwait(false);
                 return;
             }
 
@@ -700,7 +700,7 @@ namespace SysBot.Pokemon.Discord
             };
 
             SysCord<T>.Runner.Hub.Config.RotatingRaidSV.RaidEmbedParameters.Add(newparam);
-            var msg = $"A new raid for {newparam.Species} has been added!";
+            var msg = $"¡Se ha añadido una nueva incursión de **{newparam.Species}**!";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
@@ -719,7 +719,7 @@ namespace SysBot.Pokemon.Discord
                 if (def == remove)
                 {
                     list.Remove(s);
-                    var msg = $"Raid for {s.Species} | {s.Seed:X8} has been removed!";
+                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} ha sido eliminada!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -744,8 +744,8 @@ namespace SysBot.Pokemon.Discord
                         s.ActiveInRotation = false;
                     else
                         s.ActiveInRotation = true;
-                    var m = s.ActiveInRotation == true ? "enabled" : "disabled";
-                    var msg = $"Raid for {s.Species} | {s.Seed:X8} has been {m}!";
+                    var m = s.ActiveInRotation == true ? "habilitada" : "desactivada";
+                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} ha sido {m}!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -770,8 +770,8 @@ namespace SysBot.Pokemon.Discord
                         s.IsCoded = false;
                     else
                         s.IsCoded = true;
-                    var m = s.IsCoded == true ? "coded" : "uncoded";
-                    var msg = $"Raid for {s.Species} | {s.Seed:X8} is now {m}!";
+                    var m = s.IsCoded == true ? "privada" : "publica";
+                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} es ahora {m}!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -793,7 +793,7 @@ namespace SysBot.Pokemon.Discord
                 if (def == deactivate)
                 {
                     s.Title = title;
-                    var msg = $"Raid Title for {s.Species} | {s.Seed:X8} has been changed!";
+                    var msg = $"El título de incursión para {s.Species} | {s.Seed:X8} ha sido cambiado!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -810,9 +810,9 @@ namespace SysBot.Pokemon.Discord
             foreach (var s in list)
             {
                 if (s.ActiveInRotation)
-                    msg += s.Title + " - " + s.Seed + " - Status: Active" + Environment.NewLine;
+                    msg += s.Title + " - " + s.Seed + " - Estado: Activa" + Environment.NewLine;
                 else
-                    msg += s.Title + " - " + s.Seed + " - Status: Inactive" + Environment.NewLine;
+                    msg += s.Title + " - " + s.Seed + " - Estado: Inactiva" + Environment.NewLine;
             }
             var embed = new EmbedBuilder();
             embed.AddField(x =>
@@ -821,7 +821,7 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the first 20 raids currently in the list:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estas son las 20 primeras incursiones que figuran actualmente en la lista:", embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Command("toggleRaidPK")]
@@ -840,7 +840,7 @@ namespace SysBot.Pokemon.Discord
                 {
                     s.PartyPK = new[] { content };
                     var m = string.Join("\n", s.PartyPK);
-                    var msg = $"RaidPK for {s.Species} | {s.Seed:X8} has been updated to \n{m}!";
+                    var msg = $"El pokemon del bot para la raid de {s.Species} | {s.Seed:X8} se ha cqambiado a \n{m}!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -855,23 +855,23 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             List<string> cmds = new()
             {
-                "$crb - Clear all in raider ban list.\n",
-                "$vrl - View all raids in the list.\n",
-                "$arp - Add parameter to the collection.\nEx: [Command] [Seed] [Species] [Difficulty]\n",
-                "$rrp - Remove parameter from the collection.\nEx: [Command] [Seed]\n",
-                "$trp - Toggle the parameter as Active/Inactive in the collection.\nEx: [Command] [Seed]\n",
-                "$tcrp - Toggle the parameter as Coded/Uncoded in the collection.\nEx: [Command] [Seed]\n",
-                "$trpk - Set a PartyPK for the parameter via a showdown set.\nEx: [Command] [Seed] [ShowdownSet]\n",
-                "$crpt - Set the title for the parameter.\nEx: [Command] [Seed]"
+                "$crb - Borrar todo en la lista de prohibiciones.\n",
+                "$vrl - Muestra todas las incursiones de la lista.\n",
+                "$arp - Añadir parámetro a la colección.\nEj: [Command] [Seed] [Species] [Difficulty]\n",
+                "$rrp - Eliminar parámetro de la colección.\nEj: [Command] [Seed]\n",
+                "$trp - Conmutar el parámetro como Activo/Inactivo en la colección.\nEj: [Command] [Seed]\n",
+                "$tcrp - Conmutar el parámetro como Codificado/No codificado en la colección.\nEj: [Command] [Seed]\n",
+                "$trpk - Establece un PartyPK para el parámetro a través de un set de showdown.\nEj: [Command] [Seed] [ShowdownSet]\n",
+                "$crpt - Establecer el título del parámetro.\nEj: [Command] [Seed]"
             };
             string msg = string.Join("", cmds.ToList());
             embed.AddField(x =>
             {
-                x.Name = "Raid Help Commands";
+                x.Name = "Comandos de ayuda para Raid"";
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("Here's your raid help!", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Aquí tienes tu ayuda para la incursión!", embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

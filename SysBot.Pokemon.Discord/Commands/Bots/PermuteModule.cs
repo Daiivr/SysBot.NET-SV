@@ -20,11 +20,11 @@ namespace SysBot.Pokemon.Discord.Commands
 
             try
             {
-                await ch.SendMessageAsync("**Permute Command Service**", false, null, null, null, null, component).ConfigureAwait(false);
+                await ch.SendMessageAsync("**Servicio de Comandos Permutados**", false, null, null, null, null, component).ConfigureAwait(false);
             }
             catch (HttpException ex)
             {
-                await Context.Message.ReplyAsync($"Could not send a DM: {ex.Message}").ConfigureAwait(false);
+                await Context.Message.ReplyAsync($"No se ha podido enviar un **MD**: {ex.Message}").ConfigureAwait(false);
             }
 
             IEmote reaction = new Emoji("✔️");

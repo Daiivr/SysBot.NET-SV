@@ -77,7 +77,7 @@ namespace SysBot.Pokemon
             {
                 var queue = Hub.Queues.GetQueue(t);
                 if (queue.Count == 0)
-                    return "Nobody in queue.";
+                    return "Nadie en la cola.";
                 return queue.Summary();
             }
         }

@@ -28,7 +28,7 @@ namespace SysBot.Pokemon.Discord
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
 
         [Command("trade")]
@@ -52,7 +52,7 @@ namespace SysBot.Pokemon.Discord
             var template = AutoLegalityWrapper.GetTemplate(set);
             if (set.InvalidLines.Count != 0)
             {
-                var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                var msg = $"✘ No se puede analizar el conjunto Showdown:\n{string.Join("\n", set.InvalidLines)}";
                 await ReplyAsync(msg).ConfigureAwait(false);
                 return;
             }
@@ -75,8 +75,8 @@ namespace SysBot.Pokemon.Discord
 
                 if (pkm is not T pk || !la.Valid)
                 {
-                    var reason = result == "Timeout" ? $"That {spec} set took too long to generate." : result == "VersionMismatch" ? "Request refused: PKHeX and Auto-Legality Mod version mismatch." : $"I wasn't able to create a {spec} from that set."; 
-                    var imsg = $"Oops! {reason}";
+                    var reason = result == "Timeout" ? $"Este **{spec}** tomo demaciado tiempo en generarse." : result == "VersionMismatch" ? "Solicitud denegada: Las versiónes de **PKHeX** y **Auto-Legality Mod** no coinciden." : $"No puede crear un **{spec}** con los datos proporcionados."; 
+                    var imsg = $"⚠️ Oops! {reason}";
                     if (result == "Failed")
                         imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
                     await ReplyAsync(imsg).ConfigureAwait(false);
@@ -90,7 +90,7 @@ namespace SysBot.Pokemon.Discord
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TradeModule<T>));
-                var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
+                var msg = $"⚠️ Oops! Ocurrió un problema inesperado con este Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
                 await ReplyAsync(msg).ConfigureAwait(false);
             }
         }
@@ -128,7 +128,7 @@ namespace SysBot.Pokemon.Discord
         {
             ID = id,
             Name = id.ToString(),
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss} ({comment})",
         };
 
         [Command("tradeUser")]
@@ -139,13 +139,13 @@ namespace SysBot.Pokemon.Discord
         {
             if (Context.Message.MentionedUsers.Count > 1)
             {
-                await ReplyAsync("Too many mentions. Queue one user at a time.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ Demasiadas menciones. Solo puedes agregar a la lista un usario a la vez.").ConfigureAwait(false);
                 return;
             }
 
             if (Context.Message.MentionedUsers.Count == 0)
             {
-                await ReplyAsync("A user must be mentioned in order to do this.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ Un usuario debe ser mencionado para hacer esto.").ConfigureAwait(false);
                 return;
             }
 
@@ -169,7 +169,7 @@ namespace SysBot.Pokemon.Discord
             var attachment = Context.Message.Attachments.FirstOrDefault();
             if (attachment == default)
             {
-                await ReplyAsync("No attachment provided!").ConfigureAwait(false);
+                await ReplyAsync("⚠️ No se proporcionó ningún archivo adjunto!").ConfigureAwait(false);
                 return;
             }
 
@@ -186,7 +186,7 @@ namespace SysBot.Pokemon.Discord
             var pk = GetRequest(att);
             if (pk == null)
             {
-                await ReplyAsync("Attachment provided is not compatible with this module!").ConfigureAwait(false);
+                await ReplyAsync("⚠️ El archivo adjunto proporcionado no es compatible con este módulo!").ConfigureAwait(false);
                 return;
             }
 
@@ -209,7 +209,7 @@ namespace SysBot.Pokemon.Discord
         {
             if (!pk.CanBeTraded())
             {
-                await ReplyAsync("Provided Pokémon content is blocked from trading!").ConfigureAwait(false);
+                await ReplyAsync("✘ Revisa el conjunto, algun dato esta bloqueando el tradeo.").ConfigureAwait(false);
                 return;
             }
             
@@ -234,7 +234,7 @@ namespace SysBot.Pokemon.Discord
 
             if (!la.Valid)
             {
-                await ReplyAsync($"{typeof(T).Name} attachment is not legal, and cannot be traded!").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ {typeof(T).Name} el archivo adjunto no es __legal__, no puede ser tradeado.").ConfigureAwait(false);
                 return;
             }
 

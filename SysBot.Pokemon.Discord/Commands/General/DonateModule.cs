@@ -10,7 +10,7 @@ namespace SysBot.Pokemon.Discord
         [Summary("Returns the Host's Donation link.")]
         public async Task PingAsync()
         {
-            var str = $"Here's the donation link! Thank you for your support :3 {SysCordSettings.Settings.DonationLink}";
+            var str = $"¡Aquí está el enlace de donación! Gracias por tu apoyo :3 {SysCordSettings.Settings.DonationLink}";
             await ReplyAsync(str).ConfigureAwait(false);
         }
     }

@@ -229,11 +229,11 @@ namespace SysBot.Pokemon
             {
                 detail.IsRetry = true;
                 Hub.Queues.Enqueue(type, detail, Math.Min(priority, PokeTradePriorities.Tier2));
-                detail.SendNotification(this, "Oops! Something happened. I'll requeue you for another attempt.");
+                detail.SendNotification(this, "⚠️ Oops! Algo ocurrio. Intentemoslo una ves mas.");
             }
             else
             {
-                detail.SendNotification(this, $"Oops! Something happened. Canceling the trade: {result}.");
+                detail.SendNotification(this, $"⚠️ Oops! Algo ocurrio. Cancelando el trade: **{result}**.");
                 detail.TradeCanceled(this, result);
             }
         }
@@ -375,7 +375,7 @@ namespace SysBot.Pokemon
                 TradeExtensions<PK9>.SVTrade = toSend;
             }
 
-            poke.SendNotification(this, $"Found Link Trade partner: {tradePartner.TrainerName}. Waiting for a Pokémon...");
+            poke.SendNotification(this, $"Entrenador encontrado: **{tradePartner.TrainerName}**.\n\n▼\n Aqui esta tu Informacion\n **TID**: __{tradePartner.TID7}__\n **SID**: __{tradePartner.SID7}__\n▲\n\n Esperando por un __Pokémon__...");
 
             if (poke.Type == PokeTradeType.Dump)
             {
@@ -999,7 +999,7 @@ namespace SysBot.Pokemon
                 var eggstring = pk.IsEgg ? "Egg " : string.Empty;
                 var gender = pk.Gender == 0 ? " - (M)" : pk.Gender == 1 ? " - (F)" : "";
                 var size = PokeSizeDetailedUtil.GetSizeRating(pk.Scale);
-                msg += pk.IsShiny ? $"\n**This Pokémon {eggstring}is shiny!**" : string.Empty;
+                msg += pk.IsShiny ? $"\n**Este Pokémon {eggstring} es shiny!**" : string.Empty;
                 if ((Species)pk.Species is Species.Dunsparce && pk.EncryptionConstant % 100 == 0)
                     msg += $"3 Segment Dunsparce!";
                 if ((Species)pk.Species is Species.Dunsparce && pk.EncryptionConstant % 100 != 0)
@@ -1009,9 +1009,9 @@ namespace SysBot.Pokemon
                 if ((Species)pk.Species is Species.Maushold && pk.EncryptionConstant % 100 != 0)
                     msg += $"Family of 4 Maus!";
                 string TIDFormatted = pk.Generation >= 7 ? $"{pk.TrainerTID7:000000}" : $"{pk.TID16:00000}";
-                detail.SendNotification(this, $"Displaying: {(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 8) + TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{gender}\n{pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n" +
-                    $"Ability: {(Ability)pk.Ability} | {(Nature)pk.Nature} Nature | Ball: {(Ball)pk.Ball}\nTrainer Info: {pk.OT_Name}/{TIDFormatted}\n" +
-                    $"{(StopConditionSettings.HasMark(pk, out RibbonIndex mark) ? $"**Pokémon Mark: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}**" : "")}Scale: {size}\n{msg}");
+                detail.SendNotification(this, $"**Mostrando**: {(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 8) + TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{gender}\n{pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n" +
+                    $"**Habilidad**: {(Ability)pk.Ability} | **Naturaleza**: {(Nature)pk.Nature} | **Ball**: {(Ball)pk.Ball}\nInformación de entrenador: {pk.OT_Name}/{TIDFormatted}\n" +
+                    $"{(StopConditionSettings.HasMark(pk, out RibbonIndex mark) ? $"**Pokémon Mark: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}**" : "")}**Scale**: {size}\n{msg}");
                 Log($"Displaying {SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 8) + TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{gender}\n{pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n{(Nature)pk.Nature} - {(Ball)pk.Ball} - {pk.OT_Name}/{TIDFormatted}");
                 ctr++;
 
@@ -1055,7 +1055,7 @@ namespace SysBot.Pokemon
         private async Task<(PK9 toSend, PokeTradeResult check)> HandleClone(SAV9SV sav, PokeTradeDetail<PK9> poke, PK9 offered, byte[] oldEC, CancellationToken token)
         {
             if (Hub.Config.Discord.ReturnPKMs)
-                poke.SendNotification(this, offered, "Here's what you showed me!");
+                poke.SendNotification(this, offered, "¡Aqui esta lo que me mostraste!");
 
             var la = new LegalityAnalysis(offered);
             if (!la.Valid)
@@ -1066,7 +1066,7 @@ namespace SysBot.Pokemon
 
                 var report = la.Report();
                 Log(report);
-                poke.SendNotification(this, "This Pokémon is not legal per PKHeX's legality checks. I am forbidden from cloning this. Exiting trade.");
+                poke.SendNotification(this, "⚠️ Este Pokémon no es __**legal**__ según los controles de legalidad de __PKHeX__. Tengo prohibido clonar esto. Cancelando trade...");
                 poke.SendNotification(this, report);
 
                 return (offered, PokeTradeResult.IllegalTrade);
@@ -1079,14 +1079,14 @@ namespace SysBot.Pokemon
             // Line for Trade Display Notifier
             TradeExtensions<PK9>.SVTrade = clone;
 
-            poke.SendNotification(this, $"**Cloned your {GameInfo.GetStrings(1).Species[clone.Species]}!**\nNow press B to cancel your offer and trade me a Pokémon you don't want.");
+            poke.SendNotification(this, $"**✔ He __clonado__ tu **{GameInfo.GetStrings(1).Species[clone.Species]}!**\nAhora __preciosa__ **B** para cancelar y luego seleccione un Pokémon que no quieras para reliazar el tradeo.");
             Log($"Cloned a {GameInfo.GetStrings(1).Species[clone.Species]}. Waiting for user to change their Pokémon...");
 
             // Separate this out from WaitForPokemonChanged since we compare to old EC from original read.
             var partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             if (!partnerFound)
             {
-                poke.SendNotification(this, "**HEY CHANGE IT NOW OR I AM LEAVING!!!**");
+                poke.SendNotification(this, "**Porfavor cambia el pokemon ahora o cancelare el tradeo!!!**");
                 // They get one more chance.
                 partnerFound = await ReadUntilChanged(TradePartnerOfferedOffset, oldEC, 15_000, 0_200, false, true, token).ConfigureAwait(false);
             }
@@ -1107,13 +1107,13 @@ namespace SysBot.Pokemon
         private async Task<(PK9 toSend, PokeTradeResult check)> HandleFixOT(SAV9SV sav, PokeTradeDetail<PK9> poke, PK9 offered, PartnerDataHolder partnerID, CancellationToken token)
         {
             if (Hub.Config.Discord.ReturnPKMs)
-                poke.SendNotification(this, offered, "Here's what you showed me!");
+                poke.SendNotification(this, offered, "¡Aqui esta lo que me mostraste!");
 
             var adOT = TradeExtensions<PK9>.HasAdName(offered, out _);
             var laInit = new LegalityAnalysis(offered);
             if (!adOT && laInit.Valid)
             {
-                poke.SendNotification(this, "No ad detected in Nickname or OT, and the Pokémon is legal. Exiting trade.");
+                poke.SendNotification(this, "No se ha detectado ningún anuncio en Nickname u OT, y el Pokémon es legal. Saliendo del comercio.");
                 return (offered, PokeTradeResult.TrainerRequestBad);
             }
 
@@ -1138,7 +1138,7 @@ namespace SysBot.Pokemon
                 Log($"FixOT request has detected an illegal Pokémon from {name}: {(Species)offered.Species}");
                 var report = laInit.Report();
                 Log(laInit.Report());
-                poke.SendNotification(this, $"**Shown Pokémon is not legal. Attempting to regenerate...**\n\n```{report}```");
+                poke.SendNotification(this, $"*El pokémon mostrado no es legal. Intentando regenerar...**\n\n```{report}```");
                 if (DumpSetting.Dump)
                     DumpPokemon(DumpSetting.DumpFolder, "hacked", offered);
             }
@@ -1160,12 +1160,12 @@ namespace SysBot.Pokemon
             var la = new LegalityAnalysis(clone);
             if (!la.Valid)
             {
-                poke.SendNotification(this, "This Pokémon is not legal per PKHeX's legality checks. I was unable to fix this. Exiting trade.");
+                poke.SendNotification(this, "⚠️ Este Pokémon no es legal según las comprobaciones de legalidad de PKHeX. No he podido solucionarlo. Saliendo del intercambio.");
                 return (clone, PokeTradeResult.IllegalTrade);
             }
 
-            poke.SendNotification(this, $"{(!laInit.Valid ? "**Legalized" : "**Fixed Nickname/OT for")} {(Species)clone.Species}**! Now confirm the trade!");
-            Log($"{(!laInit.Valid ? "Legalized" : "Fixed Nickname/OT for")} {(Species)clone.Species}!");
+            poke.SendNotification(this, $"{(!laInit.Valid ? "**Legalizado" : "**Arreglado el Apodo/OT para")} {(Species)clone.Species}**! ¡Ahora confirma la operación!");
+            Log($"{(!laInit.Valid ? "Legalizado" : "Arreglado Apodo/OT para")} {(Species)clone.Species}!");
 
             // Wait for a bit in case trading partner tries to switch out.
             await Task.Delay(2_000, token).ConfigureAwait(false);
@@ -1175,7 +1175,7 @@ namespace SysBot.Pokemon
             if (changed)
             {
                 // They get one more chance.
-                poke.SendNotification(this, "**Offer the originally shown Pokémon or I'm leaving!**");
+                poke.SendNotification(this, "**¡Ofrece los Pokémon mostrados originalmente o cancelare el trade!**");
 
                 var timer = 10_000;
                 while (changed)
@@ -1192,7 +1192,7 @@ namespace SysBot.Pokemon
 
             if (changed)
             {
-                poke.SendNotification(this, "Pokémon was swapped and not changed back. Exiting trade.");
+                poke.SendNotification(this, "⚠️ Pokémon intercambiado y no cambiado de nuevo. Saliendo del intercambio.");
                 Log("Trading partner did not wish to send away their ad-mon.");
                 return (offered, PokeTradeResult.TrainerTooSlow);
             }
@@ -1225,7 +1225,7 @@ namespace SysBot.Pokemon
                 toSend = trade.Receive;
                 poke.TradeData = toSend;
 
-                poke.SendNotification(this, "Injecting the requested Pokémon.");
+                poke.SendNotification(this, "Inyectar el Pokémon solicitado.");
                 await SetBoxPokemonAbsolute(BoxStartOffset, toSend, token, sav).ConfigureAwait(false);
             }
             else if (config.LedyQuitIfNoMatch)
