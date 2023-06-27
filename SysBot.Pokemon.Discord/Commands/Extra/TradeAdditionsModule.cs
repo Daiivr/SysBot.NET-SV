@@ -867,7 +867,7 @@ namespace SysBot.Pokemon.Discord
             string msg = string.Join("", cmds.ToList());
             embed.AddField(x =>
             {
-                x.Name = "Comandos de ayuda para Raid"";
+                x.Name = "Comandos de ayuda para Raid";
                 x.Value = msg;
                 x.IsInline = false;
             });
