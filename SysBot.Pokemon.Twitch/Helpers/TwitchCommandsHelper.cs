@@ -96,8 +96,8 @@ namespace SysBot.Pokemon.Twitch
             {
                 QueueResultRemove.CurrentlyProcessing => "⚠️ Parece que está siendo procesado. No se te ha eliminado de la cola.",
                 QueueResultRemove.CurrentlyProcessingRemoved => "⚠️ Parece que estas siendo procesado. Eliminado de la cola.",
-                QueueResultRemove.Removed => "✔ Eliminado de la cola.",
-                _ => "✘ Lo sentimos, actualmente no está en la cola.",
+                QueueResultRemove.Removed => "✔️ Eliminado de la cola.",
+                _ => "⚠️ Lo sentimos, actualmente no está en la cola.",
             };
         }
 
@@ -105,7 +105,7 @@ namespace SysBot.Pokemon.Twitch
         {
             var detail = TwitchBot<T>.Info.GetDetail(parse);
             return detail == null
-                ? "Lo sentimos, actualmente no estas en la cola."
+                ? "⚠️ Lo sentimos, actualmente no estas en la cola."
                 : $"Su código de tradeo es: {detail.Trade.Code:0000 0000}";
         }
 
