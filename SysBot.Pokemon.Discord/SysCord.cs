@@ -238,7 +238,7 @@ namespace SysBot.Pokemon.Discord
                 }
 
                 if (Hub.Config.Discord.ReplyCannotUseCommandInChannel)
-                    await msg.Channel.SendMessageAsync("No puedes usar ese comando aquí.").ConfigureAwait(false);
+                    await msg.Channel.SendMessageAsync("⚠️ No puedes usar ese comando aquí.").ConfigureAwait(false);
                 return true;
             }
 
