@@ -62,7 +62,7 @@ namespace SysBot.Pokemon.Twitch
                         var tq = new TwitchQueue<T>(pk, new PokeTradeTrainerInfo(display, mUserId), username, sub);
                         TwitchBot<T>.QueuePool.RemoveAll(z => z.UserName == username); // remove old requests if any
                         TwitchBot<T>.QueuePool.Add(tq);
-                        msg = $"@{username} ➜ añadido a la lista de espera. Por favor, susúrrame tu código de intercambio! ¡Su solicitud de la lista de espera será eliminado si usted es demasiado lento!";
+                        msg = $"@{username} ➜ añadido a la lista de espera. Por favor, susúrrame tu código de intercambio! ¡Su solicitud de la lista de espera será eliminado si usted es demasiado lento! (Susurre a este bot, no el streamer)";
                         return true;
                     }
                 }
