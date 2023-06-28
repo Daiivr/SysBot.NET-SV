@@ -31,8 +31,8 @@ namespace SysBot.Pokemon
                 // Queue setting has been updated. Echo out that things have changed.
                 secWaited = 0;
                 var state = queues.GetCanQueue()
-                    ? "Users are now able to join the trade queue."
-                    : "Changed queue settings: **Users CANNOT join the queue until it is turned back on.**";
+                    ? "✓ **Configuración de cola modificada**: Los usuarios ahora __pueden unirse__ a la **cola**."
+                    : "⚠️ **Configuración de cola modificada**: Los usuarios __**NO PUEDEN**__ unirse a la `cola` hasta que se vuelva a `habilitar`.";
                 EchoUtil.Echo(state);
             }
         }
