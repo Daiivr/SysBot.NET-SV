@@ -86,7 +86,7 @@ namespace SysBot.Pokemon.Discord
                 pk = val.RequestInfo;
             else
             {
-                await ReplyAsync($"⚠️ El pokémon solicitado no esta disponible, usa \"{Info.Hub.Config.Discord.CommandPrefix}srl\" para consultar la lista completa de pokemons disponibles.").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ El pokémon solicitado no esta disponible, usa **\"{Info.Hub.Config.Discord.CommandPrefix}srl\"** para consultar la lista completa de pokemons disponibles.").ConfigureAwait(false);
                 return;
             }
 
