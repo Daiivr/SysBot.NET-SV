@@ -5,7 +5,7 @@
 
 Para soporte específico para este fork del fork de ForkBot del repo SysBot.NET de kwsch, ¡siéntete libre de unirte! **(No se dará soporte en el Discord oficial de PKHeX o PA, por favor no molestes a los desarrolladores)**
 
-[<img src="https://canary.discordapp.com/api/guilds/1079448118933852160/widget.png?style=banner2">](https://discord.gg/Ny6XND5B8R)
+[<img src="https://discord.com/api/guilds/1079448118933852160/widget.json">](https://discord.gg/Ny6XND5B8R)
 
 [USB-Botbase](https://github.com/Koi-3088/USB-Botbase) cliente para control remoto USB para este fork.
 
