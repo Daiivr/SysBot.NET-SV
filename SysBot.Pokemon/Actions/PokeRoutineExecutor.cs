@@ -92,7 +92,7 @@ namespace SysBot.Pokemon
             {
                 var protocol = Config.Connection.Protocol;
                 var msg = protocol is SwitchProtocol.WiFi ? "sys-botbase" : "usb-botbase";
-                msg += $" version is not supported. Expected version {BotbaseVersion} or greater, and current version is {version}. Please download the latest version from: ";
+                msg += $" ⚠️ versión no compatible. Versión esperada **{BotbaseVersion}** o superior, y la versión actual es **{version}**. Descargue la última versión desde: ";
                 if (protocol is SwitchProtocol.WiFi)
                     msg += "https://github.com/olliz0r/sys-botbase/releases/latest";
                 else
@@ -169,10 +169,10 @@ namespace SysBot.Pokemon
                 if (cd != 0 && TimeSpan.FromMinutes(cd) > delta)
                 {
                     var wait = TimeSpan.FromMinutes(cd) - delta;
-                    poke.Notifier.SendNotification(bot, poke, $"Sigues en tiempo de reutilización y no puedes intercambiar por otros {TimeSpan.FromMinutes(cd) - delta} minuto(s).");
-                    var msg = $"⚠️ Encontrado a {user.TrainerName}{useridmsg} ignorando el enfriamiento de tradeo de {cd} minutos. Encontrado por última vez hace {delta.TotalMinutes:F1} minutos.";
+                    poke.Notifier.SendNotification(bot, poke, $"⚠️ Sigues en tiempo de reutilización y no puedes intercambiar por otros **{TimeSpan.FromMinutes(cd) - delta}** minuto(s).");
+                    var msg = $"⚠️ Encontrado a **{user.TrainerName}{useridmsg}** ignorando el enfriamiento de tradeo de **{cd}** minutos. Encontrado por última vez hace **{delta.TotalMinutes:F1}** minutos.";
                     if (AbuseSettings.EchoNintendoOnlineIDCooldown)
-                        msg += $"\nID: {TrainerNID}";
+                        msg += $"\n**ID**: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.CooldownAbuseEchoMention))
                         msg = $"{AbuseSettings.CooldownAbuseEchoMention} {msg}";
                     EchoUtil.Echo(msg);
@@ -197,9 +197,9 @@ namespace SysBot.Pokemon
                         quit = true;
                     }
 
-                    var msg = $"⚠️ Encontrado a {user.TrainerName}{useridmsg} utilizando __múltiples cuentas__.\nEncontrado anteriormente {previous.Name} ({previous.RemoteID}) hace {delta.TotalMinutes:F1} minutos con el **OT**: {TrainerName}.";
+                    var msg = $"⚠️ Encontrado a **{user.TrainerName}{useridmsg}** utilizando __múltiples cuentas__.\nEncontrado anteriormente **{previous.Name} ({previous.RemoteID})** hace **{delta.TotalMinutes:F1}** minutos con el **OT**: {TrainerName}.";
                     if (AbuseSettings.EchoNintendoOnlineIDMulti)
-                        msg += $"\nID: {TrainerNID}";
+                        msg += $"\n**ID**: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiAbuseEchoMention))
                         msg = $"{AbuseSettings.MultiAbuseEchoMention} {msg}";
                     EchoUtil.Echo(msg);
@@ -227,9 +227,9 @@ namespace SysBot.Pokemon
                         quit = true;
                     }
 
-                    var msg = $"⚠️ Encontrado a {user.TrainerName}{useridmsg} __enviando__ a varios jugadores en el juego. **OT Anterior**: {previous_remote.Name}, **OT actual**: {TrainerName}";
+                    var msg = $"⚠️ Encontrado a **{user.TrainerName}{useridmsg}** __enviando__ a varios jugadores en el juego. **OT Anterior**: {previous_remote.Name}, **OT actual**: {TrainerName}";
                     if (AbuseSettings.EchoNintendoOnlineIDMultiRecipients)
-                        msg += $"\nID: {TrainerNID}";
+                        msg += $"\n**ID**: {TrainerNID}";
                     if (!string.IsNullOrWhiteSpace(AbuseSettings.MultiRecipientEchoMention))
                         msg = $"{AbuseSettings.MultiRecipientEchoMention} {msg}";
                     EchoUtil.Echo(msg);
