@@ -271,8 +271,8 @@ namespace SysBot.Pokemon.Twitch
 
                 case "tt":
                     return Info.Hub.Queues.Info.ToggleQueue()
-                        ? "Los usuarios ya pueden unirse a la cola de intercambios."
-                        : "Cambiada la configuración de la cola: **Los usuarios NO PUEDEN unirse a la cola hasta que se vuelva a activar.**";
+                        ? "✔ Los usuarios ya pueden unirse a la cola de intercambios."
+                        : "✔ Cambiada la configuración de la cola: **Los usuarios NO PUEDEN unirse a la cola hasta que se vuelva a activar.**";
 
                 case "tcu":
                     return TwitchCommandsHelper<T>.ClearTrade(args);
