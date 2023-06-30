@@ -120,7 +120,7 @@ namespace SysBot.Pokemon.Discord
             if (position.Position > botct)
             {
                 var eta = Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
-                msg += $" Tiempo estimado: **{eta:F1} minutos**";
+                msg += $" Tiempo estimado: **{eta:F1}** minutos";
             }
             return true;
         }
