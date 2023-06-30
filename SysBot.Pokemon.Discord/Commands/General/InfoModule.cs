@@ -20,7 +20,7 @@ namespace SysBot.Pokemon.Discord
         private const string fork = "https://github.com/Koi-3088/ForkBot.NET";
         private const string notfork = "https://github.com/zyro670/NotForkBot.NET";
         private const string manufork = "https://github.com/Manu098vm/SysBot.NET";
-		private const string daifork = "https://github.com/Daiivr/SysBot.NET";
+        private const string daifork = "https://github.com/Daiivr/SysBot.NET";
 
         [Command("info")]
         [Alias("about", "whoami", "owner")]
@@ -35,7 +35,7 @@ namespace SysBot.Pokemon.Discord
             };
 
             builder.AddField("Info",
-			    $"- [This Bot Sourse code ESP]({daifork})\n" +
+		$"- [This Bot Sourse code ESP]({daifork})\n" +
                 $"- [Manu's Fork Source Code]({manufork})\n" +
                 $"- [Zyro's Fork Source Code]({notfork})\n" +
                 $"- [Koi's Fork Source Code]({fork})\n" +
