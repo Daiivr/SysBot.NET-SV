@@ -9,7 +9,7 @@ namespace SysBot.Pokemon
     {
         public const string SVGameVersion = "1.3.2";
         public const string ScarletID = "0100A3D008C5C000";
-        public const string VioletID = "01008F6008C5E000";
+        public const string VioletID  = "01008F6008C5E000";
         public IReadOnlyList<long> BoxStartPokemonPointer { get; } = new long[] { 0x44C1C18, 0x130, 0x9B0, 0x0 };
         public IReadOnlyList<long> LinkTradePartnerPokemonPointer { get; } = new long[] { 0x44BB848, 0x48, 0x58, 0x40, 0x148 };
         public IReadOnlyList<long> LinkTradePartnerNIDPointer { get; } = new long[] { 0x44DFCA8, 0xF8, 0x8 };
