@@ -247,7 +247,7 @@ namespace SysBot.Pokemon
                     continue;
                 }
 				
-				if (Hub.Config.Stream.CreateAssets)
+		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Initializing...");
 
                 // Get initial raid counts for comparison later.
@@ -265,7 +265,7 @@ namespace SysBot.Pokemon
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
 					
-					if (Hub.Config.Stream.CreateAssets)
+		    if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                     Log("Failed to prepare the raid, rebooting the game.");
@@ -274,7 +274,7 @@ namespace SysBot.Pokemon
                 }
 
                 // Wait until we're in lobby.
-				if (Hub.Config.Stream.CreateAssets)
+		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Initializing Raid lobby...");
 
                 if (!await GetLobbyReady(token).ConfigureAwait(false))
@@ -330,7 +330,7 @@ namespace SysBot.Pokemon
             if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.EndRaid();
 			
-			if (Hub.Config.Stream.CreateAssets)
+	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
             await ReOpenGame(Hub.Config, t).ConfigureAwait(false);
@@ -344,7 +344,7 @@ namespace SysBot.Pokemon
             {
                 int b = 0;
                 
-				Log("Prepare for battle!");
+		Log("Prepare for battle!");
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Prepare for battle!");
 
@@ -394,7 +394,7 @@ namespace SysBot.Pokemon
                         if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.EndRaid();
 						
-						if (Hub.Config.Stream.CreateAssets)
+			if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                         var msg = "¡Ups! Algo salió mal, reiniciando para recuperar.";
@@ -426,7 +426,7 @@ namespace SysBot.Pokemon
             await Click(DDOWN, 0_500, token).ConfigureAwait(false);
 
             Log("Returning to overworld...");
-			if (Hub.Config.Stream.CreateAssets)
+	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.LogStreamProgress("Returning to overworld...");
 
             while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
@@ -703,8 +703,8 @@ namespace SysBot.Pokemon
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
 					
-					if (Hub.Config.Stream.CreateAssets)
-                        Hub.Config.Stream.LogStreamProgress("Opening Raid lobby!");
+		    if (Hub.Config.Stream.CreateAssets)
+                        Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                     Log("Failed to connect to lobby, restarting game incase we were in battle/bad connection.");
                     await ReOpenGame(Hub.Config, token).ConfigureAwait(false);
@@ -889,7 +889,7 @@ namespace SysBot.Pokemon
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.EndRaid();
 				
-				if (Hub.Config.Stream.CreateAssets)
+		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                 return (false, lobbyTrainers);
@@ -1168,7 +1168,7 @@ namespace SysBot.Pokemon
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.EndRaid();
 				
-				if (Hub.Config.Stream.CreateAssets)
+		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                 Log("Failed to recover to overworld, rebooting the game.");
