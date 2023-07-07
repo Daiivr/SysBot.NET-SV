@@ -124,6 +124,20 @@ namespace SysBot.Pokemon
             read.CopyTo(info.Data, 0);
             return sav;
         }
+        public async Task<TradeMyStatus> GetTradePartnerMyStatus(IReadOnlyList<long> pointer, CancellationToken token)
+        {
+            var info = new TradeMyStatus();
+            var read = await SwitchConnection.PointerPeek(info.Data.Length, pointer, token).ConfigureAwait(false);
+            read.CopyTo(info.Data, 0);
+            return info;
+        }
+        public async Task<TradeMyStatus> GetTradePartnerMyStatus(ulong offset, CancellationToken token)
+        {
+            var info = new TradeMyStatus();
+            var read = await SwitchConnection.ReadBytesAbsoluteAsync(offset, info.Data.Length, token).ConfigureAwait(false);
+            read.CopyTo(info.Data, 0);
+            return info;			
+        }
 
         public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
         {
