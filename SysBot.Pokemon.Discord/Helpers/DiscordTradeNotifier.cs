@@ -44,18 +44,12 @@ namespace SysBot.Pokemon.Discord
 
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
-            if (info.Type == PokeTradeType.TradeCord)
-                TradeCordHelper<T>.HandleTradedCatches(Trader.Id, false);
-
             OnFinish?.Invoke(routine);
             Trader.SendMessageAsync($"✘ Trade __cancelado__: {msg}").ConfigureAwait(false);
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)
         {
-            if (info.Type == PokeTradeType.TradeCord)
-                TradeCordHelper<T>.HandleTradedCatches(Trader.Id, true);
-
             OnFinish?.Invoke(routine);
             var tradedToUser = Data.Species;
             var message = tradedToUser != 0 ? $"✓ Trade finalizado. Disfruta de tu **{(Species)tradedToUser}**!" : "✔ Trade finalizado!";
@@ -84,14 +78,11 @@ namespace SysBot.Pokemon.Discord
                 {
                     case PokeTradeType.Specific: msg += "**Trade**!"; break;
                     case PokeTradeType.Clone: msg += "**Clone**!"; break;
-                    case PokeTradeType.Display: msg += "**Trophy**!"; break;
-                    case PokeTradeType.EtumrepDump or PokeTradeType.Dump or PokeTradeType.Seed: msg += "**Dump**!"; break;
-                    case PokeTradeType.SupportTrade or PokeTradeType.Giveaway: msg += $"**Regalo**!"; break;
+                    case PokeTradeType.SupportTrade or PokeTradeType.Giveaway: msg += $"**Trade especial**!"; break;
                     case PokeTradeType.FixOT: msg += $"**Fixed OT**!"; break;
-                    case PokeTradeType.TradeCord: msg += $"**Premio**!"; break;
                 }
 
-                var embed = GenerateEntityEmbed(fin, Context.User.Username, Hub.Config.TradeCord.UseLargerPokeBalls);
+                var embed = GenerateEntityEmbed(fin, Context.User.Username, false);
 
                 Context.Channel.SendMessageAsync(Trader.Username + " ➔ " + msg, embed: embed.Build()).ConfigureAwait(false);
                 switch (fin)
@@ -115,7 +106,7 @@ namespace SysBot.Pokemon.Discord
             var trademessage = $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
             $"**Habilidad**: {(Ability)fin.Ability}\n" +
             $"**Naturaleza**: {(Nature)fin.Nature}\n" +
-            (StopConditionSettings.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\nPokémon Mark: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
+            (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
             string markEntryText = "";
             var index = (int)mark - (int)RibbonIndex.MarkLunchtime;
             if (index > 0)
@@ -174,32 +165,6 @@ namespace SysBot.Pokemon.Discord
             });
             var msg = $"Aqui estan los detalles para: `{r.Seed:X16}`:";
             Trader.SendMessageAsync(msg, embed: embed.Build()).ConfigureAwait(false);
-        }
-
-        public void SendIncompleteEtumrepEmbed(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, string msg, IReadOnlyList<PA8> pkms)
-        {
-            var list = new List<FileAttachment>();
-            for (int i = 0; i < pkms.Count; i++)
-            {
-                var pk = pkms[i];
-                var ms = new MemoryStream(pk.Data);
-                var name = Util.CleanFileName(pk.FileName);
-                list.Add(new(ms, name));
-            }
-            var embed = new EmbedBuilder
-            {
-                Color = Color.Blue,
-                Description = "¡Aquí están todos los Pokémon que dumpeaste!",
-            }.WithAuthor(x => { x.Name = "Pokémon Legends: Arceus Dump"; });
-
-            var ch = Trader.CreateDMChannelAsync().Result;
-            ch.SendFilesAsync(list, msg, false, embed: embed.Build()).ConfigureAwait(false);
-        }
-
-        public void SendEtumrepEmbed(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, IReadOnlyList<PA8> pkms)
-        {
-            OnFinish?.Invoke(routine);
-            _ = Task.Run(() => EtumrepUtil.SendEtumrepEmbedAsync(Trader, pkms).ConfigureAwait(false));
         }
 
         public static readonly string[] MarkTitle =

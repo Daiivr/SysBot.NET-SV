@@ -383,6 +383,22 @@ namespace SysBot.Pokemon
 
             File.WriteAllText("raidcode.txt", string.Empty);
         }
+		
+		public void LogStreamProgress(string log)
+        {
+            if (!CreateAssets)
+                return;
+
+            File.WriteAllText("currentprogress.txt", log);
+        }
+
+        public void RemoveStreamProgress()
+        {
+            if (!CreateAssets)
+                return;
+
+            File.WriteAllText("currentprogress.txt", string.Empty);
+        }
 
         private async Task GenerateRaidRewards(int i, PokeTradeHub<PK9> hub, int type, CancellationToken token)
         {
