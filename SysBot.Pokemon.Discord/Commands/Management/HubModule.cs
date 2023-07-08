@@ -29,10 +29,10 @@ namespace SysBot.Pokemon.Discord
             var botCount = allBots.Count;
             builder.AddField(x =>
             {
-                x.Name = "Summary";
+                x.Name = "Resumen";
                 x.Value =
-                    $"Bot Count: {botCount}\n" +
-                    $"Bot State: {SummarizeBots(allBots)}\n" +
+                    $"Recuento de bots: {botCount}\n" +
+                    $"Estado de los Bot: {SummarizeBots(allBots)}\n" +
                     $"Pool Count: {hub.Ledy.Pool.Count}\n";
                 x.IsInline = false;
             });
@@ -43,8 +43,8 @@ namespace SysBot.Pokemon.Discord
                 var lines = bots.SelectMany(z => z.Counts.GetNonZeroCounts()).Distinct();
                 var msg = string.Join("\n", lines);
                 if (string.IsNullOrWhiteSpace(msg))
-                    msg = "Nothing counted yet!";
-                x.Name = "Counts";
+                    msg = "Aún no se ha contabilizado nada!";
+                x.Name = "Recuentos";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -60,9 +60,9 @@ namespace SysBot.Pokemon.Discord
                 var nextMsg = GetNextName(q);
                 builder.AddField(x =>
                 {
-                    x.Name = $"{q.Type} Queue";
+                    x.Name = $"{q.Type} Cola";
                     x.Value =
-                        $"Next: {nextMsg}\n" +
+                        $"Siguiente: {nextMsg}\n" +
                         $"Count: {c}\n";
                     x.IsInline = false;
                 });
@@ -73,13 +73,13 @@ namespace SysBot.Pokemon.Discord
             {
                 builder.AddField(x =>
                 {
-                    x.Name = "Queues are empty.";
-                    x.Value = "Nobody in line!";
+                    x.Name = "Las colas de espera están vacías.";
+                    x.Value = "Nadie en la cola!";
                     x.IsInline = false;
                 });
             }
 
-            await ReplyAsync("Bot Status", false, builder.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estado del bot", false, builder.Build()).ConfigureAwait(false);
         }
 
         private static string GetNextName(PokeTradeQueue<T> q)
