@@ -72,7 +72,7 @@ namespace SysBot.Pokemon.Discord
 
             if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay)
             {
-				var shiny = fin.ShinyXor == 0 ? "■" : fin.ShinyXor <= 16 ? "★" : "";
+		var shiny = fin.ShinyXor == 0 ? "■" : fin.ShinyXor <= 16 ? "★" : "";
                 var set = new ShowdownSet($"{fin.Species}");
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
                 var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
