@@ -45,7 +45,6 @@ namespace SysBot.Pokemon.Discord
         }
 
         private static readonly Dictionary<ulong, EchoChannel> Channels = new();
-        private static readonly Dictionary<ulong, EncounterEchoChannel> EncounterChannels = new();
 
         public static void RestoreChannels(DiscordSocketClient discord, DiscordSettings cfg)
         {
@@ -53,12 +52,6 @@ namespace SysBot.Pokemon.Discord
             {
                 if (discord.GetChannel(ch.ID) is ISocketMessageChannel c)
                     AddEchoChannel(c, ch.ID);
-            }
-
-            foreach (var ch in cfg.EncounterEchoChannels)
-            {
-                if (discord.GetChannel(ch.ID) is ISocketMessageChannel c)
-                    AddEncounterEchoChannel(c, ch.ID);
             }
 
             if (SysCordSettings.Settings.EchoOnBotStart)
@@ -103,46 +96,10 @@ namespace SysBot.Pokemon.Discord
             Channels.Add(cid, entry);
         }
 
-        [Command("embedHere")]
-        [Summary("Makes the bot echo special Encounter messages to the channel.")]
-        [RequireSudo]
-        public async Task AddEncounterEchoAsync()
-        {
-            var c = Context.Channel;
-            var cid = c.Id;
-            if (EncounterChannels.TryGetValue(cid, out _))
-            {
-                await ReplyAsync("Ya se está notificando aquí.").ConfigureAwait(false);
-                return;
-            }
-
-            AddEncounterEchoChannel(c, cid);
-
-            // Add to discord global loggers (saves on program close)
-            SysCordSettings.Settings.EncounterEchoChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("¡Añadida la salida Eco a este canal!").ConfigureAwait(false);
-        }
-
-        private static void AddEncounterEchoChannel(ISocketMessageChannel c, ulong cid)
-        {
-            void EncounterEchoEmbed(string ping, Embed embed) => c.SendMessageAsync(ping, false, embed);
-            Action<string, Embed> lb = EncounterEchoEmbed;
-
-            EchoUtil.EmbedForwarders.Add(lb);
-            var entry = new EncounterEchoChannel(cid, c.Name, lb);
-            EncounterChannels.Add(cid, entry);
-        }
-
         public static bool IsEchoChannel(ISocketMessageChannel c)
         {
             var cid = c.Id;
             return Channels.TryGetValue(cid, out _);
-        }
-
-        public static bool IsEmbedEchoChannel(ISocketMessageChannel c)
-        {
-            var cid = c.Id;
-            return EncounterChannels.TryGetValue(cid, out _);
         }
 
         [Command("echoInfo")]
@@ -188,49 +145,6 @@ namespace SysBot.Pokemon.Discord
             Channels.Clear();
             SysCordSettings.Settings.EchoChannels.Clear();
             await ReplyAsync("Ecos eliminados de todos los canales!").ConfigureAwait(false);
-        }
-
-        [Command("embedInfo")]
-        [Summary("Dumps the special message (Echo) settings.")]
-        [RequireSudo]
-        public async Task DumpEmbedEchoInfoAsync()
-        {
-            foreach (var c in EncounterChannels)
-                await ReplyAsync($"{c.Key} - {c.Value}").ConfigureAwait(false);
-        }
-
-        [Command("embedClear")]
-        [Summary("Clears the special message echo settings in that specific channel.")]
-        [RequireSudo]
-        public async Task ClearEmbedEchosAsync()
-        {
-            var id = Context.Channel.Id;
-            if (!EncounterChannels.TryGetValue(id, out var echo))
-            {
-                await ReplyAsync("No hay eco en este canal.").ConfigureAwait(false);
-                return;
-            }
-            EchoUtil.EmbedForwarders.Remove(echo.EmbedAction);
-            EncounterChannels.Remove(Context.Channel.Id);
-            SysCordSettings.Settings.EncounterEchoChannels.RemoveAll(z => z.ID == id);
-            await ReplyAsync($"Embed ecos borrados del canal: {Context.Channel.Name}").ConfigureAwait(false);
-        }
-
-        [Command("embedClearAll")]
-        [Summary("Clears all the special message Echo embed channel settings.")]
-        [RequireSudo]
-        public async Task ClearEmbedEchosAllAsync()
-        {
-            foreach (var l in EncounterChannels)
-            {
-                var entry = l.Value;
-                await ReplyAsync($"Embed eco borrado de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
-                EchoUtil.EmbedForwarders.Remove(entry.EmbedAction);
-            }
-            EchoUtil.EmbedForwarders.RemoveAll(y => EncounterChannels.Select(x => x.Value.EmbedAction).Contains(y));
-            EncounterChannels.Clear();
-            SysCordSettings.Settings.EncounterEchoChannels.Clear();
-            await ReplyAsync("Embed ecos eliminados de todos los canales").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()
