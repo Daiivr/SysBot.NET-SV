@@ -35,7 +35,7 @@ namespace SysBot.Pokemon.Discord
             };
 
             builder.AddField("Info",
-		$"- [This Bot Sourse code ESP]({daifork})\n" +
+		        $"- [This Bot Sourse code ESP]({daifork})\n" +
                 $"- [Manu's Fork Source Code]({manufork})\n" +
                 $"- [Zyro's Fork Source Code]({notfork})\n" +
                 $"- [Koi's Fork Source Code]({fork})\n" +

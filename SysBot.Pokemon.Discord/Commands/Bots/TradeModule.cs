@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
-    [Summary("Queues new Link Code trades")]
+    [Summary("Pone en cola las nuevas operaciones de código de enlace")]
     public class TradeModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
         [Command("tradeList")]
         [Alias("tl")]
-        [Summary("Prints the users in the trade queues.")]
+        [Summary("Muestra los usuarios en las colas comerciales.")]
         [RequireSudo]
         public async Task GetTradeListAsync()
         {
@@ -24,7 +24,7 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = "Pending Trades";
+                x.Name = "Operaciones Pendientes.";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -33,7 +33,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("trade")]
         [Alias("t")]
-        [Summary("Makes the bot trade you the provided Pokémon file.")]
+        [Summary("Hace que el bot te intercambie el archivo Pokémon proporcionado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task TradeAsyncAttach([Summary("Trade Code")] int code)
         {
@@ -43,7 +43,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("trade")]
         [Alias("t")]
-        [Summary("Makes the bot trade you a Pokémon converted from the provided Showdown Set.")]
+        [Summary("Hace que el bot te intercambie el archivo Pokémon proporcionado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task TradeAsync([Summary("Trade Code")] int code, [Summary("Showdown Set")][Remainder] string content)
         {
@@ -97,7 +97,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("trade")]
         [Alias("t")]
-        [Summary("Makes the bot trade you a Pokémon converted from the provided Showdown Set.")]
+        [Summary("Hace que el robot te cambie un Pokémon convertido del Conjunto de Enfrentamiento proporcionado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task TradeAsync([Summary("Showdown Set")][Remainder] string content)
         {
@@ -107,7 +107,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("trade")]
         [Alias("t")]
-        [Summary("Makes the bot trade you the attached file.")]
+        [Summary("Hace que el bot te intercambie el archivo adjunto.")]
         [RequireQueueRole(nameof(DiscordManager.RolesTrade))]
         public async Task TradeAsyncAttach()
         {
@@ -121,7 +121,7 @@ namespace SysBot.Pokemon.Discord
         public async Task BanTradeAsync([Summary("Online ID")] ulong nnid, string comment)
         {
             SysCordSettings.HubConfig.TradeAbuse.BannedIDs.AddIfNew(new[] { GetReference(nnid, comment) });
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("Listo.").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(ulong id, string comment) => new()
@@ -133,7 +133,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("tradeUser")]
         [Alias("tu", "tradeOther")]
-        [Summary("Makes the bot trade the mentioned user the attached file.")]
+        [Summary("Hace que el bot comercie con el usuario mencionado el archivo adjunto.")]
         [RequireSudo]
         public async Task TradeAsyncAttachUser([Summary("Trade Code")] int code, [Remainder] string _)
         {
@@ -156,7 +156,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("tradeUser")]
         [Alias("tu", "tradeOther")]
-        [Summary("Makes the bot trade the mentioned user the attached file.")]
+        [Summary("Hace que el bot comercie con el usuario mencionado el archivo adjunto.")]
         [RequireSudo]
         public async Task TradeAsyncAttachUser([Remainder] string _)
         {

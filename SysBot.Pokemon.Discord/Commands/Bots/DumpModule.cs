@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
-    [Summary("Queues new Dump trades")]
+    [Summary("Pone en cola nuevas operaciones de descarga")]
     public class DumpModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
 
         [Command("dump")]
         [Alias("d")]
-        [Summary("Dumps the Pokémon you show via Link Trade.")]
+        [Summary("Descarga los Pokémon que muestres a través de Link Trade.")]
         [RequireQueueRole(nameof(DiscordManager.RolesDump))]
         public async Task DumpAsync(int code)
         {
@@ -22,7 +22,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("dump")]
         [Alias("d")]
-        [Summary("Dumps the Pokémon you show via Link Trade.")]
+        [Summary("Descarga los Pokémon que muestres a través de Link Trade.")]
         [RequireQueueRole(nameof(DiscordManager.RolesDump))]
         public async Task DumpAsync([Summary("Trade Code")][Remainder] string code)
         {
@@ -33,7 +33,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("dump")]
         [Alias("d")]
-        [Summary("Dumps the Pokémon you show via Link Trade.")]
+        [Summary("Descarga los Pokémon que muestres a través de Link Trade.")]
         [RequireQueueRole(nameof(DiscordManager.RolesDump))]
         public async Task DumpAsync()
         {
@@ -51,11 +51,11 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = "Pending Trades";
+                x.Name = "Operaciones pendientes";
                 x.Value = msg;
                 x.IsInline = false;
             });
-            await ReplyAsync("These are the users who are currently waiting:", embed: embed.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estos son los usuarios que están esperando actualmente:", embed: embed.Build()).ConfigureAwait(false);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("stream")]
         [Alias("streamlink")]
-        [Summary("Returns the Host's Stream link.")]
+        [Summary("Muestra el enlace Stream del Host.")]
         public async Task PingAsync()
         {
             var str = $"Aquí está el enlace del Stream, disfrutar :3 {SysCordSettings.Settings.StreamLink}";

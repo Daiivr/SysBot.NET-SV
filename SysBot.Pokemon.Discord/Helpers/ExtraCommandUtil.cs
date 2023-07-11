@@ -43,8 +43,8 @@ namespace SysBot.Pokemon.Discord
             {
                 embed.AddField(x =>
                 {
-                    x.Name = "Missing \"Add Reactions\" Permission";
-                    x.Value = "Displaying only the first page of the list due to embed field limits.";
+                    x.Name = "⚠️ Falta el permiso Añadir reacciones";
+                    x.Value = "Mostrando sólo la primera página de la lista debido a los límites de los campos embeds.";
                 });
             }
 
@@ -83,7 +83,7 @@ namespace SysBot.Pokemon.Discord
         {
             var sw = new Stopwatch();
             IEmote reaction = new Emoji("👍");
-            var msg = await ctx.Channel.SendMessageAsync($"{ctx.User.Username}, please react to the attached emoji in order to confirm you're not using a script.").ConfigureAwait(false);
+            var msg = await ctx.Channel.SendMessageAsync($"{ctx.User.Username}, por favor reaccione al emoji adjunto para confirmar que no está usando un script.").ConfigureAwait(false);
             await msg.AddReactionAsync(reaction).ConfigureAwait(false);
 
             sw.Start();
@@ -166,7 +166,7 @@ namespace SysBot.Pokemon.Discord
                     pageContent.Add(string.Join(entry.Contains(',') ? ", " : entry.Contains('|') ? " | " : "\n", splice));
                 }
             }
-            else pageContent.Add(entry == "" ? "No results found." : entry);
+            else pageContent.Add(entry == "" ? "No se han encontrado resultados." : entry);
             return pageContent;
         }
 

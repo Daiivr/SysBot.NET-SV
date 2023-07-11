@@ -11,7 +11,7 @@ namespace SysBot.Pokemon.Discord
     public class SudoModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         [Command("blacklist")]
-        [Summary("Blacklists a mentioned Discord user.")]
+        [Summary("Pone en la lista negra a un usuario de Discord mencionado.")]
         [RequireSudo]
         // ReSharper disable once UnusedParameter.Global
         public async Task BlackListUsers([Remainder] string _)
@@ -19,11 +19,11 @@ namespace SysBot.Pokemon.Discord
             var users = Context.Message.MentionedUsers;
             var objects = users.Select(GetReference);
             SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("blacklistComment")]
-        [Summary("Adds a comment for a blacklisted Discord user ID.")]
+        [Summary("Añade un comentario para un ID de usuario de Discord en la lista negra.")]
         [RequireSudo]
         // ReSharper disable once UnusedParameter.Global
         public async Task BlackListUsers(ulong id, [Remainder] string comment)
@@ -31,17 +31,17 @@ namespace SysBot.Pokemon.Discord
             var obj = SysCordSettings.Settings.UserBlacklist.List.Find(z => z.ID == id);
             if (obj is null)
             {
-                await ReplyAsync($"Unable to find a user with that ID ({id}).").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ No se puede encontrar un usuario con ese ID: ({id}).").ConfigureAwait(false);
                 return;
             }
 
             var oldComment = obj.Comment;
             obj.Comment = comment;
-            await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+            await ReplyAsync($"✔ Listo. Cambiado el comentario existente **({oldComment})** a **({comment})**.").ConfigureAwait(false);
         }
 
         [Command("unblacklist")]
-        [Summary("Removes a mentioned Discord user from the blacklist.")]
+        [Summary("Elimina un usuario de Discord mencionado de la lista negra.")]
         [RequireSudo]
         // ReSharper disable once UnusedParameter.Global
         public async Task UnBlackListUsers([Remainder] string _)
@@ -49,33 +49,33 @@ namespace SysBot.Pokemon.Discord
             var users = Context.Message.MentionedUsers;
             var objects = users.Select(GetReference);
             SysCordSettings.Settings.UserBlacklist.RemoveAll(z => objects.Any(o => o.ID == z.ID));
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("blacklistId")]
-        [Summary("Blacklists Discord user IDs. (Useful if user is not in the server).")]
+        [Summary("Lista negra de IDs de usuarios de Discord. (Útil si el usuario no está en el servidor).")]
         [RequireSudo]
-        public async Task BlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+        public async Task BlackListIDs([Summary("Identificadores de discord separados por comas")][Remainder] string content)
         {
             var IDs = GetIDs(content);
             var objects = IDs.Select(GetReference);
             SysCordSettings.Settings.UserBlacklist.AddIfNew(objects);
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("unBlacklistId")]
-        [Summary("Removes Discord user IDs from the blacklist. (Useful if user is not in the server).")]
+        [Summary("Elimina IDs de usuarios de Discord de la lista negra. (Útil si el usuario no está en el servidor).")]
         [RequireSudo]
-        public async Task UnBlackListIDs([Summary("Comma Separated Discord IDs")][Remainder] string content)
+        public async Task UnBlackListIDs([Summary("Identificadores de discord separados por comas")][Remainder] string content)
         {
             var IDs = GetIDs(content);
             SysCordSettings.Settings.UserBlacklist.RemoveAll(z => IDs.Any(o => o == z.ID));
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("blacklistSummary")]
         [Alias("printBlacklist", "blacklistPrint")]
-        [Summary("Prints the list of blacklisted Discord users.")]
+        [Summary("Muestra la lista de usuarios de Discord en la lista negra.")]
         [RequireSudo]
         public async Task PrintBlacklist()
         {
@@ -85,9 +85,9 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("banID")]
-        [Summary("Bans online user IDs.")]
+        [Summary("Prohíbe las identificaciones de usuario en línea.")]
         [RequireSudo]
-        public async Task BanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+        public async Task BanOnlineIDs([Summary("Identificadores en línea separados por comas")][Remainder] string content)
         {
             var IDs = GetIDs(content);
             var objects = IDs.Select(GetReference);
@@ -95,11 +95,11 @@ namespace SysBot.Pokemon.Discord
             var me = SysCord<T>.Runner;
             var hub = me.Hub;
             hub.Config.TradeAbuse.BannedIDs.AddIfNew(objects);
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("bannedIDComment")]
-        [Summary("Adds a comment for a banned online user ID.")]
+        [Summary("Añade un comentario para un ID de usuario en línea prohibido.")]
         [RequireSudo]
         public async Task BanOnlineIDs(ulong id, [Remainder] string comment)
         {
@@ -108,19 +108,19 @@ namespace SysBot.Pokemon.Discord
             var obj = hub.Config.TradeAbuse.BannedIDs.List.Find(z => z.ID == id);
             if (obj is null)
             {
-                await ReplyAsync($"Unable to find a user with that online ID ({id}).").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ No se puede encontrar un usuario con ese ID en línea: ({id}).").ConfigureAwait(false);
                 return;
             }
 
             var oldComment = obj.Comment;
             obj.Comment = comment;
-            await ReplyAsync($"Done. Changed existing comment ({oldComment}) to ({comment}).").ConfigureAwait(false);
+            await ReplyAsync($"✔ Listo. Cambiado el comentario existente **({oldComment})** a **({comment})**.").ConfigureAwait(false);
         }
 
         [Command("unbanID")]
-        [Summary("Bans online user IDs.")]
+        [Summary("Prohíbe las identificaciones de usuario en línea.")]
         [RequireSudo]
-        public async Task UnBanOnlineIDs([Summary("Comma Separated Online IDs")][Remainder] string content)
+        public async Task UnBanOnlineIDs([Summary("Identificadores en línea separados por comas")][Remainder] string content)
         {
             var IDs = GetIDs(content);
             var objects = IDs.Select(GetReference);
@@ -128,12 +128,12 @@ namespace SysBot.Pokemon.Discord
             var me = SysCord<T>.Runner;
             var hub = me.Hub;
             hub.Config.TradeAbuse.BannedIDs.RemoveAll(z => IDs.Any(o => o == z.ID));
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("bannedIDSummary")]
         [Alias("printBannedID", "bannedIDPrint")]
-        [Summary("Prints the list of banned online IDs.")]
+        [Summary("Muestra la lista de identificaciones en línea prohibidas.")]
         [RequireSudo]
         public async Task PrintBannedOnlineIDs()
         {
@@ -146,9 +146,9 @@ namespace SysBot.Pokemon.Discord
 
         [Command("forgetUser")]
         [Alias("forget")]
-        [Summary("Forgets users that were previously encountered.")]
+        [Summary("Olvida los usuarios encontrados anteriormente.")]
         [RequireSudo]
-        public async Task ForgetPreviousUser([Summary("Comma Separated Online IDs")][Remainder] string content)
+        public async Task ForgetPreviousUser([Summary("Identificadores en línea separados por comas")][Remainder] string content)
         {
             var IDs = GetIDs(content);
             var objects = IDs.Select(GetReference);
@@ -158,12 +158,12 @@ namespace SysBot.Pokemon.Discord
                 PokeRoutineExecutorBase.PreviousUsers.RemoveAllNID(ID);
                 PokeRoutineExecutorBase.PreviousUsersDistribution.RemoveAllNID(ID);
             }
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("✔ Listo.").ConfigureAwait(false);
         }
 
         [Command("previousUserSummary")]
         [Alias("prevUsers")]
-        [Summary("Prints a list of previously encountered users.")]
+        [Summary("Muestra una lista de los usuarios encontrados anteriormente.")]
         [RequireSudo]
         public async Task PrintPreviousUsers()
         {
@@ -172,7 +172,7 @@ namespace SysBot.Pokemon.Discord
             if (lines.Any())
             {
                 found = true;
-                var msg = "Previous Users:\n" + string.Join("\n", lines);
+                var msg = "Usuarios encontrados anteriormente:\n" + string.Join("\n", lines);
                 await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
             }
 
@@ -180,25 +180,25 @@ namespace SysBot.Pokemon.Discord
             if (lines.Any())
             {
                 found = true;
-                var msg = "Previous Distribution Users:\n" + string.Join("\n", lines);
+                var msg = "Usuarios de la distribución anterior:\n" + string.Join("\n", lines);
                 await ReplyAsync(Format.Code(msg)).ConfigureAwait(false);
             }
             if (!found)
-                await ReplyAsync("No previous users found.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ No se han encontrado usuarios anteriores.").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IUser channel) => new()
         {
             ID = channel.Id,
             Name = channel.Username,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
 
         private RemoteControlAccess GetReference(ulong id) => new()
         {
             ID = id,
             Name = "Manual",
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
 
         protected static IEnumerable<ulong> GetIDs(string content)

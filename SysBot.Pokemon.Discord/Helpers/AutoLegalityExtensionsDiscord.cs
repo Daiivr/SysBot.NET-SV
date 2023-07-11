@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.Discord
 
             legal.RefreshChecksum();
 
-            var msg = $"Here's your legalized PKM for {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
+            var msg = $"Aquí está su PKM legalizado para: {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
             await channel.SendPKMAsync(legal, msg).ConfigureAwait(false);
         }
     }

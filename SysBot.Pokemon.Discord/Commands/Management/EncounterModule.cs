@@ -9,7 +9,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("toss")]
         [Alias("yeet")]
-        [Summary("Makes all bots that are currently waiting for a go-ahead continue operation.")]
+        [Summary("Hace que todos los bots que están esperando un visto bueno sigan funcionando.")]
         [RequireSudo]
         public async Task TossAsync(string name = "")
         {
@@ -23,10 +23,10 @@ namespace SysBot.Pokemon.Discord
                 x.Acknowledge();
             }
 
-            await ReplyAsync("Done.").ConfigureAwait(false);
+            await ReplyAsync("Listo.").ConfigureAwait(false);
         }
         [Command("continue")]
-        [Summary("Makes all bots that are currently waiting for a go-ahead continue operation.")]
+        [Summary("Hace que todos los Bots que están esperando un visto bueno sigan funcionando.")]
         [RequireSudo]
         public async Task ContinueAsync(string name = "")
         {
@@ -40,7 +40,7 @@ namespace SysBot.Pokemon.Discord
                 x.AcknowledgeConfirmation();
             }
 
-            await ReplyAsync("Continuing.").ConfigureAwait(false);
+            await ReplyAsync("Continuando.").ConfigureAwait(false);
         }
     }
 }

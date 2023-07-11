@@ -7,7 +7,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("donate")]
         [Alias("donation")]
-        [Summary("Returns the Host's Donation link.")]
+        [Summary("Muestra el enlace de donación del anfitrión.")]
         public async Task PingAsync()
         {
             var str = $"¡Aquí está el enlace de donación! Gracias por tu apoyo :3 {SysCordSettings.Settings.DonationLink}";

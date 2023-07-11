@@ -59,7 +59,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("echoHere")]
-        [Summary("Makes the bot echo special messages to the channel.")]
+        [Summary("Hace que el bot envíe mensajes especiales al canal.")]
         [RequireSudo]
         public async Task AddEchoAsync()
         {
@@ -67,7 +67,7 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Ya se está notificando aquí.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ Ya se está notificando aquí.").ConfigureAwait(false);
                 return;
             }
 
@@ -75,7 +75,7 @@ namespace SysBot.Pokemon.Discord
 
             // Add to discord global loggers (saves on program close)
             SysCordSettings.Settings.EchoChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("¡Añadida la salida Eco a este canal!").ConfigureAwait(false);
+            await ReplyAsync("✔ ¡Añadida la salida Eco a este canal!").ConfigureAwait(false);
         }
 
         private static void AddEchoChannel(ISocketMessageChannel c, ulong cid)
@@ -103,7 +103,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("echoInfo")]
-        [Summary("Dumps the special message (Echo) settings.")]
+        [Summary("Vuelca la configuración de los mensajes especiales (Eco).")]
         [RequireSudo]
         public async Task DumpEchoInfoAsync()
         {
@@ -112,14 +112,14 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("echoClear")]
-        [Summary("Clears the special message echo settings in that specific channel.")]
+        [Summary("Borra los ajustes de eco de mensajes especiales en ese canal específico.")]
         [RequireSudo]
         public async Task ClearEchosAsync()
         {
             var id = Context.Channel.Id;
             if (!Channels.TryGetValue(id, out var echo))
             {
-                await ReplyAsync("No hay eco en este canal.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ No hay eco en este canal.").ConfigureAwait(false);
                 return;
             }
             EchoUtil.Forwarders.Remove(echo.Action);
@@ -137,14 +137,14 @@ namespace SysBot.Pokemon.Discord
             foreach (var l in Channels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Ecos despejados de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"✔ Ecos despejados de {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
                 EchoUtil.Forwarders.Remove(entry.Action);
             }
             EchoUtil.Forwarders.RemoveAll(y => Channels.Select(x => x.Value.Action).Contains(y));
             EchoUtil.RaidForwarders.RemoveAll(y => Channels.Select(x => x.Value.RaidAction).Contains(y));
             Channels.Clear();
             SysCordSettings.Settings.EchoChannels.Clear();
-            await ReplyAsync("Ecos eliminados de todos los canales!").ConfigureAwait(false);
+            await ReplyAsync("✔ Ecos eliminados de todos los canales!").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()

@@ -16,14 +16,14 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("help")]
-        [Summary("Lists available commands.")]
+        [Summary("Lista los comandos disponibles.")]
         public async Task HelpAsync()
         {
             List<Embed> embeds = new();
             var builder = new EmbedBuilder
             {
                 Color = new Color(114, 137, 218),
-                Description = "These are the commands you can use:",
+                Description = "Estos son los comandos que puedes utilizar:",
             };
 
             var mgr = SysCordSettings.Manager;
@@ -76,25 +76,25 @@ namespace SysBot.Pokemon.Discord
             if (builder.Fields.Count > 0)
                 embeds.Add(builder.Build());
 
-            await ReplyAsync("Help has arrived!", false, null, null, null, null, null, null, embeds.ToArray()).ConfigureAwait(false);
+            await ReplyAsync("¡La ayuda ha llegado!", false, null, null, null, null, null, null, embeds.ToArray()).ConfigureAwait(false);
         }
 
         [Command("help")]
-        [Summary("Lists information about a specific command.")]
+        [Summary("Muestra información sobre un comando específico.")]
         public async Task HelpAsync([Summary("The command you want help for")] string command)
         {
             var result = _service.Search(Context, command);
 
             if (!result.IsSuccess)
             {
-                await ReplyAsync($"Sorry, I couldn't find a command like **{command}**.").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ Lo siento, no pude encontrar un comando como: **{command}**.").ConfigureAwait(false);
                 return;
             }
 
             var builder = new EmbedBuilder
             {
                 Color = new Color(114, 137, 218),
-                Description = $"Here are some commands like **{command}**:",
+                Description = $"He aquí algunos comandos como: **{command}**:",
             };
 
             foreach (var match in result.Commands)
@@ -109,7 +109,7 @@ namespace SysBot.Pokemon.Discord
                 });
             }
 
-            await ReplyAsync("Help has arrived!", false, builder.Build()).ConfigureAwait(false);
+            await ReplyAsync("¡La ayuda ha llegado!", false, builder.Build()).ConfigureAwait(false);
         }
 
         private static string GetCommandSummary(CommandInfo cmd)

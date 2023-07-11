@@ -13,7 +13,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("status")]
         [Alias("stats")]
-        [Summary("Gets the status of the bot environment.")]
+        [Summary("Obtiene el estado del entorno del bot.")]
         public async Task GetStatusAsync()
         {
             var me = SysCord<T>.Runner;
@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Discord
             var botCount = allBots.Count;
             builder.AddField(x =>
             {
-                x.Name = "Resumen";
+                x.Name = "Resumen:";
                 x.Value =
                     $"Recuento de bots: {botCount}\n" +
                     $"Estado de los Bot: {SummarizeBots(allBots)}\n" +
@@ -43,8 +43,8 @@ namespace SysBot.Pokemon.Discord
                 var lines = bots.SelectMany(z => z.Counts.GetNonZeroCounts()).Distinct();
                 var msg = string.Join("\n", lines);
                 if (string.IsNullOrWhiteSpace(msg))
-                    msg = "Aún no se ha contabilizado nada!";
-                x.Name = "Recuentos";
+                    msg = "⚠️ Aún no se ha contabilizado nada!";
+                x.Name = "Recuentos:";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -60,10 +60,10 @@ namespace SysBot.Pokemon.Discord
                 var nextMsg = GetNextName(q);
                 builder.AddField(x =>
                 {
-                    x.Name = $"{q.Type} Cola";
+                    x.Name = $"Cola {q.Type}";
                     x.Value =
                         $"Siguiente: {nextMsg}\n" +
-                        $"Count: {c}\n";
+                        $"Conteo: {c}\n";
                     x.IsInline = false;
                 });
                 count += c;
@@ -73,13 +73,13 @@ namespace SysBot.Pokemon.Discord
             {
                 builder.AddField(x =>
                 {
-                    x.Name = "Las colas de espera están vacías.";
-                    x.Value = "Nadie en la cola!";
+                    x.Name = "⚠️ Las colas de espera están vacías.";
+                    x.Value = "⚠️ Nadie en la cola!";
                     x.IsInline = false;
                 });
             }
 
-            await ReplyAsync("Estado del bot", false, builder.Build()).ConfigureAwait(false);
+            await ReplyAsync("Estado del bot!", false, builder.Build()).ConfigureAwait(false);
         }
 
         private static string GetNextName(PokeTradeQueue<T> q)
@@ -100,7 +100,7 @@ namespace SysBot.Pokemon.Discord
         private static string SummarizeBots(IReadOnlyCollection<RoutineExecutor<PokeBotState>> bots)
         {
             if (bots.Count == 0)
-                return "No bots configured.";
+                return "⚠️ No hay bots configurados.";
             var summaries = bots.Select(z => $"- {z.GetSummary()}");
             return Environment.NewLine + string.Join(Environment.NewLine, summaries);
         }

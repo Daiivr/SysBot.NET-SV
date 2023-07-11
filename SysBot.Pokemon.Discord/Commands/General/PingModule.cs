@@ -6,7 +6,7 @@ namespace SysBot.Pokemon.Discord
     public class PingModule : ModuleBase<SocketCommandContext>
     {
         [Command("ping")]
-        [Summary("Makes the bot respond, indicating that it is running.")]
+        [Summary("Hace que el bot responda, indicando que está funcionando.")]
         public async Task PingAsync()
         {
             await ReplyAsync("🏓 Pong!").ConfigureAwait(false);
@@ -14,7 +14,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("speak")]
         [Alias("talk", "say")]
-        [Summary("Tells the bot to speak during times when people are on the island.")]
+        [Summary("Indica al bot que hable cuando haya gente en la isla.")]
         [RequireSudo]
         public async Task SpeakAsync([Remainder] string request)
         {

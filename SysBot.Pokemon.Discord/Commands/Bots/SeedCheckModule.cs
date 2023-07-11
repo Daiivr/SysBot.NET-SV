@@ -12,7 +12,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
-        [Summary("Checks the seed for a Pokémon.")]
+        [Summary("Comprueba la semilla de un Pokémon.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync(int code)
         {
@@ -22,7 +22,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
-        [Summary("Checks the seed for a Pokémon.")]
+        [Summary("Comprueba la semilla de un Pokémon.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync([Summary("Trade Code")][Remainder] string code)
         {
@@ -33,7 +33,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
-        [Summary("Checks the seed for a Pokémon.")]
+        [Summary("Comprueba la semilla de un Pokémon.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync()
         {
@@ -43,7 +43,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("seedList")]
         [Alias("sl", "scq", "seedCheckQueue", "seedQueue", "seedList")]
-        [Summary("Prints the users in the Seed Check queue.")]
+        [Summary("Muestra los usuarios de la cola Seed Check.")]
         [RequireSudo]
         public async Task GetSeedListAsync()
         {
@@ -51,7 +51,7 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = "Pending Trades";
+                x.Name = "Operaciones pendientes.";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -60,7 +60,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("findFrame")]
         [Alias("ff", "getFrameData")]
-        [Summary("Prints the next shiny frame from the provided seed.")]
+        [Summary("Muestra el siguiente fotograma brillante a partir de la semilla proporcionada.")]
         public async Task FindFrameAsync([Remainder] string seedString)
         {
             var me = SysCord<T>.Runner;
@@ -79,7 +79,7 @@ namespace SysBot.Pokemon.Discord
 
             embed.AddField(x =>
             {
-                x.Name = $"Seed: {seed:X16}";
+                x.Name = $"Semilla: {seed:X16}";
                 x.Value = msg;
                 x.IsInline = false;
             });

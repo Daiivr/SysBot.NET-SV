@@ -36,7 +36,7 @@ namespace SysBot.Pokemon.Discord
                     AddLogChannel(c, ch.ID);
             }
 
-            LogUtil.LogInfo("Added Trade Start Notification to Discord channel(s) on Bot startup.", "Discord");
+            LogUtil.LogInfo("Se ha añadido una notificación de inicio de operaciones a los canales de Discord al iniciarse el bot.", "Discord");
         }
 
         public static bool IsStartChannel(ulong cid)
@@ -46,7 +46,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("startHere")]
-        [Summary("Makes the bot log trade starts to the channel.")]
+        [Summary("Hace que el bot registre los inicios de operaciones en el canal.")]
         [RequireSudo]
         public async Task AddLogAsync()
         {
@@ -54,7 +54,7 @@ namespace SysBot.Pokemon.Discord
             var cid = c.Id;
             if (Channels.TryGetValue(cid, out _))
             {
-                await ReplyAsync("Ya se está registrando aquí.").ConfigureAwait(false);
+                await ReplyAsync("⚠️ Ya se está registrando aquí.").ConfigureAwait(false);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace SysBot.Pokemon.Discord
 
             // Add to discord global loggers (saves on program close)
             SysCordSettings.Settings.TradeStartingChannels.AddIfNew(new[] { GetReference(Context.Channel) });
-            await ReplyAsync("¡Añadida salida de Notificación de Inicio a este canal!").ConfigureAwait(false);
+            await ReplyAsync("✔ ¡Añadida salida de Notificación de Inicio a este canal!").ConfigureAwait(false);
         }
 
         private static void AddLogChannel(ISocketMessageChannel c, ulong cid)
@@ -83,7 +83,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("startInfo")]
-        [Summary("Dumps the Start Notification settings.")]
+        [Summary("Vuelca la configuración de Notificación de inicio.")]
         [RequireSudo]
         public async Task DumpLogInfoAsync()
         {
@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("startClear")]
-        [Summary("Clears the Start Notification settings in that specific channel.")]
+        [Summary("Borra la configuración de Notificación de inicio en ese canal específico.")]
         [RequireSudo]
         public async Task ClearLogsAsync()
         {
@@ -100,30 +100,30 @@ namespace SysBot.Pokemon.Discord
             if (Channels.TryGetValue(Context.Channel.Id, out var entry))
                 Remove(entry);
             cfg.TradeStartingChannels.RemoveAll(z => z.ID == Context.Channel.Id);
-            await ReplyAsync($"Start Notifications cleared from channel: {Context.Channel.Name}").ConfigureAwait(false);
+            await ReplyAsync($"✔ Inicio Notificaciones borradas del canal: {Context.Channel.Name}").ConfigureAwait(false);
         }
 
         [Command("startClearAll")]
-        [Summary("Clears all the Start Notification settings.")]
+        [Summary("Borra todos los ajustes de Notificación de inicio.")]
         [RequireSudo]
         public async Task ClearLogsAllAsync()
         {
             foreach (var l in Channels)
             {
                 var entry = l.Value;
-                await ReplyAsync($"Logging cleared from {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
+                await ReplyAsync($"✔ Registro borrado de: {entry.ChannelName} ({entry.ChannelID}!").ConfigureAwait(false);
                 SysCord<T>.Runner.Hub.Queues.Forwarders.Remove(entry.Action);
             }
             Channels.Clear();
             SysCordSettings.Settings.TradeStartingChannels.Clear();
-            await ReplyAsync("Start Notifications cleared from all channels!").ConfigureAwait(false);
+            await ReplyAsync("✔ ¡Notificaciones de inicio borradas de todos los canales!").ConfigureAwait(false);
         }
 
         private RemoteControlAccess GetReference(IChannel channel) => new()
         {
             ID = channel.Id,
             Name = channel.Name,
-            Comment = $"Added by {Context.User.Username} on {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
+            Comment = $"Agregado por {Context.User.Username} el {DateTime.Now:yyyy.MM.dd-hh:mm:ss}",
         };
     }
 }

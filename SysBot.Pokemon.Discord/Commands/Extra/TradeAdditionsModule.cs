@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
-    [Summary("Generates and queues various silly trade additions")]
+    [Summary("Genera y pone en cola varias adiciones comerciales tontas")]
     public class TradeAdditionsModule<T> : ModuleBase<SocketCommandContext> where T : PKM, new()
     {
         private static TradeQueueInfo<T> Info => SysCord<T>.Runner.Hub.Queues.Info;
@@ -21,7 +21,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("giveawayqueue")]
         [Alias("gaq")]
-        [Summary("Prints the users in the giveway queues.")]
+        [Summary("Imprime los usuarios en las colas de reparto.")]
         [RequireSudo]
         public async Task GetGiveawayListAsync()
         {
@@ -29,7 +29,7 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = "Pending Giveaways";
+                x.Name = "Operaciones Pendientes";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -38,7 +38,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("giveawaypool")]
         [Alias("gap", "srl")]
-        [Summary("Show a list of Pokémon available for giveaway.")]
+        [Summary("Muestra una lista de Pokémon disponibles para regalar.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
         public async Task DisplayGiveawayPoolCountAsync()
         {
@@ -55,7 +55,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("giveaway")]
         [Alias("ga", "giveme", "gimme", "sr")]
-        [Summary("Makes the bot trade you the specified giveaway Pokémon.")]
+        [Summary("Hace que el bot te intercambie el Pokémon de regalo especificado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
         public async Task GiveawayAsync([Remainder] string content)
         {
@@ -65,7 +65,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("giveaway")]
         [Alias("ga", "giveme", "gimme", "sr")]
-        [Summary("Makes the bot trade you the specified giveaway Pokémon.")]
+        [Summary("Hace que el bot te intercambie el Pokémon de regalo especificado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
         public async Task GiveawayAsync([Summary("Código del Tradeo")] int code, [Remainder] string content)
         {
@@ -93,7 +93,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("fixOT")]
         [Alias("fix", "f")]
-        [Summary("Fixes OT and Nickname of a Pokémon you show via Link Trade if an advert is detected.")]
+        [Summary("Corrige OT y Apodo de un Pokémon que se muestra a través de Link Trade si se detecta un anuncio.")]
         [RequireQueueRole(nameof(DiscordManager.RolesFixOT))]
         public async Task FixAdOT()
         {
@@ -104,7 +104,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("fixOT")]
         [Alias("fix", "f")]
-        [Summary("Fixes OT and Nickname of a Pokémon you show via Link Trade if an advert is detected.")]
+        [Summary("Corrige OT y Apodo de un Pokémon que se muestra a través de Link Trade si se detecta un anuncio.")]
         [RequireQueueRole(nameof(DiscordManager.RolesFixOT))]
         public async Task FixAdOT([Summary("Trade Code")] int code)
         {
@@ -114,7 +114,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("fixOTList")]
         [Alias("fl", "fq")]
-        [Summary("Prints the users in the FixOT queue.")]
+        [Summary("Muestra los usuarios de la cola FixOT.")]
         [RequireSudo]
         public async Task GetFixListAsync()
         {
@@ -122,7 +122,7 @@ namespace SysBot.Pokemon.Discord
             var embed = new EmbedBuilder();
             embed.AddField(x =>
             {
-                x.Name = "Pending Trades";
+                x.Name = "Operaciones Pendientes";
                 x.Value = msg;
                 x.IsInline = false;
             });
@@ -131,7 +131,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("itemTrade")]
         [Alias("it", "item")]
-        [Summary("Makes the bot trade you a Pokémon holding the requested item, or Ditto if stat spread keyword is provided.")]
+        [Summary("Hace que el bot te intercambie un Pokémon con el objeto solicitado, o un Ditto si se proporciona la palabra clave de propagación de estadísticas..")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
         public async Task ItemTrade([Remainder] string item)
         {
@@ -141,7 +141,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("itemTrade")]
         [Alias("it", "item")]
-        [Summary("Makes the bot trade you a Pokémon holding the requested item.")]
+        [Summary("Hace que el robot te intercambie un Pokémon con el objeto solicitado.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
         public async Task ItemTrade([Summary("Trade Code")] int code, [Remainder] string item)
         {
@@ -176,7 +176,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("dittoTrade")]
         [Alias("dt", "ditto")]
-        [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
+        [Summary("Hace que el bot te intercambie un Ditto con la extensión de estadísticas y el idioma solicitados.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
         public async Task DittoTrade([Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
         {
@@ -186,7 +186,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("dittoTrade")]
         [Alias("dt", "ditto")]
-        [Summary("Makes the bot trade you a Ditto with a requested stat spread and language.")]
+        [Summary("Hace que el bot te intercambie un Ditto con la extensión de estadísticas y el idioma solicitados.")]
         [RequireQueueRole(nameof(DiscordManager.RolesSupportTrade))]
         public async Task DittoTrade([Summary("Trade Code")] int code, [Summary("Una combinación de \"ATK/SPA/SPE\" o \"6IV\"")] string keyword, [Summary("Language")] string language, [Summary("Nature")] string nature)
         {
@@ -195,7 +195,7 @@ namespace SysBot.Pokemon.Discord
                 language = lang.ToString();
             else
             {
-                await Context.Message.ReplyAsync($"No pude reconocer el idioma solicitado: {language}.").ConfigureAwait(false);
+                await Context.Message.ReplyAsync($"⚠️ No pude reconocer el idioma solicitado: {language}.").ConfigureAwait(false);
                 return;
             }
             nature = nature.Trim()[..1].ToUpper() + nature.Trim()[1..].ToLower();
@@ -223,7 +223,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("peek")]
-        [Summary("Take and send a screenshot from the specified Switch.")]
+        [Summary("Realiza y envía una captura de pantalla desde el Switch especificado.")]
         [RequireOwner]
         public async Task Peek(string address)
         {
@@ -233,7 +233,7 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(address);
             if (bot == null)
             {
-                await ReplyAsync($"No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
                 return;
             }
 
@@ -241,7 +241,7 @@ namespace SysBot.Pokemon.Discord
             var bytes = await c.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
             if (bytes.Length == 1)
             {
-                await ReplyAsync($"No se pudo tomar una captura de pantalla para el bot en {address}. ¿Está conectado el bot?").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ No se pudo tomar una captura de pantalla para el bot en {address}. ¿Está conectado el bot?").ConfigureAwait(false);
                 return;
             }
             MemoryStream ms = new(bytes);
@@ -269,7 +269,7 @@ namespace SysBot.Pokemon.Discord
         }
 
         [Command("repeek")]
-        [Summary("Take and send a screenshot from the specified Switch.")]
+        [Summary("Realiza y envía una captura de pantalla desde el Switch especificado.")]
         [RequireOwner]
         public async Task RePeek(string address)
         {
@@ -279,7 +279,7 @@ namespace SysBot.Pokemon.Discord
             var bot = SysCord<T>.Runner.GetBot(address);
             if (bot == null)
             {
-                await ReplyAsync($"No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
                 return;
             }
 
@@ -294,30 +294,30 @@ namespace SysBot.Pokemon.Discord
 
         [Command("setCatchLimit")]
         [Alias("scl")]
-        [Summary("Set the Catch Limit for Raids in SV.")]
+        [Summary("Establece el límite de capturas para las incursiones en SV.")]
         [RequireSudo]
         public async Task SetOffsetIncrement([Summary("Establece el límite de capturas para las incursiones en SV.")] int limit)
         {
             int parse = SysCord<T>.Runner.Hub.Config.RaidSV.CatchLimit = limit;
 
-            var msg = $"{Context.User.Mention} El límite de capturas para las incursiones se ha fijado en **{parse}**.";
+            var msg = $"✔ {Context.User.Mention} El límite de capturas para las incursiones se ha fijado en **{parse}**.";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
         [Command("clearRaidSVBans")]
         [Alias("crb")]
-        [Summary("Clears the RaidSV ban list.")]
+        [Summary("Borra la lista de baneos de RaidSV.")]
         [RequireSudo]
         public async Task ClearRaidBansSV()
         {
             SysCord<T>.Runner.Hub.Config.RaidSV.RaiderBanList.Clear();
-            var msg = "La lista de baneos de RaidSV ha sido borrada.";
+            var msg = "✔ La lista de baneos de RaidSV ha sido borrada.";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
         [Command("addRaidParams")]
         [Alias("arp")]
-        [Summary("Adds new raid parameter.")]
+        [Summary("Añade un nuevo parámetro de incursión.")]
         [RequireSudo]
         public async Task AddNewRaidParam([Summary("Seed")] string seed, [Summary("Species Type")] string species, [Summary("Content Type")] string content)
         {
@@ -344,7 +344,7 @@ namespace SysBot.Pokemon.Discord
             var parse = TradeExtensions<T>.EnumParse<Species>(species);
             if (parse == default)
             {
-                await ReplyAsync($"{species} no es una Especie válida.").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ {species} no es una Especie válida.").ConfigureAwait(false);
                 return;
             }
 
@@ -361,13 +361,13 @@ namespace SysBot.Pokemon.Discord
             };
 
             SysCord<T>.Runner.Hub.Config.RotatingRaidSV.RaidEmbedParameters.Add(newparam);
-            var msg = $"¡Se ha añadido una nueva incursión de **{newparam.Species}**!";
+            var msg = $"✔ ¡Se ha añadido una nueva incursión de **{newparam.Species}**!";
             await ReplyAsync(msg).ConfigureAwait(false);
         }
 
         [Command("removeRaidParams")]
         [Alias("rrp")]
-        [Summary("Adds new raid parameter.")]
+        [Summary("Remueve un parámetro de incursión.")]
         [RequireSudo]
         public async Task RemoveRaidParam([Summary("Seed")] string seed)
         {
@@ -380,7 +380,7 @@ namespace SysBot.Pokemon.Discord
                 if (def == remove)
                 {
                     list.Remove(s);
-                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} ha sido eliminada!";
+                    var msg = $"✔ La Incursión de {s.Species} | {s.Seed:X8} ha sido eliminada!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -389,7 +389,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("toggleRaidParams")]
         [Alias("trp")]
-        [Summary("Toggles raid parameter.")]
+        [Summary("Activa/Desactiva el parámetro de incursión.")]
         [RequireSudo]
         public async Task DeactivateRaidParam([Summary("Seed")] string seed)
         {
@@ -406,7 +406,7 @@ namespace SysBot.Pokemon.Discord
                     else
                         s.ActiveInRotation = true;
                     var m = s.ActiveInRotation == true ? "habilitada" : "desactivada";
-                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} ha sido {m}!";
+                    var msg = $"✔ La Incursión de {s.Species} | {s.Seed:X8} ha sido **{m}**!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -415,7 +415,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("togglecodeRaidParams")]
         [Alias("tcrp")]
-        [Summary("Toggles code raid parameter.")]
+        [Summary("Conmuta el parámetro de incursión de código.")]
         [RequireSudo]
         public async Task ToggleCodeRaidParam([Summary("Seed")] string seed)
         {
@@ -432,7 +432,7 @@ namespace SysBot.Pokemon.Discord
                     else
                         s.IsCoded = true;
                     var m = s.IsCoded == true ? "privada" : "publica";
-                    var msg = $"La Incursión de {s.Species} | {s.Seed:X8} es ahora {m}!";
+                    var msg = $"✔ La Incursión de {s.Species} | {s.Seed:X8} es ahora {m}!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -441,7 +441,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("changeRaidParamTitle")]
         [Alias("crpt")]
-        [Summary("Adds new raid parameter.")]
+        [Summary("Añade un nuevo parámetro de incursión.")]
         [RequireSudo]
         public async Task ChangeRaidParamTite([Summary("Seed")] string seed, [Summary("Content Type")] string title)
         {
@@ -454,7 +454,7 @@ namespace SysBot.Pokemon.Discord
                 if (def == deactivate)
                 {
                     s.Title = title;
-                    var msg = $"El título de incursión para {s.Species} | {s.Seed:X8} ha sido cambiado!";
+                    var msg = $"✔ El título de incursión para {s.Species} | {s.Seed:X8} ha sido cambiado!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -463,7 +463,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("viewraidList")]
         [Alias("vrl", "rotatinglist")]
-        [Summary("Prints the first 20 raids in the current collection.")]
+        [Summary("Muestra las 20 primeras incursiones de la colección actual.")]
         public async Task GetRaidListAsync()
         {
             var list = SysCord<T>.Runner.Hub.Config.RotatingRaidSV.RaidEmbedParameters.Take(19);
@@ -487,7 +487,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("toggleRaidPK")]
         [Alias("trpk")]
-        [Summary("Toggles raid parameter.")]
+        [Summary("Conmuta el parámetro de incursion.")]
         [RequireSudo]
         public async Task ToggleRaidParamPK([Summary("Seed")] string seed, [Summary("Showdown Set")][Remainder] string content)
         {
@@ -501,7 +501,7 @@ namespace SysBot.Pokemon.Discord
                 {
                     s.PartyPK = new[] { content };
                     var m = string.Join("\n", s.PartyPK);
-                    var msg = $"El pokemon del bot para la raid de {s.Species} | {s.Seed:X8} se ha cqambiado a \n{m}!";
+                    var msg = $"✔ El pokemon del bot para la raid de {s.Species} | {s.Seed:X8} se ha cqambiado a \n{m}!";
                     await ReplyAsync(msg).ConfigureAwait(false);
                     return;
                 }
@@ -510,7 +510,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("raidhelp")]
         [Alias("rh")]
-        [Summary("Prints the raid help command list.")]
+        [Summary("Muestra la lista de comandos de ayuda de raid.")]
         public async Task GetRaidHelpListAsync()
         {
             var embed = new EmbedBuilder();
