@@ -246,7 +246,7 @@ namespace SysBot.Pokemon
                     dayRoll++;
                     continue;
                 }
-				
+
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Initializing...");
 
@@ -264,7 +264,7 @@ namespace SysBot.Pokemon
                 {
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
-					
+
 		    if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -297,8 +297,8 @@ namespace SysBot.Pokemon
                     {
                         if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.EndRaid();
-						
-						if (Hub.Config.Stream.CreateAssets)
+
+			if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                         Log("Something went wrong, attempting to recover.");
@@ -329,7 +329,7 @@ namespace SysBot.Pokemon
         {
             if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.EndRaid();
-			
+
 	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -343,7 +343,7 @@ namespace SysBot.Pokemon
             if (await IsConnectedToLobby(token).ConfigureAwait(false))
             {
                 int b = 0;
-                
+
 		Log("Prepare for battle!");
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Prepare for battle!");
@@ -374,7 +374,7 @@ namespace SysBot.Pokemon
                         (var success, var address) = await ValidatePointerAll(ptr, token).ConfigureAwait(false);
                         if (!success || address == 0)
                             continue;
-
+                        
                         var trainer = await GetTradePartnerMyStatus(address, token).ConfigureAwait(false);
 
                         if (string.IsNullOrWhiteSpace(trainer.OT))
@@ -393,7 +393,7 @@ namespace SysBot.Pokemon
                         // We read bad data, reset game to end early and recover.
                         if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.EndRaid();
-						
+
 			if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -702,7 +702,7 @@ namespace SysBot.Pokemon
                 {
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
-					
+
 		    if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -888,7 +888,7 @@ namespace SysBot.Pokemon
 
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.EndRaid();
-				
+
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -1167,7 +1167,7 @@ namespace SysBot.Pokemon
             {
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.EndRaid();
-				
+
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -1345,7 +1345,7 @@ namespace SysBot.Pokemon
                         Settings.RaidEmbedParameters[a].Species = (Species)pk.Species;
                         Settings.RaidEmbedParameters[a].SpeciesForm = pk.Form;
                         var pkinfo = RaidBotSV.GetRaidPrintName(pk);
-                        pkinfo += $"\n**Tera Type**: {(MoveType)raids[i].TeraType}";
+                        pkinfo += $"\nTera Type: {(MoveType)raids[i].TeraType}";
                         var strings = GameInfo.GetStrings(1);
                         var moves = new ushort[4] { encounters[i].Move1, encounters[i].Move2, encounters[i].Move3, encounters[i].Move4 };
                         var movestr = string.Concat(moves.Where(z => z != 0).Select(z => $"{strings.Move[z]}ㅤ{Environment.NewLine}")).TrimEnd(Environment.NewLine.ToCharArray());
