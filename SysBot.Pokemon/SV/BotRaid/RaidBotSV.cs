@@ -106,7 +106,7 @@ namespace SysBot.Pokemon
         {
             if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.EndRaid();
-			
+
 	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -248,7 +248,7 @@ namespace SysBot.Pokemon
                     dayRoll++;
                     continue;
                 }
-				
+
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Initializing...");
 
@@ -266,7 +266,7 @@ namespace SysBot.Pokemon
                 {
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
-					
+
 		    if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -376,7 +376,7 @@ namespace SysBot.Pokemon
                     {
                         if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.EndRaid();
-						
+
 			if (Hub.Config.Stream.CreateAssets)
                             Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -417,7 +417,7 @@ namespace SysBot.Pokemon
                 await Click(A, 1_000, token).ConfigureAwait(false);
 
             bool ready = await CountRaids(lobbyTrainersFinal, true, token).ConfigureAwait(false);
-			
+
 	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.EndRaid();
 
@@ -547,13 +547,13 @@ namespace SysBot.Pokemon
             {
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Connecting online...");
-				
+
                 Log("Connecting...");
                 await RecoverToOverworld(token).ConfigureAwait(false);
                 if (!await ConnectToOnline(Hub.Config, token).ConfigureAwait(false))
                     return false;
             }
-			
+
 	    if (Hub.Config.Stream.CreateAssets)
                 Hub.Config.Stream.LogStreamProgress("Opening Raid lobby!");
 
@@ -592,7 +592,7 @@ namespace SysBot.Pokemon
                 {
                     if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.EndRaid();
-					
+
 		    if (Hub.Config.Stream.CreateAssets)
                         Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -773,7 +773,7 @@ namespace SysBot.Pokemon
                     Hub.Config.Stream.EndRaid();
 
                 if (Hub.Config.Stream.CreateAssets)
-                    Hub.Config.Stream.LogStreamProgress("Restarting the game!");      
+                    Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
                 return (false, lobbyTrainers);
             }
@@ -1036,7 +1036,7 @@ namespace SysBot.Pokemon
             {
                 if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.EndRaid();
-				
+
 		if (Hub.Config.Stream.CreateAssets)
                     Hub.Config.Stream.LogStreamProgress("Restarting the game!");
 
@@ -1147,7 +1147,7 @@ namespace SysBot.Pokemon
                     var catchlimit = Settings.CatchLimit;
                     string cl = catchlimit is 0 ? "\n**Sin límite de capturas.**" : $"\n**Límite de capturas: {catchlimit}**";
                     var pkinfo = GetRaidPrintName(pk);
-                    pkinfo += $"\n**Tera Type**: {(MoveType)raids[i].TeraType}";
+                    pkinfo += $"\nTera Type: {(MoveType)raids[i].TeraType}";
                     var strings = GameInfo.GetStrings(1);
                     var moves = new ushort[4] { encounters[i].Move1, encounters[i].Move2, encounters[i].Move3, encounters[i].Move4 };
                     var movestr = string.Concat(moves.Where(z => z != 0).Select(z => $"{strings.Move[z]}ㅤ{Environment.NewLine}")).TrimEnd(Environment.NewLine.ToCharArray());
@@ -1232,10 +1232,10 @@ namespace SysBot.Pokemon
                 if (pkl.Scale == 255)
                     markEntryText = " the Great";
             }
-            var set = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 9)}{TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{markEntryText}{gender}\n**IVs**: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n**Naturaleza**: {(Nature)pk.Nature} | **Habilidad**: {(Ability)pk.Ability}";
+            var set = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 9)}{TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{markEntryText}{gender}\nIVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\nNaturaleza: {(Nature)pk.Nature} | Habilidad: {(Ability)pk.Ability}";
             if (pk is PK9 pk9)
             {
-                set += $"\n**Scale**: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
+                set += $"\nScale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
             }
             return set;
         }
