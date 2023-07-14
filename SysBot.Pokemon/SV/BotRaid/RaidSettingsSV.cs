@@ -104,7 +104,7 @@ namespace SysBot.Pokemon
             public bool IsSet { get; set; } = false;
             public bool IsShiny { get; set; } = true;
             public string[] PartyPK { get; set; } = Array.Empty<string>();
-			public bool UsePartyPK { get; set; } = false;
+	    public bool UsePartyPK { get; set; } = false;
             public Species Species { get; set; } = Species.None;
             public int SpeciesForm { get; set; } = 0;
             public string Seed { get; set; } = "0";
