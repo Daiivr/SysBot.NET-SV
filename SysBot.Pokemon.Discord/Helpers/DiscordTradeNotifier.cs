@@ -77,9 +77,12 @@ namespace SysBot.Pokemon.Discord
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
                 var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
-                var trademessage = $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
+                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n" +
                     $"**Habilidad**: {(Ability)fin.Ability}\n" +
                     $"**Naturaleza**: {(Nature)fin.Nature}\n" +
+                    $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
+                    $"**EVs**: {fin.EV_HP}/{fin.EV_ATK}/{fin.EV_DEF}/{fin.EV_SPA}/{fin.EV_SPD}/{fin.EV_SPE}\n" +
+                    $"**Movimientos**: \n- {(Move)fin.Move1}\n- {(Move)fin.Move2}\n- {(Move)fin.Move3}\n- {(Move)fin.Move4}\n" +
                     (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
 
                 string markEntryText = "";
