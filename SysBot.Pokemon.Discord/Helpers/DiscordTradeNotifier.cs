@@ -103,7 +103,7 @@ namespace SysBot.Pokemon.Discord
                 }
 
                 string TIDFormatted = fin.Generation >= 7 ? $"{fin.TrainerTID7:000000}" : $"{fin.TID16:00000}";
-                var footer = new EmbedFooterBuilder { Text = $"Informacion de entrenador: {fin.OT_Name}/{TIDFormatted}" };
+                var footer = new EmbedFooterBuilder { Text = $"OT: {fin.OT_Name} • ID:{TIDFormatted}" };
                 var author = new EmbedAuthorBuilder { Name = $"{Context.User.Username}'s Pokémon" };
                 author.IconUrl = ballImg;
                 var embed = new EmbedBuilder { Color = fin.IsShiny && fin.ShinyXor == 0 ? Color.Gold : fin.IsShiny ? Color.LighterGrey : Color.Teal, Author = author, Footer = footer, ThumbnailUrl = pokeImg };
