@@ -98,7 +98,7 @@ namespace SysBot.Pokemon.Discord
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = "✘ Lo siento, ya estás en la cola..";
+                msg = $"✘ {user.Mention} Lo siento, aun estás en la lista de espera..";
                 return false;
             }
 
@@ -106,12 +106,12 @@ namespace SysBot.Pokemon.Discord
 
             var ticketID = "";
             if (TradeStartModule<T>.IsStartChannel(context.Channel.Id))
-                ticketID = $", **ID**: {detail.ID}";
+                ticketID = $", ID: **{detail.ID}**";
 
             var pokeName = "";
             if ((t == PokeTradeType.Specific || t == PokeTradeType.SupportTrade || t == PokeTradeType.Giveaway) && pk.Species != 0)
                 pokeName = $" Recibiendo: **{(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@','\n')[1].Trim()})" : $"{(Species)pk.Species}")}**.";
-            msg = $"{user.Mention} ➜ Agregado al **{type}**, ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{pokeName}";
+            msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{pokeName}";
 
             var botct = Info.Hub.Bots.Count;
             if (position.Position > botct)
