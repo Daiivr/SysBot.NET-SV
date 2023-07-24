@@ -40,7 +40,7 @@ namespace SysBot.Pokemon.Discord
                     return;
                 }
 
-                var msg = $"Aqui esta tu **({result})** legalizado para **{spec} ({la.EncounterOriginal.Name})**";
+                var msg = $"Aqui esta tu **{spec} ({la.EncounterOriginal.Name})** legalizado y **({result})**.";
                 await channel.SendPKMAsync(pkm, msg + $"\n{ReusableActions.GetFormattedShowdownText(pkm)}").ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.Discord
 
             legal.RefreshChecksum();
 
-            var msg = $"Aquí está su PKM legalizado para: {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
+            var msg = $"Aquí está su PKM legalizado: {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
             await channel.SendPKMAsync(legal, msg).ConfigureAwait(false);
         }
     }
