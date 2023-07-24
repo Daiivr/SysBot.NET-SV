@@ -76,7 +76,7 @@ namespace SysBot.Pokemon.Discord
 
             Action<PokeRoutineExecutorBase, PokeTradeDetail<T>> l = Logger;
             SysCord<T>.Runner.Hub.Queues.Forwarders.Add(l);
-            static string GetMessage(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail) => $"> [{DateTime.Now:hh:mm:ss}] - {bot.Connection.Label} ahora esta tradeando (ID {detail.ID}) {detail.Trainer.TrainerName}";
+            static string GetMessage(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail) => $"> ✔ [{DateTime.Now:hh:mm:ss}] ➜ **{bot.Connection.Label}** ahora esta tradeando con **{detail.Trainer.TrainerName}**. (ID **{detail.ID}**)";
 
             var entry = new TradeStartAction(cid, l, c.Name);
             Channels.Add(cid, entry);
