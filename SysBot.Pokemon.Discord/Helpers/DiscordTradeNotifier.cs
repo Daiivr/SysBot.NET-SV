@@ -81,9 +81,28 @@ namespace SysBot.Pokemon.Discord
                     $"**Habilidad**: {(Ability)fin.Ability}\n" +
                     $"**Naturaleza**: {(Nature)fin.Nature}\n" +
                     $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
-                    $"**EVs**: {fin.EV_HP}/{fin.EV_ATK}/{fin.EV_DEF}/{fin.EV_SPA}/{fin.EV_SPD}/{fin.EV_SPE}\n" +
-                    $"**Movimientos**: \n- {(Move)fin.Move1}\n- {(Move)fin.Move2}\n- {(Move)fin.Move3}\n- {(Move)fin.Move4}\n" +
-                    (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
+                    $"**EVs**: {fin.EV_HP}/{fin.EV_ATK}/{fin.EV_DEF}/{fin.EV_SPA}/{fin.EV_SPD}/{fin.EV_SPE}\n";
+                var moves = new List<string>();
+
+                // Agregar los movimientos no nulos al listado
+                if (fin.Move1 != 0)
+                    moves.Add($"- {(Move)fin.Move1}");
+
+                if (fin.Move2 != 0)
+                    moves.Add($"- {(Move)fin.Move2}");
+
+                if (fin.Move3 != 0)
+                    moves.Add($"- {(Move)fin.Move3}");
+
+                if (fin.Move4 != 0)
+                    moves.Add($"- {(Move)fin.Move4}");
+
+                // Comprobar si hay movimientos para agregarlos al mensaje
+                if (moves.Any())
+                {
+                    trademessage += "**Movimientos**: \n" + string.Join("\n", moves) + "\n";
+                }
+                trademessage += (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
 
                 string markEntryText = "";
                 var index = (int)mark - (int)RibbonIndex.MarkLunchtime;
@@ -103,7 +122,7 @@ namespace SysBot.Pokemon.Discord
                 }
 
                 string TIDFormatted = fin.Generation >= 7 ? $"{fin.TrainerTID7:000000}" : $"{fin.TID16:00000}";
-                var footer = new EmbedFooterBuilder { Text = $"OT: {fin.OT_Name} • ID:{TIDFormatted}" };
+                var footer = new EmbedFooterBuilder { Text = $"OT: {fin.OT_Name} • ID: {TIDFormatted}" };
                 var author = new EmbedAuthorBuilder { Name = $"{Context.User.Username}'s Pokémon" };
                 author.IconUrl = ballImg;
                 var embed = new EmbedBuilder { Color = fin.IsShiny && fin.ShinyXor == 0 ? Color.Gold : fin.IsShiny ? Color.LighterGrey : Color.Teal, Author = author, Footer = footer, ThumbnailUrl = pokeImg };
