@@ -80,15 +80,11 @@ namespace SysBot.Pokemon.Discord
                 var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
                 var tera = pk9.TeraType;
-                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n";
-                if (pk9.TeraType != 0)
-                {
-                    trademessage += $"**Tera**: {pk9.TeraType}\n";
-                }
-                trademessage += $"**Habilidad**: {(Ability)fin.Ability}\n";
-                trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n";
-                trademessage += $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
-
+                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n" +
+                    $"**Tera**: {pk9.TeraType}\n" +
+                    $"**Habilidad**: {(Ability)fin.Ability}\n" +
+                    $"**Naturaleza**: {(Nature)fin.Nature}\n" +
+                    $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
                 var evs = new List<string>();
 
                 // Agregar los EVs no nulos al listado
