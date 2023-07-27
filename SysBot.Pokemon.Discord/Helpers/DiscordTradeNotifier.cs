@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Discord.Commands;
+using MathNet.Numerics.LinearAlgebra.Factorization;
+using System.Text;
 
 namespace SysBot.Pokemon.Discord
 {
@@ -70,37 +72,78 @@ namespace SysBot.Pokemon.Discord
                 case PK8: fin = SWSHmon; break;
             }
 
-            if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay)
+            if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay && fin is PK9 pk9)
             {
 		var shiny = fin.ShinyXor == 0 ? "■" : fin.ShinyXor <= 16 ? "★" : "";
                 var set = new ShowdownSet($"{fin.Species}");
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
                 var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
-                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n" +
-                    $"**Habilidad**: {(Ability)fin.Ability}\n" +
-                    $"**Naturaleza**: {(Nature)fin.Nature}\n" +
-                    $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n" +
-                    $"**EVs**: {fin.EV_HP}/{fin.EV_ATK}/{fin.EV_DEF}/{fin.EV_SPA}/{fin.EV_SPD}/{fin.EV_SPE}\n";
+                var tera = pk9.TeraType;
+                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n";
+                if (pk9.TeraType != 0)
+                {
+                    trademessage += $"**Tera**: {pk9.TeraType}\n";
+                }
+                trademessage += $"**Habilidad**: {(Ability)fin.Ability}\n";
+                trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n";
+                trademessage += $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
+
+                var evs = new List<string>();
+
+                // Agregar los EVs no nulos al listado
+                if (fin.EV_HP != 0)
+                    evs.Add($"{fin.EV_HP} HP");
+
+                if (fin.EV_ATK != 0)
+                    evs.Add($"{fin.EV_ATK} Atk");
+
+                if (fin.EV_DEF != 0)
+                    evs.Add($"{fin.EV_DEF} Def");
+
+                if (fin.EV_SPA != 0)
+                    evs.Add($"{fin.EV_SPA} SpA");
+
+                if (fin.EV_SPD != 0)
+                    evs.Add($"{fin.EV_SPD} SpD");
+
+                if (fin.EV_SPE != 0)
+                    evs.Add($"{fin.EV_SPE} Spe");
+
+                // Comprobar si hay EVs para agregarlos al mensaje
+                if (evs.Any())
+                {
+                    trademessage += "**EVs**: " + string.Join(" / ", evs) + "\n";
+                }
                 var moves = new List<string>();
 
-                // Agregar los movimientos no nulos al listado
+                //Remueve el None si no encuentra un movimiento
                 if (fin.Move1 != 0)
-                    moves.Add($"- {(Move)fin.Move1}");
-
+                    moves.Add(AddSpaceBeforeUpperCase($"*{(Move)fin.Move1}"));
                 if (fin.Move2 != 0)
-                    moves.Add($"- {(Move)fin.Move2}");
-
+                    moves.Add(AddSpaceBeforeUpperCase($"*{(Move)fin.Move2}"));
                 if (fin.Move3 != 0)
-                    moves.Add($"- {(Move)fin.Move3}");
-
+                    moves.Add(AddSpaceBeforeUpperCase($"*{(Move)fin.Move3}"));
                 if (fin.Move4 != 0)
-                    moves.Add($"- {(Move)fin.Move4}");
+                    moves.Add(AddSpaceBeforeUpperCase($"*{(Move)fin.Move4}"));
 
-                // Comprobar si hay movimientos para agregarlos al mensaje
+                // Comprobar si hay movimientos que añadir al mensaje
                 if (moves.Any())
                 {
                     trademessage += "**Movimientos**: \n" + string.Join("\n", moves) + "\n";
+                }
+                static string AddSpaceBeforeUpperCase(string input)
+                {
+                    StringBuilder output = new StringBuilder();
+                    foreach (char c in input)
+                    {
+                        if (char.IsUpper(c))
+                        {
+                            output.Append(' '); // Añadir un espacio antes de la letra mayúscula
+                        }
+                        output.Append(c);
+                    }
+                    return output.ToString();
                 }
                 trademessage += (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");
 
