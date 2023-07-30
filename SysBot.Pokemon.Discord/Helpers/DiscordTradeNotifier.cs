@@ -74,17 +74,52 @@ namespace SysBot.Pokemon.Discord
 
             if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay && fin is PK9 pk9)
             {
-		var shiny = fin.ShinyXor == 0 ? "■" : fin.ShinyXor <= 16 ? "★" : "";
+		        var shiny = fin.ShinyXor == 0 ? "<:square:1134580807529398392>" : fin.ShinyXor <= 16 ? "<:shiny:1134580552926777385>" : "";
                 var set = new ShowdownSet($"{fin.Species}");
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
-                var gender = fin.Gender == 0 ? " - (M)" : fin.Gender == 1 ? " - (F)" : "";
+                var gender = fin.Gender == 0 ? " - <:Males:1134568420843728917>" : fin.Gender == 1 ? " - <:Females:1134568421787435069>" : "";
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
-                var tera = pk9.TeraType;
-                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n" +
-                    $"**Tera**: {pk9.TeraType}\n" +
-                    $"**Habilidad**: {(Ability)fin.Ability}\n" +
-                    $"**Naturaleza**: {(Nature)fin.Nature}\n" +
-                    $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
+                var tera = pk9.TeraType.ToString(); // Convertir a string
+                // Diccionario que mapea cada tipo de Tera a su correspondiente emoji en Discord
+                Dictionary<string, string> teraEmojis = new Dictionary<string, string>
+    {
+        { "Normal", "<:Normal:1134575677648162886>" },
+        { "Fire", "<:Fire:1134576993799766197>" },
+        { "Water", "<:Water:1134575004038742156>" },
+        { "Grass", "<:Grass:1134574800057139331>" },
+        { "Flying", "<:Flying:1134573296734711918>" },
+        { "Poison", "<:Poison:1134575188403564624>" },
+        { "Electric", "<:Electric:1134576561991995442>" },
+        { "Ground", "<:Ground:1134573701766058095>" },
+        { "Psychic", "<:Psychic:1134576746298089575>" },
+        { "Fighting", "<:Flying:1134573296734711918>" },
+        { "Rock", "<:Rock:1134574024542912572>" },
+        { "Ice", "<:Ice:1134576183787409531>" },
+        { "Bug", "<:Bug:1134574602908073984>" },
+        { "Dragon", "<:Dragon:1134576015973294221>" },
+        { "Ghost", "<:Ghost:1134574276628975626>" },
+        { "Dark", "<:Dark:1134575488598294578>" },
+        { "Steel", "<:Steel:1134576384191254599>" },
+        { "Fairy", "<:Fairy:1134575841523814470>" },
+    };
+                var trademessage = $"**Nivel**: {fin.CurrentLevel}\n";
+                    // Obtener el emoji correspondiente al tipo de Tera
+                if (teraEmojis.TryGetValue(tera, out string? emojiID))
+                {
+                    // Obtener el emoji desde el servidor de Discord utilizando el ID
+                    var emoji = new Emoji(emojiID);
+
+                    // Agregar el emoji al mensaje utilizando la sintaxis {emoji}
+                    trademessage += $"**Tera**: {emoji} {tera}\n";
+                }
+                else
+                {
+                    // Si no se encuentra el emoji correspondiente, simplemente se muestra el tipo de Tera sin emoji
+                    trademessage += $"**Tera**: {tera}\n";
+                }
+                trademessage += $"**Habilidad**:{AddSpaceBeforeUpperCase(((Ability)fin.Ability).ToString())}\n";
+                trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n";
+                trademessage += $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
                 var evs = new List<string>();
 
                 // Agregar los EVs no nulos al listado
@@ -161,7 +196,22 @@ namespace SysBot.Pokemon.Discord
                 }
 
                 string TIDFormatted = fin.Generation >= 7 ? $"{fin.TrainerTID7:000000}" : $"{fin.TID16:00000}";
-                var footer = new EmbedFooterBuilder { Text = $"OT: {fin.OT_Name} • ID: {TIDFormatted}" };
+                var footer = new EmbedFooterBuilder
+                {
+                    Text = $"OT: {fin.OT_Name} • ID: {TIDFormatted}"
+                };
+
+                // Verificar si el usuario tiene una foto de perfil válida
+                if (Context.User.GetAvatarUrl() != null)
+                {
+                    // Si tiene foto de perfil, configurar el footer con la URL de la foto de perfil del usuario
+                    footer.IconUrl = Context.User.GetAvatarUrl();
+                }
+                else
+                {
+                    // Si no tiene foto de perfil, configurar el footer con la URL de la imagen personalizada
+                    footer.IconUrl = "https://media.discordapp.net/attachments/1074950249606557776/1134550042695450645/output-onlinegiftools_1.gif";
+                }
                 var author = new EmbedAuthorBuilder { Name = $"{Context.User.Username}'s Pokémon" };
                 author.IconUrl = ballImg;
                 var embed = new EmbedBuilder { Color = fin.IsShiny && fin.ShinyXor == 0 ? Color.Gold : fin.IsShiny ? Color.LighterGrey : Color.Teal, Author = author, Footer = footer, ThumbnailUrl = pokeImg };
@@ -172,7 +222,7 @@ namespace SysBot.Pokemon.Discord
                     x.IsInline = false;
                 });
 
-                Context.Channel.SendMessageAsync(Trader.Username + " ➔ " + msg, embed: embed.Build()).ConfigureAwait(false);
+                Context.Channel.SendMessageAsync($"**{Trader.Username}** ➔ {msg}", embed: embed.Build()).ConfigureAwait(false);
                 switch (fin)
                 {
                     case PK9: TradeExtensions<PK9>.SVTrade = new(); break;

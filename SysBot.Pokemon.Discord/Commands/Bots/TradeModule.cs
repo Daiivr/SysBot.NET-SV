@@ -234,7 +234,7 @@ namespace SysBot.Pokemon.Discord
 
             if (!la.Valid)
             {
-                await ReplyAsync($"⚠️ {typeof(T).Name} el archivo adjunto no es __legal__, no puede ser tradeado.").ConfigureAwait(false);
+                await ReplyAsync($"⚠️ {usr.Mention} el archivo {typeof(T).Name} no es __legal__, no puede ser tradeado.").ConfigureAwait(false);
                 return;
             }
 

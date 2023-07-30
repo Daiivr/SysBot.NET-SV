@@ -123,8 +123,8 @@ namespace SysBot.Pokemon
                 File.Move(prevpath, filepath);
             if (!File.Exists(filepath))
             {
-                File.WriteAllText(filepath, "{shinySymbol} - {species} - {markTitle} - {genderSymbol} - {genderText}" + Environment.NewLine + "{stars} - {difficulty} - {tera}" + Environment.NewLine +
-                    "{HP}/{ATK}/{DEF}/{SPA}/{SPD}/{SPE}\n{ability} | {nature}" + Environment.NewLine + "Scale: {scaleText} - {scaleNumber}" + Environment.NewLine + "{moveset}" + Environment.NewLine + "{extramoves}");
+                File.WriteAllText(filepath, "**Raid Info**:\n{shinySymbol} - {species} - {genderSymbol}" + Environment.NewLine + "**Tera Type**: {tera}" + Environment.NewLine +
+                    "**Habilidad**: {ability}\n**Naturaleza**: {nature}" + Environment.NewLine + "**Scale**: {scaleText} - {scaleNumber}\n**IV**: {HP}/{ATK}/{DEF}/{SPA}/{SPD}/{SPE}" + Environment.NewLine + "{moveset}" + Environment.NewLine + "{extramoves}");
             }
             if (File.Exists(filepath))
             {

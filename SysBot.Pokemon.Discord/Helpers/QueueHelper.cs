@@ -98,7 +98,7 @@ namespace SysBot.Pokemon.Discord
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"✘ {user.Mention} Lo siento, aun estás en la lista de espera..";
+                msg = $"✘ Lo siento {user.Mention}, aun estás en la lista de espera..";
                 return false;
             }
 
@@ -121,5 +121,6 @@ namespace SysBot.Pokemon.Discord
             }
             return true;
         }
+
     }
 }
