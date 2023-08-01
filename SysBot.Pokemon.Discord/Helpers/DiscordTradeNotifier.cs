@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.Discord
         { "Electric", "<:Electric:1134576561991995442>" },
         { "Ground", "<:Ground:1134573701766058095>" },
         { "Psychic", "<:Psychic:1134576746298089575>" },
-        { "Fighting", "<:Flying:1134573296734711918>" },
+        { "Fighting", "<:Fighting:1134573062881300551>" },
         { "Rock", "<:Rock:1134574024542912572>" },
         { "Ice", "<:Ice:1134576183787409531>" },
         { "Bug", "<:Bug:1134574602908073984>" },
