@@ -2,7 +2,9 @@
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
+using MathNet.Numerics.Distributions;
 using PKHeX.Core;
+using System;
 using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
@@ -11,7 +13,7 @@ namespace SysBot.Pokemon.Discord
     {
         private const uint MaxTradeCode = 9999_9999;
 
-        public static async Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig, T trade, PokeRoutineType routine, PokeTradeType type, SocketUser trader, int catchID = 0)
+        public static async Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig, T trade, PokeRoutineType routine, PokeTradeType type, SocketUser trader, bool showInServer = true, int catchID = 0)
         {
             if ((uint)code > MaxTradeCode)
             {
@@ -36,9 +38,7 @@ namespace SysBot.Pokemon.Discord
             // Try adding
             var result = AddToTradeQueue(context, trade, code, trainer, sig, routine, type, trader, out var msg, catchID);
 
-            // Notify in channel
-            await context.Channel.SendMessageAsync(msg).ConfigureAwait(false);
-            // Notify in PM to mirror what is said in the channel.
+            // Notify in PM
             await trader.SendMessageAsync($"{msg}\nTu codigo de tradeo sera: **{code:0000 0000}**.").ConfigureAwait(false);
 
             try
@@ -54,6 +54,17 @@ namespace SysBot.Pokemon.Discord
                 {
                     // Delete our "I'm adding you!", and send the same message that we sent to the general channel.
                     await test.DeleteAsync().ConfigureAwait(false);
+
+                    // Display the error message as an embed in the server channel
+                    if (showInServer)
+                    {
+                        await SendErrorEmbedAsync(context.Channel, msg).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        // Send the regular text error message to the server channel if showInServer is set to false
+                        await context.Channel.SendMessageAsync(msg).ConfigureAwait(false);
+                    }
                 }
             }
             catch (HttpException ex)
@@ -76,9 +87,65 @@ namespace SysBot.Pokemon.Discord
             }
         }
 
+        private static async Task SendErrorEmbedAsync(ISocketMessageChannel channel, string errorMessage)
+        {
+            var currentTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // Get the current time in the desired format
+
+            var builder = new EmbedBuilder
+            {
+                Color = Color.Red, // Customize the color of the error embed
+                Description = errorMessage,
+                Footer = new EmbedFooterBuilder
+                {
+                    Text = $"Hora del Error: {currentTime}" // Add the current time to the footer
+                }
+            };
+
+            // Add an icon for the embed title
+            var iconUrl = "https://th.bing.com/th/id/R.1d93f8024c141eda3d9a8bf92c99a208?rik=05Y5fmtpw1S%2fwQ&riu=http%3a%2f%2fclipart-library.com%2fimg%2f1718415.png&ehk=UDu8WfsBrx%2flX7P9FTiObJJ7JA1QL%2bJKE8SqI3hBu9o%3d&risl=&pid=ImgRaw&r=0"; // Replace with the URL of the icon you want to use for error embeds
+            builder.WithAuthor("Error", iconUrl);
+
+            // Add a regular image to the embed
+            var imageUrl = "https://c.tenor.com/rDzirQgBPwcAAAAd/tenor.gif"; // Replace with the URL of the image you want to use for the error embed
+            builder.WithImageUrl(imageUrl);
+
+            var embed = builder.Build();
+            await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+        }
+
         public static async Task AddToQueueAsync(SocketCommandContext context, int code, string trainer, RequestSignificance sig, T trade, PokeRoutineType routine, PokeTradeType type, int catchID = 0)
         {
-            await AddToQueueAsync(context, code, trainer, sig, trade, routine, type, context.User, catchID).ConfigureAwait(false);
+            await AddToQueueAsync(context, code, trainer, sig, trade, routine, type, context.User, catchID: catchID).ConfigureAwait(false);
+        }
+
+        private static async Task SendEmbedMessageAsync(SocketUser user, string type, int detailId, int position, string pokeName, T pk, double eta, ISocketMessageChannel channel)
+        {
+            var builder = new EmbedBuilder
+            {
+                Color = Color.Green, // Customize the color of the embed
+                Description = $"{user.Mention} ➜ Agregado al {type}.",
+                Footer = new EmbedFooterBuilder
+                {
+                    Text = $"ID: {detailId} | Posicion actual: {position}" + (eta > 0 ? $"\nTiempo estimado: {eta:F1} minutos" : ""),
+                    IconUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl() // Set the user's icon as the footer icon
+                }
+            };
+
+            if (!string.IsNullOrWhiteSpace(pokeName))
+            {
+                builder.AddField("Informacion Extra:", pokeName);
+            }
+
+            // Add the requested Pokémon image as the thumbnail
+            var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+            builder.WithThumbnailUrl(pokeImgUrl);
+
+            // Add an icon for the embed title
+            var iconUrl = "https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png"; // Replace with the URL of the icon you want to use
+            builder.WithAuthor("Solicitud de Intercambio", iconUrl);
+
+            var embed = builder.Build();
+            await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
 
         private static bool AddToTradeQueue(SocketCommandContext context, T pk, int code, string trainerName, RequestSignificance sig, PokeRoutineType type, PokeTradeType t, SocketUser trader, out string msg, int catchID = 0)
@@ -98,7 +165,7 @@ namespace SysBot.Pokemon.Discord
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"✘ Lo siento {user.Mention}, aun estás en la lista de espera..";
+                msg = $"✘ Lo siento {user.Mention}, aun estás siendo procesado, Por favor espera unos segundos antes de volverlo a intentar.";
                 return false;
             }
 
@@ -110,17 +177,23 @@ namespace SysBot.Pokemon.Discord
 
             var pokeName = "";
             if ((t == PokeTradeType.Specific || t == PokeTradeType.SupportTrade || t == PokeTradeType.Giveaway) && pk.Species != 0)
-                pokeName = $" Recibiendo: **{(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@','\n')[1].Trim()})" : $"{(Species)pk.Species}")}**.";
+                pokeName = $" Recibiendo: **{(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}**.";
             msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{pokeName}";
 
+            // Retrieve the bot count from the Info object
             var botct = Info.Hub.Bots.Count;
+
+            double eta = 0;
             if (position.Position > botct)
             {
-                var eta = Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
+                eta = Info.Hub.Config.Queues.EstimateDelay(position.Position, botct);
                 msg += $" Tiempo estimado: **{eta:F1}** minutos";
             }
+
+            // Send the message as an embed with the requested Pokémon image as the thumbnail
+            SendEmbedMessageAsync(user, type.ToString(), detail.ID, position.Position, pokeName, pk, eta, context.Channel).Wait();
+
             return true;
         }
-
     }
 }

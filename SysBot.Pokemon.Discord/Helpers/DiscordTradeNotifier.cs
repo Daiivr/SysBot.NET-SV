@@ -74,7 +74,7 @@ namespace SysBot.Pokemon.Discord
 
             if (fin.Species != 0 && Hub.Config.Trade.TradeDisplay && fin is PK9 pk9)
             {
-		        var shiny = fin.ShinyXor == 0 ? "<:square:1134580807529398392>" : fin.ShinyXor <= 16 ? "<:shiny:1134580552926777385>" : "";
+                var shiny = fin.ShinyXor == 0 ? "<:square:1134580807529398392>" : fin.ShinyXor <= 16 ? "<:shiny:1134580552926777385>" : "";
                 var set = new ShowdownSet($"{fin.Species}");
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
                 var gender = fin.Gender == 0 ? " - <:Males:1134568420843728917>" : fin.Gender == 1 ? " - <:Females:1134568421787435069>" : "";
@@ -103,7 +103,7 @@ namespace SysBot.Pokemon.Discord
         { "Fairy", "<:Fairy:1134575841523814470>" },
     };
                 var trademessage = $"**Nivel**: {fin.CurrentLevel}\n";
-                    // Obtener el emoji correspondiente al tipo de Tera
+                // Obtener el emoji correspondiente al tipo de Tera
                 if (teraEmojis.TryGetValue(tera, out string? emojiID))
                 {
                     // Obtener el emoji desde el servidor de Discord utilizando el ID

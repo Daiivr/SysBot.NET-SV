@@ -71,15 +71,35 @@ namespace SysBot.Pokemon.Discord
             {
                 if (detail.Type == PokeTradeType.Random)
                     return;
-                c.SendMessageAsync(GetMessage(bot, detail));
+
+                var embed = CreateTradeEmbed(bot, detail);
+                c.SendMessageAsync(embed: embed);
             }
 
             Action<PokeRoutineExecutorBase, PokeTradeDetail<T>> l = Logger;
             SysCord<T>.Runner.Hub.Queues.Forwarders.Add(l);
-            static string GetMessage(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail) => $"> ✔ [{DateTime.Now:hh:mm:ss}] ➜ **{bot.Connection.Label}** ahora esta tradeando con **{detail.Trainer.TrainerName}**. (ID **{detail.ID}**)";
 
             var entry = new TradeStartAction(cid, l, c.Name);
             Channels.Add(cid, entry);
+        }
+
+        private static Embed CreateTradeEmbed(PokeRoutineExecutorBase bot, PokeTradeDetail<T> detail)
+        {
+            var builder = new EmbedBuilder
+            {
+                Color = Color.Green, // Customize the color of the embed
+                Description = $"> ✔ **{bot.Connection.Label}** ahora está tradeando con **{detail.Trainer.TrainerName}**.",
+                Footer = new EmbedFooterBuilder
+                {
+                    Text = $"ID: {detail.ID} | {DateTime.Now:hh:mm:ss}",
+                }
+            };
+
+            // Add an icon for the embed title
+            var iconUrl = "https://styles.redditmedia.com/t5_2rmov/styles/communityIcon_8jj0o28zosp21.png?width=256&s=8a23b0dcec4abbaa98df5c1f9270b08da7f960e3"; // Replace with the URL of the icon you want to use for the embed
+            builder.WithAuthor("Notificacion de Inicio de Tradeo", iconUrl);
+
+            return builder.Build();
         }
 
         [Command("startInfo")]

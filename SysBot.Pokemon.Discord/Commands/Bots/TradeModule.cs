@@ -209,10 +209,36 @@ namespace SysBot.Pokemon.Discord
         {
             if (!pk.CanBeTraded())
             {
-                await ReplyAsync("✘ Revisa el conjunto, algun dato esta bloqueando el tradeo.").ConfigureAwait(false);
+                // Set the custom icon URL for the embed title
+                var customIconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg";
+                var customImageUrl = "https://media.tenor.com/vjgjHDFwyOgAAAAM/pysduck-confused.gif"; // Custom image URL for the embed
+
+                var errorEmbed = new EmbedBuilder
+                {
+                    Description = "✘ Revisa el conjunto enviado, algun dato esta bloqueando el tradeo.",
+                    Color = Color.Red,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        Text = $"Solicitado por {usr.Username} • {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+                        IconUrl = usr.GetAvatarUrl() ?? usr.GetDefaultAvatarUrl()
+                    }
+                };
+
+                // Set the custom icon URL for the embed title
+                if (!string.IsNullOrWhiteSpace(customIconUrl))
+                {
+                    errorEmbed.WithAuthor("Error al crear conjunto!", customIconUrl);
+                }
+
+                if (!string.IsNullOrWhiteSpace(customImageUrl))
+                {
+                    errorEmbed.WithImageUrl(customImageUrl); // Set the custom image URL
+                }
+
+                await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
                 return;
             }
-            
+
             var la = new LegalityAnalysis(pk);
 
             if (!la.Valid && la.Results.Any(m => m.Identifier is CheckIdentifier.Memory))
@@ -226,7 +252,7 @@ namespace SysBot.Pokemon.Discord
                     ((dynamic)clone).HT_Language = (byte)pk.Language;
 
                 clone.CurrentHandler = 1;
-                
+
                 la = new LegalityAnalysis(clone);
 
                 if (la.Valid) pk = clone;
@@ -234,7 +260,31 @@ namespace SysBot.Pokemon.Discord
 
             if (!la.Valid)
             {
-                await ReplyAsync($"⚠️ {usr.Mention} el archivo {typeof(T).Name} no es __legal__, no puede ser tradeado.").ConfigureAwait(false);
+                var customIconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg"; // Custom icon URL for the embed title
+                var customImageUrl = "https://usagif.com/wp-content/uploads/gify/37-pikachu-usagif.gif"; // Custom image URL for the embed
+
+                var errorEmbed = new EmbedBuilder
+                {
+                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.",
+                    Color = Color.Red,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        Text = $"Solicitado por {usr.Username} • {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+                        IconUrl = usr.GetAvatarUrl() ?? usr.GetDefaultAvatarUrl()
+                    }
+                };
+
+                if (!string.IsNullOrWhiteSpace(customIconUrl))
+                {
+                    errorEmbed.WithAuthor("Error de Legalidad!", customIconUrl);
+                }
+
+                if (!string.IsNullOrWhiteSpace(customImageUrl))
+                {
+                    errorEmbed.WithImageUrl(customImageUrl); // Set the custom image URL
+                }
+
+                await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
                 return;
             }
 

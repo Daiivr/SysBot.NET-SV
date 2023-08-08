@@ -261,7 +261,7 @@ namespace SysBot.Pokemon.Discord
 
             if (invalid || !ItemRestrictions.IsHeldItemAllowed(pkm) || noItem || (pkm.Nickname.ToLower() == "egg" && !Breeding.CanHatchAsEgg(pkm.Species)))
             {
-                var msg = $"{(noItem ? $"{context.User.Username}, the item you entered wasn't recognized." : $"Oops! I wasn't able to create that {GameInfo.Strings.Species[pkm.Species]}.")} Here's a meme instead!\n";
+                var msg = $"⚠️ {(noItem ? $"{context.User.Username}, el item que has introducido no ha sido reconocido." : $"⚠️Oops! No fui capaz de crear ese {GameInfo.Strings.Species[pkm.Species]}.")} He aquí un meme en su lugar!\n";
                 await context.Channel.SendMessageAsync($"{(invalid || noItem ? msg : "")}{path[rng.Next(path.Length)]}").ConfigureAwait(false);
                 return true;
             }

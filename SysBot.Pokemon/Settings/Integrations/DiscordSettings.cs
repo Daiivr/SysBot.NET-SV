@@ -1,7 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SysBot.Pokemon
 {
+    public enum StreamIconOption
+    {
+        Twitch,
+        Youtube,
+        Facebook,
+        Kick
+    }
     public class DiscordSettings
     {
         private const string Startup = nameof(Startup);
@@ -36,6 +44,18 @@ namespace SysBot.Pokemon
 
         [Category(Operation), Description("Stream link.")]
         public string StreamLink { get; set; } = string.Empty;
+
+        [Category(Operation), Description("Icon option for the stream.")]
+        public StreamIconOption StreamIcon { get; set; } = StreamIconOption.Twitch;
+
+        // URLs for the stream icons
+        public static readonly Dictionary<StreamIconOption, string> StreamIconUrls = new()
+        {
+            { StreamIconOption.Twitch, "https://i.imgur.com/zD95Rzy.png" },
+            { StreamIconOption.Youtube, "https://i.imgur.com/VzFGPdo.png" },
+            { StreamIconOption.Facebook, "https://i.imgur.com/YYkD2fe.png" },
+            { StreamIconOption.Kick, "https://i.imgur.com/HH8AAJY.jpg" }
+        };
 
         [Category(Operation), Description("Donation link.")]
         public string DonationLink { get; set; } = string.Empty;
@@ -111,3 +131,4 @@ namespace SysBot.Pokemon
         public bool EchoOnBotStart { get; set; } = false;
     }
 }
+
