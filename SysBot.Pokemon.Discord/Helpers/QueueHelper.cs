@@ -102,7 +102,7 @@ namespace SysBot.Pokemon.Discord
             };
 
             // Add an icon for the embed title
-            var iconUrl = "https://th.bing.com/th/id/R.1d93f8024c141eda3d9a8bf92c99a208?rik=05Y5fmtpw1S%2fwQ&riu=http%3a%2f%2fclipart-library.com%2fimg%2f1718415.png&ehk=UDu8WfsBrx%2flX7P9FTiObJJ7JA1QL%2bJKE8SqI3hBu9o%3d&risl=&pid=ImgRaw&r=0"; // Replace with the URL of the icon you want to use for error embeds
+            var iconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg"; // Replace with the URL of the icon you want to use for error embeds
             builder.WithAuthor("Error", iconUrl);
 
             // Add a regular image to the embed
