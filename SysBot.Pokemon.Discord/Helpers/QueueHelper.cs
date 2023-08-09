@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
+using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using PKHeX.Core;
 using System;
@@ -133,12 +134,33 @@ namespace SysBot.Pokemon.Discord
 
             if (!string.IsNullOrWhiteSpace(pokeName))
             {
-                builder.AddField("Informacion Extra:", pokeName);
+                builder.AddField("Informacion Extra:", $"{pokeName}\n**Nivel**: {pk.CurrentLevel}");
             }
 
-            // Add the requested Pokémon image as the thumbnail
-            var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
-            builder.WithThumbnailUrl(pokeImgUrl);
+            // Check if the type is "clone" or "dump"
+            if (type == "Clone" || type == "Dump")
+            {
+                // Display the Pokémon image as the thumbnail and remove it from the embed image
+                var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                builder.WithThumbnailUrl(pokeImgUrl);
+            }
+            else
+            {
+                // Display the Poké Ball image as the thumbnail if available
+                var pokeImgUrlForEmbed = TradeExtensions<T>.PokeImg(pk, false, false);
+                var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)pk.Ball}ball".ToLower() + ".png";
+                if (!string.IsNullOrWhiteSpace(ballImg))
+                {
+                    builder.WithThumbnailUrl(ballImg);
+                    builder.WithImageUrl(pokeImgUrlForEmbed);
+                }
+                else
+                {
+                    // Display the Pokémon image as the thumbnail
+                    var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                    builder.WithThumbnailUrl(pokeImgUrl);
+                }
+            }
 
             // Add an icon for the embed title
             var iconUrl = "https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png"; // Replace with the URL of the icon you want to use
@@ -147,6 +169,7 @@ namespace SysBot.Pokemon.Discord
             var embed = builder.Build();
             await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
+
 
         private static bool AddToTradeQueue(SocketCommandContext context, T pk, int code, string trainerName, RequestSignificance sig, PokeRoutineType type, PokeTradeType t, SocketUser trader, out string msg, int catchID = 0)
         {
@@ -177,7 +200,7 @@ namespace SysBot.Pokemon.Discord
 
             var pokeName = "";
             if ((t == PokeTradeType.Specific || t == PokeTradeType.SupportTrade || t == PokeTradeType.Giveaway) && pk.Species != 0)
-                pokeName = $" Recibiendo: **{(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}**.";
+                pokeName = $" **Recibiendo**: {(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}.";
             msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{pokeName}";
 
             // Retrieve the bot count from the Info object

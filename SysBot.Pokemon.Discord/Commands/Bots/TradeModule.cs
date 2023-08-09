@@ -75,11 +75,32 @@ namespace SysBot.Pokemon.Discord
 
                 if (pkm is not T pk || !la.Valid)
                 {
-                    var reason = result == "Timeout" ? $"Este **{spec}** tomo demaciado tiempo en generarse." : result == "VersionMismatch" ? "Solicitud denegada: Las versiónes de **PKHeX** y **Auto-Legality Mod** no coinciden." : $"No puede crear un **{spec}** con los datos proporcionados."; 
-                    var imsg = $"⚠️ Oops! {reason}";
+                    var reason = result == "Timeout" ? $"Este **{spec}** tomó demasiado tiempo en generarse." : result == "VersionMismatch" ? "Solicitud denegada: Las versiones de **PKHeX** y **Auto-Legality Mod** no coinciden." : $"{Context.User.Mention} No se puede crear un **{spec}** con los datos proporcionados.";
+                    var imsg = $"Oops! {reason}";
                     if (result == "Failed")
-                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
-                    await ReplyAsync(imsg).ConfigureAwait(false);
+                        imsg += $"\n\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+
+                    var errorEmbed = new EmbedBuilder
+                    {
+                        Description = imsg,
+                        Color = Color.Red,
+                        Footer = new EmbedFooterBuilder
+                        {
+                            Text = $"{Context.User.Username} • {DateTime.UtcNow:dd-MM-yyyy HH:mm:ss}",
+                            IconUrl = Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()
+                        }
+                    };
+
+                    // Set the author with an icon
+                    errorEmbed.WithAuthor("Error en la Legalidad del Conjunto", "https://img.freepik.com/free-icon/warning_318-478601.jpg");
+                    errorEmbed.ImageUrl = "https://i.imgur.com/Y64hLzW.gif"; // Set embed image URL
+
+                    // Set any additional properties for the embed if needed
+                    // errorEmbed.ThumbnailUrl = "URL_TO_THUMBNAIL_IMAGE"; // Set thumbnail URL
+                    // errorEmbed.ImageUrl = "URL_TO_EMBED_IMAGE"; // Set embed image URL
+                    // ...
+
+                    await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
                     return;
                 }
                 pk.ResetPartyStats();
@@ -215,11 +236,11 @@ namespace SysBot.Pokemon.Discord
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = "✘ Revisa el conjunto enviado, algun dato esta bloqueando el tradeo.",
+                    Description = $"✘ {usr.Mention} revisa el conjunto enviado, algun dato esta bloqueando el intercambio.\n\n```Revisa detenidamente cada detalle \ndel conjunto y vuelve a intentarlo!```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
-                        Text = $"Solicitado por {usr.Username} • {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+                        Text = $"{usr.Username} • {DateTime.UtcNow:dd-MM-yyyy HH:mm:ss} UTC",
                         IconUrl = usr.GetAvatarUrl() ?? usr.GetDefaultAvatarUrl()
                     }
                 };
@@ -265,11 +286,11 @@ namespace SysBot.Pokemon.Discord
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.",
+                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente \nla informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para \nlegalizar tus pokemons y ahorrarte estos problemas.```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
-                        Text = $"Solicitado por {usr.Username} • {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",
+                        Text = $"{usr.Username} • {DateTime.UtcNow:dd-MM-yyyy HH:mm:ss}",
                         IconUrl = usr.GetAvatarUrl() ?? usr.GetDefaultAvatarUrl()
                     }
                 };
