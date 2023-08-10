@@ -236,7 +236,7 @@ namespace SysBot.Pokemon.Discord
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} revisa el conjunto enviado, algun dato esta bloqueando el intercambio.\n\n```Revisa detenidamente cada detalle \ndel conjunto y vuelve a intentarlo!```",
+                    Description = $"✘ {usr.Mention} revisa el conjunto enviado, algun dato esta bloqueando el intercambio.\n\n```Revisa detenidamente cada detalle del conjunto y vuelve a intentarlo!```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
@@ -286,7 +286,7 @@ namespace SysBot.Pokemon.Discord
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente \nla informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para \nlegalizar tus pokemons y ahorrarte estos problemas.```",
+                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente la informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para legalizar tus pokemons y ahorrarte estos problemas.```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
