@@ -138,21 +138,35 @@ namespace SysBot.Pokemon.Discord
             }
 
             // Check if the type is "clone" or "dump"
-            if (type == "Clone" || type == "Dump")
+            if (type != "Clone" && type != "Dump")
             {
-                // Display the Pokémon image as the thumbnail and remove it from the embed image
-                var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
-                builder.WithThumbnailUrl(pokeImgUrl);
-            }
-            else
-            {
-                // Display the Poké Ball image as the thumbnail if available
-                var pokeImgUrlForEmbed = TradeExtensions<T>.PokeImg(pk, false, false);
+                // Display the Poké Ball image as the embed title icon if available
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)pk.Ball}ball".ToLower() + ".png";
                 if (!string.IsNullOrWhiteSpace(ballImg))
                 {
-                    builder.WithThumbnailUrl(ballImg);
-                    builder.WithImageUrl(pokeImgUrlForEmbed);
+                    builder.WithAuthor("Solicitud de Intercambio", ballImg);
+                }
+            }
+
+            if (pk.HeldItem != 0)
+            {
+                // Display the item image as the thumbnail
+                var itemimg = $"https://raw.githubusercontent.com/Daiivr/Pokemon-Scarlet-and-Violet/main/Item%20Icons/50x50/item_{pk.HeldItem}.png"; // Adjust the URL generation based on the item ID
+                builder.WithThumbnailUrl(itemimg);
+
+                // Display the Pokémon image as the embed image
+                var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                builder.WithImageUrl(pokeImgUrl);
+            }
+            else
+            {
+                if (type == "Clone" || type == "Dump")
+                {
+                    // Display the Pokémon image as the thumbnail and remove it from the embed image
+                    var titleicon = $"https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png";
+                    var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                    builder.WithThumbnailUrl(pokeImgUrl);
+                    builder.WithAuthor("Solicitud de Intercambio", titleicon);
                 }
                 else
                 {
@@ -162,14 +176,9 @@ namespace SysBot.Pokemon.Discord
                 }
             }
 
-            // Add an icon for the embed title
-            var iconUrl = "https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png"; // Replace with the URL of the icon you want to use
-            builder.WithAuthor("Solicitud de Intercambio", iconUrl);
-
             var embed = builder.Build();
             await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
-
 
         private static bool AddToTradeQueue(SocketCommandContext context, T pk, int code, string trainerName, RequestSignificance sig, PokeRoutineType type, PokeTradeType t, SocketUser trader, out string msg, int catchID = 0)
         {
