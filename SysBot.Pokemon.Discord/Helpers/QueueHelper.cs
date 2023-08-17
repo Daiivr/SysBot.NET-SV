@@ -6,6 +6,7 @@ using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using PKHeX.Core;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
@@ -118,6 +119,22 @@ namespace SysBot.Pokemon.Discord
         {
             await AddToQueueAsync(context, code, trainer, sig, trade, routine, type, context.User, catchID: catchID).ConfigureAwait(false);
         }
+        private static string AddSpacesBeforeUpperCase(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            var result = new StringBuilder();
+            foreach (char c in input)
+            {
+                if (char.IsUpper(c))
+                    result.Append(' ');
+
+                result.Append(c);
+            }
+
+            return result.ToString().Trim(); // Remove any leading/trailing spaces
+        }
 
         private static async Task SendEmbedMessageAsync(SocketUser user, string type, int detailId, int position, string pokeName, T pk, double eta, ISocketMessageChannel channel)
         {
@@ -134,7 +151,8 @@ namespace SysBot.Pokemon.Discord
 
             if (!string.IsNullOrWhiteSpace(pokeName))
             {
-                builder.AddField("Informacion Extra:", $"{pokeName}\n**Nivel**: {pk.CurrentLevel}");
+                pokeName = AddSpacesBeforeUpperCase(pokeName); // Add spaces before uppercase letters
+                builder.AddField("Informacion Extra:", $"{pokeName}\n**Nivel**: {pk.CurrentLevel}.");
             }
 
             // Check if the type is "clone" or "dump"
@@ -210,7 +228,7 @@ namespace SysBot.Pokemon.Discord
             var pokeName = "";
             if ((t == PokeTradeType.Specific || t == PokeTradeType.SupportTrade || t == PokeTradeType.Giveaway) && pk.Species != 0)
                 pokeName = $" **Recibiendo**: {(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}.";
-            msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{pokeName}";
+            msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{AddSpacesBeforeUpperCase(pokeName)}";
 
             // Retrieve the bot count from the Info object
             var botct = Info.Hub.Bots.Count;

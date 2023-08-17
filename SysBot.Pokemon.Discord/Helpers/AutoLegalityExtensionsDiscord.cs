@@ -32,22 +32,91 @@ namespace SysBot.Pokemon.Discord
                 var spec = GameInfo.Strings.Species[template.Species];
                 if (!la.Valid)
                 {
-                    var reason = result == "Timeout" ? $"Este **{spec}** tomo demaciado tiempo para generarse." : result == "VersionMismatch" ? "Solicitud denegada: Las versiones de **PKHeX** y **Auto-Legality Mod** no coinciden." : $"No se puede crear un **{spec}** con esos datos."; 
-                    var imsg = $"⚠️ Oops! {reason}";
+                    var reason = result == "Timeout" ? $"Este **{spec}** tomó demasiado tiempo para generarse." : result == "VersionMismatch" ? "Solicitud denegada: Las versiones de **PKHeX** y **Auto-Legality Mod** no coinciden." : $"No se puede crear un **{spec}** con esos datos.";
+                    var imsg = $"Oops! {reason}"; 
                     if (result == "Failed")
-                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
-                    await channel.SendMessageAsync(imsg).ConfigureAwait(false);
+                        imsg += $"\n\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+
+                    // Create an embed
+                    var embed1 = new EmbedBuilder()
+                        .WithDescription(imsg)
+                        .WithColor(Color.Red)
+                        .WithAuthor(new EmbedAuthorBuilder
+                        {
+                            Name = "Error de legalidad",
+                            IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
+                        })
+                        .WithImageUrl("https://i.imgur.com/Y64hLzW.gif") // Replace with the URL of an image related to the error
+                        .Build();
+
+                    await channel.SendMessageAsync(embed: embed1).ConfigureAwait(false);
                     return;
                 }
 
-                var msg = $"Aqui esta tu **{spec} ({la.EncounterOriginal.Name})** legalizado y **({result})**.";
-                await channel.SendPKMAsync(pkm, msg + $"\n{ReusableActions.GetFormattedShowdownText(pkm)}").ConfigureAwait(false);
+                var speciesName = GameInfo.Strings.Species[template.Species];
+                var successMsg = $"Aqui esta tu **{speciesName}** legalizado.";
+                var showdownText = ReusableActions.GetFormattedShowdownText(pkm);
+                string pokeImgUrl = "https://i.imgur.com/MlkpDow.gif"; // Replace with a suitable default image URL
+
+                if (pkm is PK8 pk8)
+                {
+                    pokeImgUrl = TradeExtensions<PK8>.PokeImg(pk8, false, false);
+                }
+                else if (pkm is PK9 pk9)
+                {
+                    pokeImgUrl = TradeExtensions<PK9>.PokeImg(pk9, false, false);
+                }
+                else if (pkm is PB8 pb8)
+                {
+                    pokeImgUrl = TradeExtensions<PB8>.PokeImg(pb8, false, false);
+                }
+                else if (pkm is PA8 pa8)
+                {
+                    pokeImgUrl = TradeExtensions<PB8>.PokeImg(pa8, false, false);
+                }
+
+                if (pokeImgUrl == null)
+                {
+                    // Handle the case where the type is not recognized
+                    await channel.SendMessageAsync("Tipo de Pokémon no reconocido para obtener la imagen.").ConfigureAwait(false);
+                    return;
+                }
+
+                var embed = new EmbedBuilder()
+                    .WithDescription(successMsg)
+                    .WithColor(Color.Green)
+                    .WithAuthor(new EmbedAuthorBuilder
+                    {
+                        Name = "Legalización Exitosa",
+                        IconUrl = "https://www.opvakantienaar.com/wp-content/themes/yootheme/cache/Yes-Sign-c182f662.png" // Replace with the URL of the success icon
+                    })
+                    .WithThumbnailUrl(pokeImgUrl) // Use the Pokémon image URL from pokeImgUrl
+                    .AddField("Especie", spec, true)
+                    .AddField("Tipo de encuentro", la.EncounterOriginal.Name, true)
+                    .AddField("Resultado", result, true)
+                    .AddField("Detalles:", showdownText)
+                    .Build();
+
+                await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+                await channel.SendPKMAsync(pkm).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(AutoLegalityExtensionsDiscord));
-                var msg = $"⚠️ Oops! Ocurrió un problema inesperado con este Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
-                await channel.SendMessageAsync(msg).ConfigureAwait(false);
+                var errorMessage = $"Oops! Ocurrió un problema inesperado con este Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
+
+                var embedError = new EmbedBuilder()
+                    .WithDescription(errorMessage)
+                    .WithColor(Color.Red)
+                    .WithAuthor(new EmbedAuthorBuilder
+                    {
+                        Name = "Error de Legalidad",
+                        IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
+                    })
+                    .WithThumbnailUrl("https://i.imgur.com/uwx3RYC.png")
+                    .Build();
+
+                await channel.SendMessageAsync(embed: embedError).ConfigureAwait(false);
             }
         }
 
@@ -77,23 +146,84 @@ namespace SysBot.Pokemon.Discord
             }
 
             var pkm = download.Data!;
-            if (new LegalityAnalysis(pkm).Valid)
+            var legalityAnalysis = new LegalityAnalysis(pkm);
+            if (legalityAnalysis.Valid)
             {
-                await channel.SendMessageAsync($"{download.SanitizedFileName}: __Ya es legal__.").ConfigureAwait(false);
+                var embedLegal = new EmbedBuilder()
+                    .WithDescription($"{download.SanitizedFileName}: **Ya es legal**.")
+                    .WithColor(Color.Green)
+                    .WithAuthor(new EmbedAuthorBuilder
+                    {
+                        Name = "Advertencia!",
+                        IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the success icon
+                    })
+                    .WithThumbnailUrl("https://i.imgur.com/IK0unJI.png")
+                    .Build();
+
+                await channel.SendMessageAsync(embed: embedLegal).ConfigureAwait(false);
                 return;
             }
 
             var legal = pkm.LegalizePokemon();
-            if (!new LegalityAnalysis(legal).Valid)
+            var legalityAnalysisLegal = new LegalityAnalysis(legal);
+            if (!legalityAnalysisLegal.Valid)
             {
-                await channel.SendMessageAsync($"{download.SanitizedFileName}: __**No se puede legalizar**__.").ConfigureAwait(false);
+                var embedNotLegal = new EmbedBuilder()
+                    .WithDescription($"{download.SanitizedFileName}: **No se puede legalizar**.")
+                    .WithColor(Color.Red)
+                    .WithAuthor(new EmbedAuthorBuilder
+                    {
+                        Name = "Error de Legalización",
+                        IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
+                    })
+                    .WithThumbnailUrl("https://i.imgur.com/uwx3RYC.png")
+                    .Build();
+
+                await channel.SendMessageAsync(embed: embedNotLegal).ConfigureAwait(false);
                 return;
             }
 
             legal.RefreshChecksum();
 
-            var msg = $"Aquí está su PKM legalizado: {download.SanitizedFileName}!\n{ReusableActions.GetFormattedShowdownText(legal)}";
-            await channel.SendPKMAsync(legal, msg).ConfigureAwait(false);
+            string pokeImgUrl = "https://i.imgur.com/MlkpDow.gif"; // Replace with a suitable default image URL
+
+            if (pkm is PK8 pk8)
+            {
+                pokeImgUrl = TradeExtensions<PK8>.PokeImg(pk8, false, false);
+            }
+            else if (pkm is PK9 pk9)
+            {
+                pokeImgUrl = TradeExtensions<PK9>.PokeImg(pk9, false, false);
+            }
+            else if (pkm is PB8 pb8)
+            {
+                pokeImgUrl = TradeExtensions<PB8>.PokeImg(pb8, false, false);
+            }
+            else if (pkm is PA8 pa8)
+            {
+                pokeImgUrl = TradeExtensions<PB8>.PokeImg(pa8, false, false);
+            }
+
+            if (pokeImgUrl == null)
+            {
+                // Handle the case where the type is not recognized
+                await channel.SendMessageAsync("Tipo de Pokémon no reconocido para obtener la imagen.").ConfigureAwait(false);
+                return;
+            }
+            var embed = new EmbedBuilder()
+            .WithDescription($"Aquí está su PKM legalizado: **{download.SanitizedFileName}**!")
+            .WithColor(Color.Green)
+            .WithAuthor(new EmbedAuthorBuilder
+            {
+                Name = "Legalización Exitosa",
+                IconUrl = "https://www.opvakantienaar.com/wp-content/themes/yootheme/cache/Yes-Sign-c182f662.png" // Replace with the URL of the success icon
+            })
+            .WithThumbnailUrl(pokeImgUrl) // Use the Pokémon image URL from pokeImgUrl
+            .AddField("Showdown Text", ReusableActions.GetFormattedShowdownText(legal))
+            .Build();
+
+            await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+            await channel.SendPKMAsync(pkm).ConfigureAwait(false);
         }
     }
 }

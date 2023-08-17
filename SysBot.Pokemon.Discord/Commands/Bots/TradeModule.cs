@@ -111,8 +111,22 @@ namespace SysBot.Pokemon.Discord
             catch (Exception ex)
             {
                 LogUtil.LogSafe(ex, nameof(TradeModule<T>));
-                var msg = $"⚠️ Oops! Ocurrió un problema inesperado con este Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
-                await ReplyAsync(msg).ConfigureAwait(false);
+                var setLines = string.Join("\n", set.GetSetLines());
+                var errorEmbed = new EmbedBuilder
+                {
+                    Description = $"Oops! Ocurrió un problema inesperado con este Showdown Set:\n```\n{setLines}\n```",
+                    Color = Color.Red,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        Text = $"{Context.User.Username} • {DateTime.UtcNow:dd-MM-yyyy HH:mm:ss}",
+                        IconUrl = Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl()
+                    }
+                };
+
+                errorEmbed.WithAuthor("Error", "https://img.freepik.com/free-icon/warning_318-478601.jpg");
+                errorEmbed.ThumbnailUrl = "https://i.imgur.com/uwx3RYC.png"; // Set thumbnail URL
+
+                await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
             }
         }
 
