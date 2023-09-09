@@ -140,8 +140,8 @@ namespace SysBot.Pokemon.Discord
         {
             var builder = new EmbedBuilder
             {
-                Color = Color.Green, // Customize the color of the embed
-                Description = $"{user.Mention} ➜ Agregado al {type}.",
+                Color = pk.IsShiny && pk.ShinyXor == 0 ? Color.Gold : pk.IsShiny ? Color.LighterGrey : Color.Teal,
+                Description = $"{user.Mention} ➜ Agregado al **{type}**.",
                 Footer = new EmbedFooterBuilder
                 {
                     Text = $"ID: {detailId} | Posicion actual: {position}" + (eta > 0 ? $"\nTiempo estimado: {eta:F1} minutos" : ""),
@@ -178,7 +178,7 @@ namespace SysBot.Pokemon.Discord
             }
             else
             {
-                if (type == "Clone" || type == "Dump")
+                if (type == "Clone" || type == "Dump" || type == "FixOT")
                 {
                     // Display the Pokémon image as the thumbnail and remove it from the embed image
                     var titleicon = $"https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png";
@@ -225,9 +225,10 @@ namespace SysBot.Pokemon.Discord
             if (TradeStartModule<T>.IsStartChannel(context.Channel.Id))
                 ticketID = $", ID: **{detail.ID}**";
 
+            var shiny = pk.ShinyXor == 0 ? "<:square:1134580807529398392>" : pk.ShinyXor <= 16 ? "<:shiny:1134580552926777385>" : "";
             var pokeName = "";
             if ((t == PokeTradeType.Specific || t == PokeTradeType.SupportTrade || t == PokeTradeType.Giveaway) && pk.Species != 0)
-                pokeName = $" **Recibiendo**: {(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}.";
+                pokeName = $"**Recibiendo**: {shiny}{(t == PokeTradeType.SupportTrade && pk.Species != (int)Species.Ditto && pk.HeldItem != 0 ? $"{(Species)pk.Species} ({ShowdownParsing.GetShowdownText(pk).Split('@', '\n')[1].Trim()})" : $"{(Species)pk.Species}")}.";
             msg = $"{user.Mention} ➜ Agregado al **{type}**. ID: **{detail.ID}**. Posicion actual: **{position.Position}**.{AddSpacesBeforeUpperCase(pokeName)}";
 
             // Retrieve the bot count from the Info object

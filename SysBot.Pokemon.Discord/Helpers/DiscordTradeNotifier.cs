@@ -119,7 +119,41 @@ namespace SysBot.Pokemon.Discord
                 }
                 trademessage += $"**Habilidad**:{AddSpaceBeforeUpperCase(((Ability)fin.Ability).ToString())}\n";
                 trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n";
-                trademessage += $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}\n";
+                string ivMessage;
+
+                // Check if all IVs are 31
+                if (fin.IV_HP == 31 && fin.IV_ATK == 31 && fin.IV_DEF == 31 && fin.IV_SPA == 31 && fin.IV_SPD == 31 && fin.IV_SPE == 31)
+                {
+                    ivMessage = "**IVs**: Maximos";
+                }
+                else
+                {
+                    var ivs = new List<string>();
+
+                    if (fin.IV_HP != 0)
+                        ivs.Add($"{fin.IV_HP} HP");
+
+                    if (fin.IV_ATK != 0)
+                        ivs.Add($"{fin.IV_ATK} Atk");
+
+                    if (fin.IV_DEF != 0)
+                        ivs.Add($"{fin.IV_DEF} Def");
+
+                    if (fin.IV_SPA != 0)
+                        ivs.Add($"{fin.IV_SPA} SpA");
+
+                    if (fin.IV_SPD != 0)
+                        ivs.Add($"{fin.IV_SPD} SpD");
+
+                    if (fin.IV_SPE != 0)
+                        ivs.Add($"{fin.IV_SPE} Spe");
+
+                    // Construct the IVs message
+                    ivMessage = "**IVs**: " + string.Join(" / ", ivs);
+                }
+
+                // Add the IVs information to the trade message
+                trademessage += ivMessage + "\n";
                 var evs = new List<string>();
 
                 // Agregar los EVs no nulos al listado
@@ -212,7 +246,8 @@ namespace SysBot.Pokemon.Discord
                     // Si no tiene foto de perfil, configurar el footer con la URL de la imagen personalizada
                     footer.IconUrl = "https://media.discordapp.net/attachments/1074950249606557776/1134550042695450645/output-onlinegiftools_1.gif";
                 }
-                var author = new EmbedAuthorBuilder { Name = $"{Context.User.Username}'s Pokémon" };
+                var authorName = fin.ShinyXor == 0 ? $"{Context.User.Username}'s Shiny Pokémon" : fin.ShinyXor <= 16 ? $"{Context.User.Username}'s Shiny Pokémon" : $"{Context.User.Username}'s Pokémon";
+                var author = new EmbedAuthorBuilder { Name = authorName };
                 author.IconUrl = ballImg;
                 var embed = new EmbedBuilder { Color = fin.IsShiny && fin.ShinyXor == 0 ? Color.Gold : fin.IsShiny ? Color.LighterGrey : Color.Teal, Author = author, Footer = footer, ThumbnailUrl = pokeImg };
                 embed.AddField(x =>
