@@ -108,26 +108,5 @@ namespace SysBot.Pokemon.Twitch
                 ? "⚠️ Lo sentimos, actualmente no estas en la cola."
                 : $"Su código de tradeo es: {detail.Trade.Code:0000 0000}";
         }
-
-        public static string GetRaidList()
-        {
-            var list = SysCord<T>.Runner.Hub.Config.RotatingRaidSV.RaidEmbedParameters.Take(19);
-            string msg = string.Empty;
-            int raidcount = 0;
-            foreach (var s in list)
-            {
-                if (s.ActiveInRotation)
-                {
-                    raidcount++;
-                    msg += $"{raidcount}.) " + s.Title + " - " + s.Seed + " - Status: Active | ";
-                }
-                else
-                {
-                    raidcount++;
-                    msg += $"{raidcount}.) " + s.Title + " - " + s.Seed + " - Status: Inactive | ";
-                }
-            }
-            return "Estas son las 20 primeras incursiones que figuran actualmente en la lista:\n" + msg;
-        }
     }
 }
