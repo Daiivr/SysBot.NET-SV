@@ -47,6 +47,7 @@ namespace SysBot.Pokemon.Discord
                             IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
                         })
                         .WithImageUrl("https://i.imgur.com/Y64hLzW.gif") // Replace with the URL of an image related to the error
+                        .WithThumbnailUrl("https://i.imgur.com/lPU9wFp.png")  // Replace with the URL of an image related to the error
                         .Build();
 
                     await channel.SendMessageAsync(embed: embed1).ConfigureAwait(false);

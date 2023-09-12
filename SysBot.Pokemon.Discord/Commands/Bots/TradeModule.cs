@@ -94,6 +94,7 @@ namespace SysBot.Pokemon.Discord
                     // Set the author with an icon
                     errorEmbed.WithAuthor("Error en la Legalidad del Conjunto", "https://img.freepik.com/free-icon/warning_318-478601.jpg");
                     errorEmbed.ImageUrl = "https://i.imgur.com/Y64hLzW.gif"; // Set embed image URL
+                    errorEmbed.ThumbnailUrl = "https://i.imgur.com/lPU9wFp.png";
 
                     // Set any additional properties for the embed if needed
                     // errorEmbed.ThumbnailUrl = "URL_TO_THUMBNAIL_IMAGE"; // Set thumbnail URL
@@ -250,7 +251,7 @@ namespace SysBot.Pokemon.Discord
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} revisa el conjunto enviado, algun dato esta bloqueando el intercambio.\n\n```Revisa detenidamente cada detalle del conjunto y vuelve a intentarlo!```",
+                    Description = $"✘ {usr.Mention} revisa el conjunto enviado, algun dato esta bloqueando el intercambio.\n\n```📝Soluciones:\n• Revisa detenidamente cada detalle del conjunto y vuelve a intentarlo!```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
@@ -268,6 +269,11 @@ namespace SysBot.Pokemon.Discord
                 if (!string.IsNullOrWhiteSpace(customImageUrl))
                 {
                     errorEmbed.WithImageUrl(customImageUrl); // Set the custom image URL
+                }
+
+                if (!string.IsNullOrWhiteSpace(customImageUrl))
+                {
+                    errorEmbed.WithThumbnailUrl("https://i.imgur.com/lPU9wFp.png"); // Set the custom image URL
                 }
 
                 await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
