@@ -80,6 +80,10 @@ namespace SysBot.Pokemon.Discord
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)fin.Ball}ball".ToLower() + ".png";
                 var gender = fin.Gender == 0 ? " - <:Males:1134568420843728917>" : fin.Gender == 1 ? " - <:Females:1134568421787435069>" : "";
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
+                string scale = "";
+                if (fin is PK9 fin9)
+                    scale = $"**Tamaño**: {PokeSizeDetailedUtil.GetSizeRating(fin9.Scale)} ({fin9.Scale})\n";
+
                 var tera = pk9.TeraType.ToString(); // Convertir a string 
                 // Diccionario que mapea cada tipo de Tera a su correspondiente emoji en Discord
                 Dictionary<string, string> teraEmojis = new Dictionary<string, string>
@@ -118,8 +122,8 @@ namespace SysBot.Pokemon.Discord
                     // Si no se encuentra el emoji correspondiente, simplemente se muestra el tipo de Tera sin emoji
                     trademessage += $"**Tera**: {tera}\n";
                 }
-                trademessage += $"**Habilidad**:{AddSpaceBeforeUpperCase(((Ability)fin.Ability).ToString())}\n";
-                trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n";
+                trademessage += $"**Habilidad**: {GameInfo.GetStrings(1).Ability[fin.Ability]}\n";
+                trademessage += $"**Naturaleza**: {(Nature)fin.Nature}\n{scale}";
                 string ivMessage;
 
                 // Check if all IVs are 31
@@ -129,28 +133,7 @@ namespace SysBot.Pokemon.Discord
                 }
                 else
                 {
-                    var ivs = new List<string>();
-
-                    if (fin.IV_HP != 0)
-                        ivs.Add($"{fin.IV_HP}");
-
-                    if (fin.IV_ATK != 0)
-                        ivs.Add($"{fin.IV_ATK}");
-
-                    if (fin.IV_DEF != 0)
-                        ivs.Add($"{fin.IV_DEF}");
-
-                    if (fin.IV_SPA != 0)
-                        ivs.Add($"{fin.IV_SPA}");
-
-                    if (fin.IV_SPD != 0)
-                        ivs.Add($"{fin.IV_SPD}");
-
-                    if (fin.IV_SPE != 0)
-                        ivs.Add($"{fin.IV_SPE}");
-
-                    // Construct the IVs message
-                    ivMessage = "**IVs**: " + string.Join("/", ivs);
+                    ivMessage = $"**IVs**: {fin.IV_HP}/{fin.IV_ATK}/{fin.IV_DEF}/{fin.IV_SPA}/{fin.IV_SPD}/{fin.IV_SPE}";
                 }
 
                 // Add the IVs information to the trade message
@@ -422,20 +405,6 @@ namespace SysBot.Pokemon.Discord
                 if (moves.Any())
                 {
                     trademessage += "**Movimientos**: \n" + string.Join("\n", moves) + "\n";
-                }
-
-                static string AddSpaceBeforeUpperCase(string input)
-                {
-                    StringBuilder output = new StringBuilder();
-                    foreach (char c in input)
-                    {
-                        if (char.IsUpper(c))
-                        {
-                            output.Append(' '); // Añadir un espacio antes de la letra mayúscula
-                        }
-                        output.Append(c);
-                    }
-                    return output.ToString();
                 }
 
                 trademessage += (PokeTradeBotSV.HasMark((IRibbonIndex)fin, out RibbonIndex mark) ? $"\n**Pokémon Mark**: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}" : "");

@@ -997,9 +997,10 @@ namespace SysBot.Pokemon
                     msg += $"Family of 3 Maus!";
                 if ((Species)pk.Species is Species.Maushold && pk.EncryptionConstant % 100 != 0)
                     msg += $"Family of 4 Maus!";
+                string scale = $"\nScale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
                 string TIDFormatted = pk.Generation >= 7 ? $"{pk.TrainerTID7:000000}" : $"{pk.TID16:00000}";
                 detail.SendNotification(this, $"**Mostrando**: {(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 8) + TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{gender}\n{pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n" +
-                    $"**Habilidad**: {(Ability)pk.Ability} | **Naturaleza**: {(Nature)pk.Nature} | **Ball**: {(Ball)pk.Ball}\nInformación de entrenador: {pk.OT_Name}/{TIDFormatted}\n" +
+                    $"**Habilidad**: {(Ability)pk.Ability} | **Naturaleza**: {(Nature)pk.Nature} | **Ball**: {(Ball)pk.Ball}{scale}\nInformación de entrenador: {pk.OT_Name}/{TIDFormatted}\n" +
                     $"{(HasMark(pk, out RibbonIndex mark) ? $"**Pokémon Mark: {mark.ToString().Replace("Mark", "")}{Environment.NewLine}**" : "")}**Scale**: {size}\n{msg}");
                 Log($"Displaying {SpeciesName.GetSpeciesNameGeneration(pk.Species, 2, 8) + TradeExtensions<PK9>.FormOutput(pk.Species, pk.Form, out _)}{gender}\n{pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}\n{(Nature)pk.Nature} - {(Ball)pk.Ball} - {pk.OT_Name}/{TIDFormatted}");
                 ctr++;
