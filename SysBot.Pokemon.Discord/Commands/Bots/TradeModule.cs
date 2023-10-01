@@ -94,7 +94,7 @@ namespace SysBot.Pokemon.Discord
                     // Set the author with an icon
                     errorEmbed.WithAuthor("Error en la Legalidad del Conjunto", "https://img.freepik.com/free-icon/warning_318-478601.jpg");
                     errorEmbed.ImageUrl = "https://i.imgur.com/Y64hLzW.gif"; // Set embed image URL
-                    errorEmbed.ThumbnailUrl = "https://i.imgur.com/lPU9wFp.png";
+                    errorEmbed.ThumbnailUrl = "https://i.imgur.com/DWLEXyu.png";
 
                     // Set any additional properties for the embed if needed
                     // errorEmbed.ThumbnailUrl = "URL_TO_THUMBNAIL_IMAGE"; // Set thumbnail URL
@@ -248,6 +248,7 @@ namespace SysBot.Pokemon.Discord
                 // Set the custom icon URL for the embed title
                 var customIconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg";
                 var customImageUrl = "https://media.tenor.com/vjgjHDFwyOgAAAAM/pysduck-confused.gif"; // Custom image URL for the embed
+                var customthumbnail = "https://i.imgur.com/DWLEXyu.png";
 
                 var errorEmbed = new EmbedBuilder
                 {
@@ -271,9 +272,9 @@ namespace SysBot.Pokemon.Discord
                     errorEmbed.WithImageUrl(customImageUrl); // Set the custom image URL
                 }
 
-                if (!string.IsNullOrWhiteSpace(customImageUrl))
+                if (!string.IsNullOrWhiteSpace(customthumbnail))
                 {
-                    errorEmbed.WithThumbnailUrl("https://i.imgur.com/lPU9wFp.png"); // Set the custom image URL
+                    errorEmbed.WithThumbnailUrl("https://i.imgur.com/DWLEXyu.png"); // Set the custom image URL
                 }
 
                 await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
@@ -303,10 +304,11 @@ namespace SysBot.Pokemon.Discord
             {
                 var customIconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg"; // Custom icon URL for the embed title
                 var customImageUrl = "https://usagif.com/wp-content/uploads/gify/37-pikachu-usagif.gif"; // Custom image URL for the embed
+                var customthumbnail = "https://i.imgur.com/DWLEXyu.png";
 
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente la informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para legalizar tus pokemons y ahorrarte estos problemas.```",
+                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente la informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para legalizar tus pokemons y ahorrarte estos problemas.```\n```🔊Advertencia:\n• Debido a que Home ya no permite que los Pokémon generados en juegos que no son de origen (como generar un Urshifu en SV) sean depositados en Home ahora van a ser considerados ilegales y eso significa que ya no podrás generar ningún Pokémon que no esté disponible de forma nativa en cada juego.```\n### Consejo\n- Puedes verificar la lista completa de pokemons aqui [(Click Aqui)](https://i.imgur.com/t2TjID2.png)",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
@@ -323,6 +325,11 @@ namespace SysBot.Pokemon.Discord
                 if (!string.IsNullOrWhiteSpace(customImageUrl))
                 {
                     errorEmbed.WithImageUrl(customImageUrl); // Set the custom image URL
+                }
+
+                if (!string.IsNullOrWhiteSpace(customthumbnail))
+                {
+                    errorEmbed.WithThumbnailUrl(customthumbnail); // Set the custom thumbnail URL
                 }
 
                 await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);

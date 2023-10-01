@@ -15,7 +15,7 @@ namespace SysBot.Pokemon.Discord
     // Copyright 2017, Christopher F. <foxbot@protonmail.com>
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
-        private const string detail = "I am an open-source Discord bot powered by PKHeX.Core and other open-source software.";
+        private const string detail = "Soy un bot de Discord de código abierto que funciona con PKHeX.Core y otro software de código abierto.";
         private const string repo = "https://github.com/kwsch/SysBot.NET";
         private const string fork = "https://github.com/Koi-3088/ForkBot.NET";
         private const string notfork = "https://github.com/zyro670/NotForkBot.NET";
@@ -57,6 +57,8 @@ namespace SysBot.Pokemon.Discord
                 $"- {Format.Bold("Usuarios")}: {Context.Client.Guilds.Sum(g => g.MemberCount)}\n" +
                 $"{Format.Bold("\nGracias, [Project Pokémon](https://projectpokemon.org), por hacer públicos los sprites e imágenes de Pokémon utilizados en este bot!")}\n"
                 );
+
+            builder.WithThumbnailUrl("https://i.imgur.com/rzwDEDO.png");
 
             await ReplyAsync("He aquí un poco sobre mí!", embed: builder.Build()).ConfigureAwait(false);
         }

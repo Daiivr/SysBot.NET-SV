@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -207,16 +208,20 @@ namespace SysBot.Pokemon
             pk = TrashBytes(pk);
             var la = new LegalityAnalysis(pk);
             var enc = la.EncounterMatch;
-            pk.CurrentFriendship = pk.PersonalInfo.BaseFriendship;
+            var tb = new List<ALMTraceback>() { new() { Identifier = TracebackType.Encounter, Comment = $"Selected Encounter: {enc}" } };
+            pk.SetSuggestedRibbons(template, enc, true, tb);
+            pk.SetSuggestedMoves();
+            la = new LegalityAnalysis(pk);
+            enc = la.EncounterMatch;
+            pk.CurrentFriendship = enc is IHatchCycle h ? h.EggCycles : pk.PersonalInfo.HatchCycles;
+
             Span<ushort> relearn = stackalloc ushort[4];
             la.GetSuggestedRelearnMoves(relearn, enc);
             pk.SetRelearnMoves(relearn);
 
-            pk.SetSuggestedMoves();
             pk.Move1_PPUps = pk.Move2_PPUps = pk.Move3_PPUps = pk.Move4_PPUps = 0;
             pk.SetMaximumPPCurrent(pk.Moves);
             pk.SetSuggestedHyperTrainingData();
-            pk.SetSuggestedRibbons(template, enc);
         }
 
         public static void EncounterLogs(PKM pk, string filepath = "")
@@ -388,7 +393,8 @@ namespace SysBot.Pokemon
             if (mgPkm is not null && result is EntityConverterResult.Success)
             {
                 var enc = new LegalityAnalysis(mgPkm).EncounterMatch;
-                mgPkm.SetHandlerandMemory(info, enc);
+                var tb = new List<ALMTraceback>() { new() { Identifier = TracebackType.Encounter, Comment = $"Selected Encounter: {enc}" } };
+                mgPkm.SetHandlerandMemory(info, enc, tb);
 
                 if (mgPkm.TID16 is 0 && mgPkm.SID16 is 0)
                 {

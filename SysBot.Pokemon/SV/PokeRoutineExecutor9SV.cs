@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static SysBot.Pokemon.PokeDataOffsetsSV;
 using static SysBot.Base.SwitchButton;
 using static System.Buffers.Binary.BinaryPrimitives;
+using System.Text;
 
 namespace SysBot.Pokemon
 {
@@ -123,6 +124,7 @@ namespace SysBot.Pokemon
             read.CopyTo(info.Data, 0);
             return sav;
         }
+
         public async Task<TradeMyStatus> GetTradePartnerMyStatus(IReadOnlyList<long> pointer, CancellationToken token)
         {
             var info = new TradeMyStatus();
@@ -130,12 +132,13 @@ namespace SysBot.Pokemon
             read.CopyTo(info.Data, 0);
             return info;
         }
+
         public async Task<TradeMyStatus> GetTradePartnerMyStatus(ulong offset, CancellationToken token)
         {
             var info = new TradeMyStatus();
             var read = await SwitchConnection.ReadBytesAbsoluteAsync(offset, info.Data.Length, token).ConfigureAwait(false);
             read.CopyTo(info.Data, 0);
-            return info;			
+            return info;
         }
 
         public async Task InitializeHardware(IBotStateSettings settings, CancellationToken token)
@@ -162,16 +165,47 @@ namespace SysBot.Pokemon
 
         protected virtual async Task EnterLinkCode(int code, PokeTradeHubConfig config, CancellationToken token)
         {
+            await Task.Delay(2_000, token).ConfigureAwait(false);
+
             //Thanks Berichan
             //https://github.com/berichan/SysBot.PokemonScarletViolet/blob/234739c7b2c47bf3a7ced779172dd9083a73c7a5/SysBot.Pokemon/SV/PokeRoutineExecutor9.cs#LL140C14-L140C14
             var codeChars = $"{code:00000000}".ToCharArray();
             var keysToPress = new HidKeyboardKey[codeChars.Length];
             for (var i = 0; i < codeChars.Length; ++i)
+            {
                 keysToPress[i] = (HidKeyboardKey)Enum.Parse(typeof(HidKeyboardKey), codeChars[i] >= 'A' && codeChars[i] <= 'Z' ? $"{codeChars[i]}" : $"D{codeChars[i]}");
+                await Connection.SendAsync(SwitchCommand.TypeKey(keysToPress[i]), token).ConfigureAwait(false);
+                await Task.Delay(HidWaitTime).ConfigureAwait(false);
+            }
 
-            await Connection.SendAsync(SwitchCommand.TypeMultipleKeys(keysToPress), token).ConfigureAwait(false);
-            await Task.Delay((HidWaitTime * 8) + 0_200, token).ConfigureAwait(false);
+            //await Connection.SendAsync(SwitchCommand.TypeMultipleKeys(keysToPress), token).ConfigureAwait(false);
+            //await Task.Delay((HidWaitTime * 8) + 0_200, token).ConfigureAwait(false);
+            await Task.Delay(0_750, token).ConfigureAwait(false);
             // Confirm Code outside of this method (allow synchronization)
+
+            /*
+            // Just inject the code instead
+            var offs = await SwitchConnection.PointerAll(KeyboardBufferPointer, token).ConfigureAwait(false);
+            var keyboardbytes = await SwitchConnection.ReadBytesAbsoluteAsync(offs, 16, token).ConfigureAwait(false);
+
+            if (!keyboardbytes.SequenceEqual(new byte[16]))
+                await ClearKeyboardBuffer(token).ConfigureAwait(false);
+
+            // inject
+            var codeText = $"{code:00000000}";
+            var codeBytes = Encoding.Unicode.GetBytes(codeText);
+            await SwitchConnection.WriteBytesAbsoluteAsync(codeBytes, offs, token).ConfigureAwait(false);
+
+            await Click(PLUS, 1_000, token).ConfigureAwait(false);*/
+        }
+
+        private async Task ClearKeyboardBuffer(CancellationToken token)
+        {
+            (var valid, var offs) = await ValidatePointerAll(KeyboardBufferPointer, token).ConfigureAwait(false);
+            if (!valid)
+                return;
+
+            await SwitchConnection.WriteBytesAbsoluteAsync(new byte[0x10], offs, token).ConfigureAwait(false);
         }
 
         public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
@@ -272,18 +306,18 @@ namespace SysBot.Pokemon
             return await IsOnOverworld(offset, token).ConfigureAwait(false);
         }
 
-        // Usually 0x9-0xA if fully loaded into Poké Portal.
+        // 0x10 if fully loaded into Poké Portal.
         public async Task<bool> IsInPokePortal(ulong offset, CancellationToken token)
         {
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
-            return data[0] >= 9;
+            return data[0] == 0x10;
         }
 
-        // Usually 4-6 in a box.
+        // 0x14 in a box and during trades, trade evolutions, and move learning.
         public async Task<bool> IsInBox(ulong offset, CancellationToken token)
         {
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
-            return data[0] < 8;
+            return data[0] == 0x14;
         }
 
         public async Task<TextSpeedOption> GetTextSpeed(CancellationToken token)
