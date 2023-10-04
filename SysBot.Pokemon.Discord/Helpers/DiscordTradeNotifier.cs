@@ -82,31 +82,51 @@ namespace SysBot.Pokemon.Discord
                 var pokeImg = TradeExtensions<T>.PokeImg(fin, false, false);
                 string scale = "";
                 if (fin is PK9 fin9)
-                    scale = $"**Tamaño**: {PokeSizeDetailedUtil.GetSizeRating(fin9.Scale)} ({fin9.Scale})\n";
+                {
+                    string scaleRating = PokeSizeDetailedUtil.GetSizeRating(fin9.Scale).ToString();
+
+                    Dictionary<string, string> scaleEmojis = new Dictionary<string, string>
+                    {
+                       { "XXXS", "<:minimark:1158632782013136946>" }, // Replace "emoji_name_1" with the actual name of the emoji for XXXS
+                       { "XXXL", "<:jumbomark:1158632783380492318>" }  // Replace "emoji_name_2" with the actual name of the emoji for XXXL
+                    };
+
+                    // Check if the scale value has a corresponding emoji
+                    if (scaleEmojis.TryGetValue(scaleRating, out string? emojiCode))
+                    {
+                        // Use the emoji code in the message
+                        scale = $"**Tamaño**: {emojiCode} {scaleRating} ({fin9.Scale})\n";
+                    }
+                    else
+                    {
+                        // If no emoji is found, just display the scale text
+                        scale = $"**Tamaño**: {scaleRating} ({fin9.Scale})\n";
+                    }
+                }
 
                 var tera = pk9.TeraType.ToString(); // Convertir a string 
                 // Diccionario que mapea cada tipo de Tera a su correspondiente emoji en Discord
                 Dictionary<string, string> teraEmojis = new Dictionary<string, string>
-    {
-        { "Normal", "<:Normal:1134575677648162886>" },
-        { "Fire", "<:Fire:1134576993799766197>" },
-        { "Water", "<:Water:1134575004038742156>" },
-        { "Grass", "<:Grass:1134574800057139331>" },
-        { "Flying", "<:Flying:1134573296734711918>" },
-        { "Poison", "<:Poison:1134575188403564624>" },
-        { "Electric", "<:Electric:1134576561991995442>" },
-        { "Ground", "<:Ground:1134573701766058095>" },
-        { "Psychic", "<:Psychic:1134576746298089575>" },
-        { "Fighting", "<:Fighting:1134573062881300551>" },
-        { "Rock", "<:Rock:1134574024542912572>" },
-        { "Ice", "<:Ice:1134576183787409531>" },
-        { "Bug", "<:Bug:1134574602908073984>" },
-        { "Dragon", "<:Dragon:1134576015973294221>" },
-        { "Ghost", "<:Ghost:1134574276628975626>" },
-        { "Dark", "<:Dark:1134575488598294578>" },
-        { "Steel", "<:Steel:1134576384191254599>" },
-        { "Fairy", "<:Fairy:1134575841523814470>" },
-    };
+                {
+                    { "Normal", "<:Normal:1134575677648162886>" },
+                    { "Fire", "<:Fire:1134576993799766197>" },
+                    { "Water", "<:Water:1134575004038742156>" },
+                    { "Grass", "<:Grass:1134574800057139331>" },
+                    { "Flying", "<:Flying:1134573296734711918>" },
+                    { "Poison", "<:Poison:1134575188403564624>" },
+                    { "Electric", "<:Electric:1134576561991995442>" },
+                    { "Ground", "<:Ground:1134573701766058095>" },
+                    { "Psychic", "<:Psychic:1134576746298089575>" },
+                    { "Fighting", "<:Fighting:1134573062881300551>" },
+                    { "Rock", "<:Rock:1134574024542912572>" },
+                    { "Ice", "<:Ice:1134576183787409531>" },
+                    { "Bug", "<:Bug:1134574602908073984>" },
+                    { "Dragon", "<:Dragon:1134576015973294221>" },
+                    { "Ghost", "<:Ghost:1134574276628975626>" },
+                    { "Dark", "<:Dark:1134575488598294578>" },
+                    { "Steel", "<:Steel:1134576384191254599>" },
+                    { "Fairy", "<:Fairy:1134575841523814470>" },
+                };
                 var trademessage = $"**Nivel**: {fin.CurrentLevel}\n";
                 // Obtener el emoji correspondiente al tipo de Tera
                 if (teraEmojis.TryGetValue(tera, out string? emojiID))
