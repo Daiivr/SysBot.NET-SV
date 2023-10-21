@@ -306,9 +306,11 @@ namespace SysBot.Pokemon.Discord
                 var customImageUrl = "https://usagif.com/wp-content/uploads/gify/37-pikachu-usagif.gif"; // Custom image URL for the embed
                 var customthumbnail = "https://i.imgur.com/DWLEXyu.png";
 
+                string legalityReport = la.Report(verbose: false);
+
                 var errorEmbed = new EmbedBuilder
                 {
-                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n\n```Por favor verifica detenidamente la informacion en PKHeX e intentalo de nuevo!\n\nPuedes utilizar el plugin de ALM para legalizar tus pokemons y ahorrarte estos problemas.```\n```🔊Advertencia:\n• Debido a que Home ya no permite que los Pokémon generados en juegos que no son de origen (como generar un Urshifu en SV) sean depositados en Home ahora van a ser considerados ilegales y eso significa que ya no podrás generar ningún Pokémon que no esté disponible de forma nativa en cada juego.```\n### Consejo\n- Puedes verificar la lista completa de pokemons aqui [(Click Aqui)](https://i.imgur.com/t2TjID2.png)",
+                    Description = $"✘ {usr.Mention} el archivo **{typeof(T).Name}** no es __legal__ y no puede ser tradeado.\n### He aquí la razón:\n```{legalityReport}```\n```🔊Consejo:\n• Por favor verifica detenidamente la informacion en PKHeX e intentalo de nuevo!\n• Puedes utilizar el plugin de ALM para legalizar tus pokemons y ahorrarte estos problemas.```",
                     Color = Color.Red,
                     Footer = new EmbedFooterBuilder
                     {
