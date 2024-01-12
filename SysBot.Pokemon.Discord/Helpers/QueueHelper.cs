@@ -4,6 +4,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
+using Microsoft.VisualBasic;
 using PKHeX.Core;
 using System;
 using System.Text;
@@ -111,6 +112,9 @@ namespace SysBot.Pokemon.Discord
             var imageUrl = "https://c.tenor.com/rDzirQgBPwcAAAAd/tenor.gif"; // Replace with the URL of the image you want to use for the error embed
             builder.WithImageUrl(imageUrl);
 
+            var imgUrl = "https://i.imgur.com/DWLEXyu.png"; // Replace with the URL of the image you want to use for the error embed
+            builder.WithThumbnailUrl(imgUrl);
+
             var embed = builder.Build();
             await channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
         }
@@ -145,20 +149,13 @@ namespace SysBot.Pokemon.Discord
                 Footer = new EmbedFooterBuilder
                 {
                     Text = $"ID: {detailId} | Posicion actual: {position}" + (eta > 0 ? $"\nTiempo estimado: {eta:F1} minutos" : ""),
-                    IconUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl() // Set the user's icon as the footer icon
+                    IconUrl = user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl()
                 }
             };
 
-            if (!string.IsNullOrWhiteSpace(pokeName))
-            {
-                pokeName = AddSpacesBeforeUpperCase(pokeName); // Add spaces before uppercase letters
-                builder.AddField("Informacion Extra:", $"{pokeName}\n**Nivel**: {pk.CurrentLevel}.");
-            }
-
-            // Check if the type is "clone" or "dump"
+            // Añade la imagen del tipo de Poké Ball como icono del título del embed
             if (type != "Clone" && type != "Dump")
             {
-                // Display the Poké Ball image as the embed title icon if available
                 var ballImg = $"https://raw.githubusercontent.com/BakaKaito/HomeImages/main/Ballimg/50x50/" + $"{(Ball)pk.Ball}ball".ToLower() + ".png";
                 if (!string.IsNullOrWhiteSpace(ballImg))
                 {
@@ -166,32 +163,57 @@ namespace SysBot.Pokemon.Discord
                 }
             }
 
-            if (pk.HeldItem != 0)
+            // Verifica si el Pokémon es un huevo
+            if (pk.IsEgg)
             {
-                // Display the item image as the thumbnail
-                var itemimg = $"https://raw.githubusercontent.com/Daiivr/Pokemon-Scarlet-and-Violet/main/Item%20Icons/50x50/item_{pk.HeldItem}.png"; // Adjust the URL generation based on the item ID
-                builder.WithThumbnailUrl(itemimg);
-
-                // Display the Pokémon image as the embed image
-                var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
-                builder.WithImageUrl(pokeImgUrl);
+                var eggImageUrl = "https://i.imgur.com/vXktZIJ.gif";
+                builder.WithThumbnailUrl(eggImageUrl);
+                pokeName = "**Recibiendo**: Huevo."; // Asigna "Huevo" como nombre
             }
             else
             {
-                if (type == "Clone" || type == "Dump" || type == "FixOT")
+                if (pk.HeldItem != 0)
                 {
-                    // Display the Pokémon image as the thumbnail and remove it from the embed image
-                    var titleicon = $"https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png";
+                    var itemimg = $"https://raw.githubusercontent.com/Daiivr/Pokemon-Scarlet-and-Violet/main/Item%20Icons/50x50/item_{pk.HeldItem}.png";
+                    builder.WithThumbnailUrl(itemimg);
                     var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
-                    builder.WithThumbnailUrl(pokeImgUrl);
-                    builder.WithAuthor("Solicitud de Intercambio", titleicon);
+                    builder.WithImageUrl(pokeImgUrl);
                 }
                 else
                 {
-                    // Display the Pokémon image as the thumbnail
-                    var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
-                    builder.WithThumbnailUrl(pokeImgUrl);
+                    if (type == "Clone" || type == "Dump" || type == "FixOT")
+                    {
+                        var titleicon = $"https://b.thumbs.redditmedia.com/lnvqYS6qJ76fqr9bM2p2JryeEHfyji6dLegH6wnyoeM.png";
+                        var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                        builder.WithAuthor("Solicitud de Intercambio", titleicon);
+                        // Asigna una imagen de embed diferente según el tipo de comando
+                        string embedImgUrl;
+                        if (type == "Dump")
+                        {
+                            embedImgUrl = "https://i.imgur.com/FmSvdvy.png"; // URL para imagen de Dump
+                        }
+                        else if (type == "Clone")
+                        {
+                            embedImgUrl = "https://i.imgur.com/acxv2pn.png"; // URL para imagen de Clone
+                        }
+                        else // FixOT
+                        {
+                            embedImgUrl = "https://i.imgur.com/FpotPyx.png"; // URL para imagen de FixOT
+                        }
+                        builder.WithThumbnailUrl(embedImgUrl);
+                    }
+                    else
+                    {
+                        var pokeImgUrl = TradeExtensions<T>.PokeImg(pk, false, false);
+                        builder.WithThumbnailUrl(pokeImgUrl);
+                    }
                 }
+            }
+
+            if (!string.IsNullOrWhiteSpace(pokeName))
+            {
+                pokeName = AddSpacesBeforeUpperCase(pokeName);
+                builder.AddField("Informacion Extra:", $"{pokeName}\n**Nivel**: {pk.CurrentLevel}.");
             }
 
             var embed = builder.Build();
@@ -215,7 +237,7 @@ namespace SysBot.Pokemon.Discord
 
             if (added == QueueResultAdd.AlreadyInQueue)
             {
-                msg = $"✘ Lo siento {user.Mention}, aun estás siendo procesado, Por favor espera unos segundos antes de volverlo a intentar.";
+                msg = $"✘ Lo siento {user.Mention}, aun estás siendo procesado, por favor espera unos segundos antes de volverlo a intentar.";
                 return false;
             }
 

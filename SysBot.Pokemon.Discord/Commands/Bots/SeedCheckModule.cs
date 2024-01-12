@@ -13,7 +13,6 @@ namespace SysBot.Pokemon.Discord
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
         [Summary("Comprueba la semilla de un Pokémon.")]
-        [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync(int code)
         {
             var sig = Context.User.GetFavor();
@@ -23,7 +22,6 @@ namespace SysBot.Pokemon.Discord
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
         [Summary("Comprueba la semilla de un Pokémon.")]
-        [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync([Summary("Trade Code")][Remainder] string code)
         {
             int tradeCode = Util.ToInt32(code);
@@ -34,7 +32,6 @@ namespace SysBot.Pokemon.Discord
         [Command("seedCheck")]
         [Alias("checkMySeed", "checkSeed", "seed", "s", "sc")]
         [Summary("Comprueba la semilla de un Pokémon.")]
-        [RequireQueueRole(nameof(DiscordManager.RolesSeed))]
         public async Task SeedCheckAsync()
         {
             var code = Info.GetRandomTradeCode();

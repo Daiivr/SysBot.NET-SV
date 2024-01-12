@@ -17,13 +17,12 @@ namespace SysBot.Pokemon.Discord
         public RemoteControlAccessList FavoredRoles => Config.RoleFavored;
 
         public RemoteControlAccessList RolesClone => Config.RoleCanClone;
-        public RemoteControlAccessList RolesTrade => Config.RoleCanTrade;
-        public RemoteControlAccessList RolesSeed => Config.RoleCanSeedCheck;
         public RemoteControlAccessList RolesDump => Config.RoleCanDump;
+        public RemoteControlAccessList RolesTrade => Config.RoleCanTrade;
         public RemoteControlAccessList RolesRemoteControl => Config.RoleRemoteControl;
 
-        public RemoteControlAccessList RolesFixOT => Config.RoleCanFixOT;
         public RemoteControlAccessList RolesGiveaway => Config.RoleCanGiveaway;
+        public RemoteControlAccessList RolesFixOT => Config.RoleCanFixOT;
         public RemoteControlAccessList RolesSupportTrade => Config.RoleCanSupportTrade;
 
         public bool CanUseSudo(ulong uid) => SudoDiscord.Contains(uid);
@@ -57,10 +56,9 @@ namespace SysBot.Pokemon.Discord
         {
             nameof(RolesClone) => RolesClone,
             nameof(RolesTrade) => RolesTrade,
-            nameof(RolesSeed) => RolesSeed,
             nameof(RolesDump) => RolesDump,
-            nameof(RolesRemoteControl) => RolesRemoteControl,
             nameof(RolesFixOT) => RolesFixOT,
+            nameof(RolesRemoteControl) => RolesRemoteControl,
             nameof(RolesGiveaway) => RolesGiveaway,
             nameof(RolesSupportTrade) => RolesSupportTrade,
             _ => throw new ArgumentOutOfRangeException(nameof(type)),

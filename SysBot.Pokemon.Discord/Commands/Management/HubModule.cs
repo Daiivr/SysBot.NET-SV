@@ -34,6 +34,7 @@ namespace SysBot.Pokemon.Discord
                     $"Recuento de bots: {botCount}\n" +
                     $"Estado de los Bot: {SummarizeBots(allBots)}\n" +
                     $"Pool Count: {hub.Ledy.Pool.Count}\n";
+                _ = $"GiveawayPool Count: {hub.LedyPlus.GiveawayPool.Count}\n";
                 x.IsInline = false;
             });
 

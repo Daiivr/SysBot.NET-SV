@@ -115,6 +115,10 @@ namespace SysBot.Pokemon
             var pool = Hub.Ledy.Pool;
             if (!pool.Reload(Hub.Config.Folder.DistributeFolder))
                 LogUtil.LogError("Nothing to distribute for Empty Trade Queues!", "Hub");
+
+            var giveawaypool = Hub.LedyPlus.GiveawayPool;
+            if (!giveawaypool.Reload(Hub.Config.Folder.GiveawayFolder))
+                LogUtil.LogError("Nothing to Giveaway for Empty Trade Queues!", "Hub");
         }
 
         public PokeRoutineExecutorBase CreateBotFromConfig(PokeBotState cfg) => Factory.CreateBot(Hub, cfg);

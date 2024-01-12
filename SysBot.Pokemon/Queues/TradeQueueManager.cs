@@ -59,7 +59,25 @@ namespace SysBot.Pokemon
             return true;
         }
 
-        public bool TryDequeue(PokeRoutineType type, out PokeTradeDetail<T> detail, out uint priority)
+        public bool TryDequeueLedyPlus(out PokeTradeDetail<T> detail, bool force = false)
+        {
+            detail = default!;
+            var cfg = Hub.Config.Distribution;
+            if (!cfg.DistributeWhileIdle && !force)
+                return false;
+
+            if (Hub.LedyPlus.GiveawayPool.Count == 0)
+                return false;
+
+            var random = Hub.LedyPlus.GiveawayPool.GetRandomPoke();
+
+            var code = cfg.RandomCode ? Hub.Config.Trade.GetRandomTradeCode() : cfg.TradeCode;
+            var trainer = new PokeTradeTrainerInfo("Random Giveaway");
+            detail = new PokeTradeDetail<T>(random, trainer, PokeTradeHub<T>.LogNotifier, PokeTradeType.Random, code, false);
+            return true;
+        }
+
+            public bool TryDequeue(PokeRoutineType type, out PokeTradeDetail<T> detail, out uint priority)
         {
             if (type == PokeRoutineType.FlexTrade)
                 return GetFlexDequeue(out detail, out priority);

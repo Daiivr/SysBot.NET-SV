@@ -114,7 +114,7 @@ namespace SysBot.Pokemon.Discord
                         Name = "Error de Legalidad",
                         IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
                     })
-                    .WithThumbnailUrl("https://i.imgur.com/uwx3RYC.png")
+                    .WithThumbnailUrl("https://i.imgur.com/DWLEXyu.png")
                     .Build();
 
                 await channel.SendMessageAsync(embed: embedError).ConfigureAwait(false);
@@ -158,7 +158,7 @@ namespace SysBot.Pokemon.Discord
                         Name = "Advertencia!",
                         IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the success icon
                     })
-                    .WithThumbnailUrl("https://i.imgur.com/IK0unJI.png")
+                    .WithThumbnailUrl("https://i.imgur.com/DWLEXyu.png")
                     .Build();
 
                 await channel.SendMessageAsync(embed: embedLegal).ConfigureAwait(false);
@@ -177,7 +177,7 @@ namespace SysBot.Pokemon.Discord
                         Name = "Error de Legalización",
                         IconUrl = "https://img.freepik.com/free-icon/warning_318-478601.jpg" // Replace with the URL of the author's icon
                     })
-                    .WithThumbnailUrl("https://i.imgur.com/uwx3RYC.png")
+                    .WithThumbnailUrl("https://i.imgur.com/DWLEXyu.png")
                     .Build();
 
                 await channel.SendMessageAsync(embed: embedNotLegal).ConfigureAwait(false);

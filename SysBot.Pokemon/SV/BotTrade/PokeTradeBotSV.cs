@@ -230,7 +230,7 @@ namespace SysBot.Pokemon
             }
             else
             {
-                detail.SendNotification(this, $"⚠️ Oops! Algo ocurrio. Cancelando el trade: **{result}**.");
+                detail.SendNotification(this, $"⚠️ Oops! Algo ocurrio. Cancelando el trade: **{result.GetDescription()}**.");
                 detail.TradeCanceled(this, result);
             }
         }
@@ -476,6 +476,9 @@ namespace SysBot.Pokemon
             res.TrainerSID7 = partner.Info.DisplaySID;
             res.Language = partner.Info.Language;
             res.Version = partner.Info.Game;
+
+            if (!pk.IsNicknamed)
+                res.ClearNickname();
 
             if (pk.IsShiny)
                 res.PID = (uint)((res.TID16 ^ res.SID16 ^ (res.PID & 0xFFFF) ^ pk.ShinyXor) << 16) | (res.PID & 0xFFFF);

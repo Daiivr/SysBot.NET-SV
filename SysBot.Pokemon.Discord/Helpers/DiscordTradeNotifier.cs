@@ -48,7 +48,8 @@ namespace SysBot.Pokemon.Discord
         public void TradeCanceled(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, PokeTradeResult msg)
         {
             OnFinish?.Invoke(routine);
-            Trader.SendMessageAsync($"✘ Trade __cancelado__: {msg}").ConfigureAwait(false);
+            var description = msg.GetDescription(); // Obtiene la descripción personalizada
+            Trader.SendMessageAsync($"✘ Trade __cancelado__: {description}.").ConfigureAwait(false);
         }
 
         public void TradeFinished(PokeRoutineExecutor<T> routine, PokeTradeDetail<T> info, T result)

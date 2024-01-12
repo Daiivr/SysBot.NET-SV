@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
@@ -27,6 +28,9 @@ namespace SysBot.Pokemon.Discord
             await user.SendFileAsync(tmp, msg).ConfigureAwait(false);
             File.Delete(tmp);
         }
+
+       
+
 
         public static async Task RepostPKMAsShowdownAsync(this ISocketMessageChannel channel, IAttachment att)
         {
@@ -52,11 +56,21 @@ namespace SysBot.Pokemon.Discord
             return RequestSignificance.None;
         }
 
+        public static string ToTitleCase(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return string.Empty;
+
+            var words = str.Split(' ').Select(word =>
+                char.ToUpper(word[0]) + (word.Length > 1 ? word.Substring(1).ToLower() : ""));
+
+            return string.Join(" ", words);
+        }
         public static async Task EchoAndReply(this ISocketMessageChannel channel, string msg)
         {
             // Announce it in the channel the command was entered only if it's not already an echo channel.
             EchoUtil.Echo(msg);
-            if (!EchoModule.IsEchoChannel(channel))
+            if (!EchoModule.IsEchoChannel(channel) || !EchoModule.IsEmbedEchoChannel(channel))
                 await channel.SendMessageAsync(msg).ConfigureAwait(false);
         }
 
@@ -97,5 +111,11 @@ namespace SysBot.Pokemon.Discord
         }
 
         public static string StripCodeBlock(string str) => str.Replace("`\n", "").Replace("\n`", "").Replace("`", "").Trim();
+
+        public static string GetAuthorName(this IUser user) => user.Username + "#" + user.Discriminator;
+
+       
+        
     }
+
 }

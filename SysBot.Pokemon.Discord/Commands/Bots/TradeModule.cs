@@ -125,7 +125,7 @@ namespace SysBot.Pokemon.Discord
                 };
 
                 errorEmbed.WithAuthor("Error", "https://img.freepik.com/free-icon/warning_318-478601.jpg");
-                errorEmbed.ThumbnailUrl = "https://i.imgur.com/uwx3RYC.png"; // Set thumbnail URL
+                errorEmbed.ThumbnailUrl = "https://i.imgur.com/DWLEXyu.png"; // Set thumbnail URL
 
                 await ReplyAsync(embed: errorEmbed.Build()).ConfigureAwait(false);
             }

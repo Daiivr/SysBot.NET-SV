@@ -15,6 +15,9 @@ namespace SysBot.Pokemon
         [Category(Files), Description("Source folder: where PKM files to distribute are selected from.")]
         public string DistributeFolder { get; set; } = string.Empty;
 
+        [Category(Files), Description("Source folder: where PKM files to giveaway are selected from.")]
+        public string GiveawayFolder { get; set; } = string.Empty;
+
         [Category(Files), Description("Destination folder: where all received PKM files are dumped to.")]
         public string DumpFolder { get; set; } = string.Empty;
 
@@ -28,6 +31,11 @@ namespace SysBot.Pokemon
             var distribute = Path.Combine(path, "distribute");
             Directory.CreateDirectory(distribute);
             DistributeFolder = distribute;
+
+            var giveaway = Path.Combine(path, "giveaway");
+            Directory.CreateDirectory(giveaway);
+            GiveawayFolder = giveaway;
+
         }
     }
 }

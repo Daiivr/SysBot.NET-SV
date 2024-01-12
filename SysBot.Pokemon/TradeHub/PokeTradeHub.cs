@@ -14,9 +14,11 @@ namespace SysBot.Pokemon
         {
             Config = config;
             var pool = new PokemonPool<T>(config);
+            var giveawaypool = new PokemonPool<T>(config);
             Ledy = new LedyDistributor<T>(pool);
             BotSync = new BotSynchronizer(config.Distribution);
             BotSync.BarrierReleasingActions.Add(() => LogUtil.LogInfo($"{BotSync.Barrier.ParticipantCount} bots released.", "Barrier"));
+            LedyPlus = new LedyGiveaway<T>(giveawaypool);
 
             Queues = new TradeQueueManager<T>(this);
         }
@@ -34,5 +36,6 @@ namespace SysBot.Pokemon
         #region Distribution Queue
         public readonly LedyDistributor<T> Ledy;
         #endregion
+        public readonly LedyGiveaway<T> LedyPlus;
     }
 }
