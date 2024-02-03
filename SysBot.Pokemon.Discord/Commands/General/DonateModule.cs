@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
 
@@ -17,7 +17,7 @@ namespace SysBot.Pokemon.Discord
             {
                 Color = new Color(255, 0, 0), // Set the color of the embed (optional)
                 Title = "¡Enlace de donación!", // Set the title of the embed
-                Description = $"¡Aquí está el enlace de donación! Gracias por tu apoyo :3 \n{settings.DonationLink}", 
+                Description = $"¡Aquí está el enlace de donación! Gracias por tu apoyo :3 \n{settings.DonationLink}",
                 Url = SysCordSettings.Settings.DonationLink // Set the URL for the title (optional)
             };
 

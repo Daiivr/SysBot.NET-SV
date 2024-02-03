@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using System.Threading.Tasks;
 
@@ -8,7 +8,7 @@ namespace SysBot.Pokemon.Discord
     {
         [Command("stream")]
         [Alias("streamlink")]
-        [Summary("Muestra el enlace Stream del Host.")]
+        [Summary("Devuelve el enlace de transmisión del anfitrión.")]
         public async Task PingAsync()
         {
             var settings = SysCordSettings.Settings;

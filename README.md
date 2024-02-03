@@ -1,52 +1,67 @@
 # SysBot.NET
-![Licencia](https://img.shields.io/badge/License-AGPLv3-blue.svg)
+![License](https://img.shields.io/badge/License-AGPLv3-blue.svg)
+
+## Disclaimer
+This fork is intended for my personal use. You're free to use this fork, but please be aware I'm not willing to add specific features that don't fit my needs.
 
 ## Support Discords:
 
-Para soporte específico para este fork del fork de ForkBot del repo SysBot.NET de kwsch, ¡siéntete libre de unirte! **(No se dará soporte en el Discord oficial de PKHeX o PA, por favor no molestes a los desarrolladores)**
+For specific support for this fork of [kwsch](https://github.com/kwsch)'s [SysBot.NET](https://github.com/kwsch/SysBot.NET) repo feel free to join! (No support will be provided in the official PKHeX or PA Discord, please don't bother the devs)
 
-[<img src="https://discordapp.com/api/guilds/1079448118933852160/widget.png?style=banner2">](https://discord.gg/Ny6XND5B8R)
+[Support Server: Manu's Server](https://discord.com/invite/yWveAjKbKt)
 
-[USB-Botbase](https://github.com/Koi-3088/USB-Botbase) cliente para control remoto USB para este fork.
+[<img src="https://canary.discordapp.com/api/guilds/693083823197519873/widget.png?style=banner2">](https://discord.gg/yWveAjKbKt)
 
-[sys-botbase](https://github.com/olliz0r/sys-botbase) cliente para la automatización por control remoto de las consolas Nintendo Switch.
+This fork uses code from:
+* [Berichan](https://github.com/berichan)'s [SysBot.PokemonScarletViolet](https://github.com/berichan/SysBot.PokemonScarletViolet)
+* [Koi](https://github.com/Koi-3088)'s [ForkBot.NET](https://github.com/Koi-3088/ForkBot.NET)
+* [Zyro](https://github.com/zyro670)'s [NotForkBot.NET](https://github.com/zyro670/NotForkBot.NET)
+
+Thanks to all the devs and contributors of the mentioned forks!
+
+[usb-Botbase](https://github.com/Koi-3088/USB-Botbase) client for remote USB control for this fork.
+
+[sys-botbase](https://github.com/olliz0r/sys-botbase) client for remote control automation of Nintendo Switch consoles.
 
 ## SysBot.Base:
-- Biblioteca lógica de base para proyectos específicos de juegos.
-- Contiene una clase de conexión Bot síncrona y asíncrona para interactuar con sys-botbase.
+- Base logic library to be built upon in game-specific projects.
+- Contains a synchronous and asynchronous Bot connection class to interact with sys-botbase.
 
 ## SysBot.Tests:
-- Pruebas unitarias para garantizar que la lógica se comporta según lo previsto :)
+- Unit Tests for ensuring logic behaves as intended :)
 
-# Ejemplos de aplicación
+# Example Implementations
 
-La fuerza impulsora para desarrollar este proyecto son los bots automatizados para los juegos Pokémon de Nintendo Switch. Se proporciona un ejemplo de implementación en este repo para demostrar tareas interesantes que este framework es capaz de realizar. Consulta la [Wiki](https://github.com/kwsch/SysBot.NET/wiki) para más detalles sobre las funciones Pokémon soportadas.
+The driving force to develop this project is automated bots for Nintendo Switch Pokémon games. An example implementation is provided in this repo to demonstrate interesting tasks this framework is capable of performing. Refer to the [Wiki](https://github.com/kwsch/SysBot.NET/wiki) for more details on the supported Pokémon features.
 
 ## SysBot.Pokemon:
-- Librería de clases usando SysBot.Base para contener lógica relacionada con la creación y ejecución de bots Sword/Shield.
+- Class library using SysBot.Base to contain logic related to creating & running Sword/Shield bots.
 
 ## SysBot.Pokemon.WinForms:
-- Simple GUI Launcher para añadir, iniciar y detener bots Pokémon (como se ha descrito anteriormente).
-- La configuración de los ajustes del programa se realiza in-app y se guarda como un archivo json local.
+- Simple GUI Launcher for adding, starting, and stopping Pokémon bots (as described above).
+- Configuration of program settings is performed in-app and is saved as a local json file.
 
 ## SysBot.Pokemon.Discord:
-- Interfaz Discord para interactuar remotamente con la GUI WinForms.
-- Proporcione un token de inicio de sesión de discordia y los roles que se les permite interactuar con sus robots.
-- Se proporcionan comandos para gestionar y unirse a la cola de distribución.
+- Discord interface for remotely interacting with the WinForms GUI.
+- Provide a discord login token and the Roles that are allowed to interact with your bots.
+- Commands are provided to manage & join the distribution queue.
 
 ## SysBot.Pokemon.Twitch:
-- Interfaz de Twitch.tv para anunciar a distancia el inicio de la distribución.
-- Proporciona un token de inicio de sesión de Twitch, un nombre de usuario y un canal para iniciar sesión.
+- Twitch.tv interface for remotely announcing when the distribution starts.
+- Provide a Twitch login token, username, and channel for login.
 
 ## SysBot.Pokemon.YouTube:
-- Interfaz de YouTube.com para anunciar a distancia el inicio de la distribución.
-- Proporcione un ClientID, ClientSecret y ChannelID de inicio de sesión de YouTube.
+- YouTube.com interface for remotely announcing when the distribution starts.
+- Provide a YouTube login ClientID, ClientSecret, and ChannelID for login.
 
-Usa [Discord.Net](https://github.com/discord-net/Discord.Net) , [TwitchLib](https://github.com/TwitchLib/TwitchLib) y [StreamingClientLibary](https://github.com/SaviorXTanren/StreamingClientLibrary) como dependencia a través de Nuget.
+Uses [Discord.Net](https://github.com/discord-net/Discord.Net) , [TwitchLib](https://github.com/TwitchLib/TwitchLib) and [StreamingClientLibary](https://github.com/SaviorXTanren/StreamingClientLibrary) as a dependency via Nuget.
 
-## Otras dependencias
-La lógica de la API Pokémon la proporciona [PKHeX](https://github.com/kwsch/PKHeX/), y la generación de plantillas se realiza mediante [AutoMod](https://github.com/architdate/PKHeX-Plugins/).
+## Other Dependencies
+Pokémon API logic is provided by [PKHeX](https://github.com/kwsch/PKHeX/), and template generation is provided by [AutoMod](https://github.com/architdate/PKHeX-Plugins/).
 
-Generación de permutaciones mediante [PermuteMMO](https://github.com/kwsch/PermuteMMO).
-# Licencia
-Consulte el archivo `License.md` para obtener más información sobre las licencias.
+## Special Credits:
+This SysBot fork is an agglomeration of different forks and other PKHeX/SysBot based programs.
+Thanks to [Santacrab](https://github.com/santacrab2), [Zyro](https://github.com/zyro670), [Koi](https://github.com/Koi-3088), [Berichan](https://github.com/berichan), [Anubis](https://github.com/Lusamine), [Archit](https://github.com/architdate), [Kurt](https://github.com/kwsch) and all the developers that contributed and will contribute to their repositories!
+
+# License
+Refer to the `License.md` for details regarding licensing.

@@ -1,6 +1,5 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
 using System;
 using System.Linq;
 using System.Diagnostics;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using PKHeX.Core;
 using SysBot.Base;
-using System.Threading;
+using Discord.WebSocket;
 
 namespace SysBot.Pokemon.Discord
 {
@@ -19,6 +18,7 @@ namespace SysBot.Pokemon.Discord
         private static readonly Dictionary<ulong, ReactMessageContents> ReactMessageDict = new();
         private static bool DictWipeRunning = false;
         private static readonly IEmote[] Reactions = { new Emoji("⬅️"), new Emoji("➡️") };
+
         private class ReactMessageContents
         {
             public List<string> Pages { get; set; } = new();
@@ -102,7 +102,6 @@ namespace SysBot.Pokemon.Discord
             }
         }
 
-
         public static async Task HandleReactionAsync(Cacheable<IUserMessage, UInt64> cachedMessage, Cacheable<IMessageChannel, UInt64> channel, SocketReaction reaction)
         {
             Stopwatch sw = new Stopwatch();
@@ -174,43 +173,33 @@ namespace SysBot.Pokemon.Discord
 
         public async Task<bool> ReactionVerification(SocketCommandContext ctx)
         {
+            var sw = new Stopwatch();
             IEmote reaction = new Emoji("👍");
-            var msg = await ctx.Channel.SendMessageAsync($"{ctx.User.Username}, por favor reaccione al emoji adjunto para confirmar que no está usando un script.").ConfigureAwait(false);
+            var msg = await ctx.Channel.SendMessageAsync($"{ctx.User.Username}, please react to the attached emoji in order to confirm you're not using a script.").ConfigureAwait(false);
             await msg.AddReactionAsync(reaction).ConfigureAwait(false);
 
-            var tokenSource = new CancellationTokenSource();
-            tokenSource.CancelAfter(20000);
-
-            try
+            sw.Start();
+            while (sw.ElapsedMilliseconds < 20_000)
             {
-                while (!tokenSource.Token.IsCancellationRequested)
+                await msg.UpdateAsync().ConfigureAwait(false);
+                var react = msg.Reactions.FirstOrDefault(x => x.Value.ReactionCount > 1 && x.Value.IsMe);
+                if (react.Key == default)
+                    continue;
+
+                if (react.Key.Name == reaction.Name)
                 {
-                    await msg.UpdateAsync().ConfigureAwait(false);
-                    var react = msg.Reactions.FirstOrDefault(x => x.Value.ReactionCount > 1 && x.Value.IsMe);
-                    if (react.Key != default && react.Key.Name == reaction.Name)
-                    {
-                        var reactUsers = await msg.GetReactionUsersAsync(reaction, 100).FlattenAsync().ConfigureAwait(false);
-                        var usr = reactUsers.FirstOrDefault(x => x.Id == ctx.User.Id && !x.IsBot);
-                        if (usr != default)
-                        {
-                            await msg.AddReactionAsync(new Emoji("✅")).ConfigureAwait(false);
-                            return false;
-                        }
-                    }
-                    await Task.Delay(500, tokenSource.Token).ConfigureAwait(false);  // Optional: Add a short delay to reduce API calls
+                    var reactUsers = await msg.GetReactionUsersAsync(reaction, 100).FlattenAsync().ConfigureAwait(false);
+                    var usr = reactUsers.FirstOrDefault(x => x.Id == ctx.User.Id && !x.IsBot);
+                    if (usr == default)
+                        continue;
+
+                    await msg.AddReactionAsync(new Emoji("✅")).ConfigureAwait(false);
+                    return false;
                 }
             }
-            catch (TaskCanceledException)
-            {
-
-                // Task was cancelled because timeout reached.
-            }
-
             await msg.AddReactionAsync(new Emoji("❌")).ConfigureAwait(false);
             return true;
         }
-
-
 
         public async Task EmbedUtil(SocketCommandContext ctx, string name, string value, EmbedBuilder? embed = null)
         {
@@ -253,39 +242,29 @@ namespace SysBot.Pokemon.Discord
             return list;
         }
 
-        public static List<string> ListUtilPrep(List<string> descriptions, int maxPageLength)
+        private static List<string> ListUtilPrep(string entry)
         {
-            List<string> pages = new List<string>();
-            string currentPage = "";
-            foreach (var description in descriptions)
+            List<string> pageContent = new();
+            if (entry.Length > 1024)
             {
-                if (currentPage.Length + description.Length > maxPageLength)
+                var index = 0;
+                while (true)
                 {
-                    pages.Add(currentPage);
-                    currentPage = "";
-                }
+                    var splice = SpliceAtWord(entry, index, 1024);
+                    if (splice.Count == 0)
+                        break;
 
-                if (currentPage.Length > 0 && description.Length > maxPageLength)
-                {
-                    // Split the description and repeat the module name on the new page
-                    string moduleName = description.Substring(0, description.IndexOf('\n') + 1);
-                    string remainingDescription = description.Substring(description.IndexOf('\n') + 1);
-                    currentPage += description.Substring(0, maxPageLength - currentPage.Length);
-                    pages.Add(currentPage);
-                    currentPage = moduleName + remainingDescription.Substring(0, Math.Min(remainingDescription.Length, maxPageLength - moduleName.Length));
-                }
-                else
-                {
-                    currentPage += description;
+                    index += splice.Count;
+                    pageContent.Add(string.Join(entry.Contains(',') ? ", " : entry.Contains('|') ? " | " : "\n", splice));
                 }
             }
+            else
+            {
+                pageContent.Add(entry == "" ? "No se han encontrado resultados." : entry);
+            }
 
-            if (currentPage.Length > 0)
-                pages.Add(currentPage);
-
-            return pages;
+            return pageContent;
         }
-
 
         public static Color GetBorderColor(bool gift, PKM? pkm = null)
         {

@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using PKHeX.Core;
@@ -79,15 +79,13 @@ namespace SysBot.Pokemon.Discord
             var sav = AutoLegalityWrapper.GetTrainerInfo<T>();
             var pkm = sav.GetLegal(template, out var result);
             pkm = EntityConverter.ConvertToType(pkm, typeof(T), out _) ?? pkm;
-            if (pkm.HeldItem == 0 && !Info.Hub.Config.Trade.Memes)
+            if (pkm.HeldItem == 0)
             {
                 await ReplyAsync($"⚠️ {Context.User.Username}, el item que has solicitado no ha sido reconocido.").ConfigureAwait(false);
                 return;
             }
 
             var la = new LegalityAnalysis(pkm);
-            if (Info.Hub.Config.Trade.Memes && await TrollAsync(Context, pkm is not T || !la.Valid, pkm, true).ConfigureAwait(false))
-                return;
 
             if (pkm is not T pk || !la.Valid)
             {
@@ -120,7 +118,9 @@ namespace SysBot.Pokemon.Discord
         {
             keyword = keyword.ToLower().Trim();
             if (Enum.TryParse(language, true, out LanguageID lang))
+            {
                 language = lang.ToString();
+            }
             else
             {
                 await Context.Message.ReplyAsync($"⚠️ No pude reconocer el idioma solicitado: {language}.").ConfigureAwait(false);
@@ -134,8 +134,6 @@ namespace SysBot.Pokemon.Discord
             TradeExtensions<T>.DittoTrade((T)pkm);
 
             var la = new LegalityAnalysis(pkm);
-            if (Info.Hub.Config.Trade.Memes && await TrollAsync(Context, pkm is not T || !la.Valid, pkm).ConfigureAwait(false))
-                return;
 
             if (pkm is not T pk || !la.Valid)
             {
@@ -148,76 +146,6 @@ namespace SysBot.Pokemon.Discord
             pk.ResetPartyStats();
             var sig = Context.User.GetFavor();
             await QueueHelper<T>.AddToQueueAsync(Context, code, Context.User.Username, sig, pk, PokeRoutineType.LinkTrade, PokeTradeType.SupportTrade).ConfigureAwait(false);
-        }
-
-        [Command("peek")]
-        [Summary("Realiza y envía una captura de pantalla desde el Switch especificado.")]
-        [RequireOwner]
-        public async Task Peek(string address)
-        {
-            var source = new CancellationTokenSource();
-            var token = source.Token;
-
-            var bot = SysCord<T>.Runner.GetBot(address);
-            if (bot == null)
-            {
-                await ReplyAsync($"⚠️ No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
-                return;
-            }
-
-            var c = bot.Bot.Connection;
-            var bytes = await c.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
-            if (bytes.Length == 1)
-            {
-                await ReplyAsync($"⚠️ No se pudo tomar una captura de pantalla para el bot en {address}. ¿Está conectado el bot?").ConfigureAwait(false);
-                return;
-            }
-            MemoryStream ms = new(bytes);
-
-            var img = "cap.jpg";
-            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Imagen capturada del bot en la dirección: {address}." });
-            await Context.Channel.SendFileAsync(ms, img, "", false, embed: embed.Build());
-        }
-
-        public static async Task<bool> TrollAsync(SocketCommandContext context, bool invalid, PKM pkm, bool itemTrade = false)
-        {
-            var rng = new Random();
-            bool noItem = pkm.HeldItem == 0 && itemTrade;
-            var path = Info.Hub.Config.Trade.MemeFileNames.Split(',');
-            if (Info.Hub.Config.Trade.MemeFileNames == "" || path.Length == 0)
-                path = new string[] { "https://i.imgur.com/qaCwr09.png" }; //If memes enabled but none provided, use a default one.
-
-            if (invalid || !ItemRestrictions.IsHeldItemAllowed(pkm) || noItem || (pkm.Nickname.ToLower() == "egg" && !Breeding.CanHatchAsEgg(pkm.Species)))
-            {
-                var msg = $"⚠️ {(noItem ? $"{context.User.Username}, el item que has introducido no ha sido reconocido." : $"⚠️Oops! No fui capaz de crear ese {GameInfo.Strings.Species[pkm.Species]}.")} He aquí un meme en su lugar!\n";
-                await context.Channel.SendMessageAsync($"{(invalid || noItem ? msg : "")}{path[rng.Next(path.Length)]}").ConfigureAwait(false);
-                return true;
-            }
-            return false;
-        }
-
-        [Command("repeek")]
-        [Summary("Realiza y envía una captura de pantalla desde el Switch especificado.")]
-        [RequireOwner]
-        public async Task RePeek(string address)
-        {
-            var source = new CancellationTokenSource();
-            var token = source.Token;
-
-            var bot = SysCord<T>.Runner.GetBot(address);
-            if (bot == null)
-            {
-                await ReplyAsync($"⚠️ No se ha encontrado ningún bot con la dirección especificada: ({address}).").ConfigureAwait(false);
-                return;
-            }
-
-            var c = bot.Bot.Connection;
-            c.Reset();
-            var bytes = Task.Run(async () => await c.PixelPeek(token).ConfigureAwait(false)).Result ?? Array.Empty<byte>();
-            MemoryStream ms = new(bytes);
-            var img = "cap.jpg";
-            var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Color.Purple }.WithFooter(new EmbedFooterBuilder { Text = $"Imagen capturada del bot en la dirección: {address}." });
-            await Context.Channel.SendFileAsync(ms, img, "", false, embed: embed.Build());
         }
     }
 }

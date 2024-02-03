@@ -1,9 +1,10 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using PKHeX.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
             var giveawaypool = Info.Hub.LedyPlus.GiveawayPool;
             if (giveawaypool.Count == 0)
             {
-                var giveawayMsg = ("La lista de treadeos especiales esta vacia.");
+                var giveawayMsg = ("⚠️ La lista de treadeos especiales esta vacia.");
                 var embedGiveawayMsg = new EmbedBuilder()
                 {
                     Author = new EmbedAuthorBuilder()
@@ -107,7 +108,7 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
             }
             else
             {
-                var giveawayPoolMsg = ("La lista de treadeos especiales esta vacia.");
+                var giveawayPoolMsg = ("⚠️ La lista de treadeos especiales esta vacia.");
                 var embedGiveawayPoolMsg = new EmbedBuilder()
                 {
                     Author = new EmbedAuthorBuilder()
@@ -135,7 +136,7 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
             await Context.Message.DeleteAsync().ConfigureAwait(false);
             var me = SysCord<T>.Runner;
             var hub = me.Hub;
-            var failedtoReload = $"Error al recargar la carpeta Giveaway.";
+            var failedtoReload = $"⚠️ Error al recargar la carpeta Giveaway.";
             var embedFailedtoReload = new EmbedBuilder()
             {
                 Author = new EmbedAuthorBuilder()
@@ -149,7 +150,7 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
             .WithThumbnailUrl("https://i.imgur.com/3D36Tyc.png")
                 .WithCurrentTimestamp()
                 .Build();
-            var reloadedMsg = $"Carpeta de regalos recargada. Recuento: **{hub.LedyPlus.GiveawayPool.Count}**";
+            var reloadedMsg = $"✔️ Carpeta de regalos recargada. Recuento: **{hub.LedyPlus.GiveawayPool.Count}**";
             var embedReloadedMsg = new EmbedBuilder()
             {
                 Author = new EmbedAuthorBuilder()
@@ -266,7 +267,7 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
             var giveawaypool = Info.Hub.LedyPlus.GiveawayPool;
             if (giveawaypool.Count == 0)
             {
-                var emptyGiveawayPool = ("La lista de treadeos especiales esta vacia.");
+                var emptyGiveawayPool = ("⚠️ La lista de treadeos especiales esta vacia.");
                 var embedEmptyGiveawayPool = new EmbedBuilder()
                 {
                     Author = new EmbedAuthorBuilder()
@@ -343,6 +344,96 @@ namespace SysBot.Pokemon.Discord.Commands.Extra
 
                 await ReplyAsync(null, false, embed).ConfigureAwait(false);
             }
+        }
+
+        [Command("le")]
+        [Alias("lookup")]
+        [Summary("Looks up all Pokémon files in the specified folder with the specified Pokémon name or initial letter.")]
+        [RequireQueueRole(nameof(DiscordManager.RolesGiveaway))]
+        public async Task LookupPokemonAsync([Remainder] string input)
+        {
+            // Split the input into name and page number parts
+            var parts = input.Split(' ');
+            var pokemonName = parts[0];
+            var pageNumber = parts.Length > 1 && int.TryParse(parts[1], out var num) ? num : 1;
+
+            var giveawayFolder = Info.Hub.Config.Folder.GiveawayFolder;
+            if (!Directory.Exists(giveawayFolder))
+            {
+                var folderEmptyEmbed = new EmbedBuilder
+                {
+                    Title = "📁 Carpeta de eventos",
+                    Description = "⚠️ La carpeta de eventos especiales no contiene ningún archivo.",
+                    Color = Color.Red,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        IconUrl = Context.User.GetAvatarUrl(),
+                        Text = $"{Context.User.Username} - {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC"
+                    },
+                    ThumbnailUrl = "https://i.imgur.com/3D36Tyc.png"
+                };
+
+                await ReplyAsync(embed: folderEmptyEmbed.Build()).ConfigureAwait(false);
+                return;
+            }
+
+            string normalizedPokemonName = pokemonName.ToLowerInvariant().Replace(" ", "").Replace("-", "");
+
+            List<string> matchingFileNames = Directory.GetFiles(giveawayFolder)
+                .Select(Path.GetFileNameWithoutExtension)
+                .Where(name => name.StartsWith(normalizedPokemonName, StringComparison.OrdinalIgnoreCase) || (normalizedPokemonName.Length == 1 && name[0] == normalizedPokemonName[0]))
+                .ToList();
+
+            if (!matchingFileNames.Any())
+            {
+                var noFileFoundEmbed = new EmbedBuilder
+                {
+                    Title = "📥 Busqueda Terminada",
+                    Description = $"⚠️ No se encontraron archivos de Pokémon \nque coincidan con: '**{pokemonName}**'",
+                    Color = Color.Red,
+                    Footer = new EmbedFooterBuilder
+                    {
+                        IconUrl = Context.User.GetAvatarUrl(),
+                        Text = $"{Context.User.Username} - {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC"
+                    },
+                    ThumbnailUrl = "https://i.imgur.com/3D36Tyc.png"
+                };
+
+                await ReplyAsync(embed: noFileFoundEmbed.Build()).ConfigureAwait(false);
+                return;
+            }
+
+            const int ItemsPerPage = 10;
+            var totalNumberOfPages = (int)Math.Ceiling(matchingFileNames.Count / (double)ItemsPerPage);
+            pageNumber = Math.Max(1, pageNumber);
+            pageNumber = Math.Min(pageNumber, totalNumberOfPages);
+
+            var paginatedFileNames = matchingFileNames
+                .Skip((pageNumber - 1) * ItemsPerPage)
+                .Take(ItemsPerPage)
+                .ToList();
+
+            var response = new EmbedBuilder
+            {
+                Title = $"📥 Busqueda Terminada - Pagina {pageNumber} de {totalNumberOfPages}",
+                Color = Color.Blue,
+                Footer = new EmbedFooterBuilder
+                {
+                    IconUrl = Context.User.GetAvatarUrl(),
+                    Text = $"{Context.User.Username} - {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC"
+                },
+                ThumbnailUrl = "https://i.imgur.com/MOXSDFV.png"
+            };
+
+            string commandPrefix = Info.Hub.Config.Discord.CommandPrefix;
+            for (int fileIndex = 0; fileIndex < paginatedFileNames.Count; fileIndex++)
+            {
+                int eventNumber = fileIndex + 1 + (pageNumber - 1) * ItemsPerPage;
+                string requestCommand = $"{commandPrefix}ga {paginatedFileNames[fileIndex]}";
+                response.Description += $"**{eventNumber}**. **{paginatedFileNames[fileIndex]}**\n Usa `{requestCommand}` para solicitar este evento.\n\n";
+            }
+
+            await ReplyAsync(embed: response.Build()).ConfigureAwait(false);
         }
 
         private List<string> SplitIntoPages(string text, int maxPageLength)
