@@ -7,6 +7,7 @@ Este fork está pensado para mi uso personal. Eres libre de usar este fork, pero
 ## Support Discords:
 
 Para soporte específico para este fork del fork de ForkBot del repo SysBot.NET de kwsch, ¡siéntete libre de unirte! **(No se dará soporte en el Discord oficial de PKHeX o PA, por favor no molestes a los desarrolladores)**
+
 [<img src="https://discordapp.com/api/guilds/1079448118933852160/widget.png?style=banner2">](https://discord.gg/Ny6XND5B8R)
 
 Esta fork utiliza código de:
